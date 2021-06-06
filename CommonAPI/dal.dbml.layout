@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 14, 8.5" name="dal">
+  <DataContextMoniker Name="/dalDataContext" />
+  <nestedChildShapes>
+    <classShape Id="c06c7255-e5b0-4800-ac51-0060d964b2e7" absoluteBounds="11.75, 1, 2, 1.3862939453125">
+      <DataClassMoniker Name="/dalDataContext/_brgy" />
+      <nestedChildShapes>
+        <elementListCompartment Id="b8f32f73-1019-4fe2-8319-1c9c89299ca1" absoluteBounds="11.765, 1.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="9ed9de3e-7c7f-471f-86bf-cef653e71b6a" absoluteBounds="3.5, 1, 2, 1.3862939453125">
+      <DataClassMoniker Name="/dalDataContext/_region" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f2bb6939-147c-495b-b90b-9b1ac1aaa8f0" absoluteBounds="3.515, 1.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="d608be2d-55f2-49dd-955d-929d69bf9a1f" absoluteBounds="0.75, 1, 2, 1.3862939453125">
+      <DataClassMoniker Name="/dalDataContext/_country" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f129b8d0-ac30-4011-afff-6433f0c20fcf" absoluteBounds="0.765, 1.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="000c8270-257f-466e-977e-e5896976608a" absoluteBounds="9, 0.875, 2, 1.5785953776041664">
+      <DataClassMoniker Name="/dalDataContext/_mun_city" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9c683055-793a-4a75-b80d-a232fb512f19" absoluteBounds="9.015, 1.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ad17bb12-0437-4a68-a19d-809adec8f620" absoluteBounds="6.25, 1, 2, 1.3862939453125">
+      <DataClassMoniker Name="/dalDataContext/_province" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c9db5f09-15b8-4b9b-8dce-dc5be112be34" absoluteBounds="6.265, 1.46, 1.9700000000000002, 0.8262939453125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="fc1e6fae-7e1e-4781-b381-861b94b5de22" absoluteBounds="5.5, 4.25, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/dalDataContext/vwCity" />
+      <nestedChildShapes>
+        <elementListCompartment Id="51a43df1-3d6e-40ac-acdf-1a2b23020d09" absoluteBounds="5.515, 4.71, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

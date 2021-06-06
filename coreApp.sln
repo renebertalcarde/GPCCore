@@ -3,17 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coreApp", ".\coreApp\coreApp.csproj", "{4FD7A8FE-28A5-44C9-83D5-D6F2E5D89825}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "coreApp", "coreApp\coreApp.csproj", "{4FD7A8FE-28A5-44C9-83D5-D6F2E5D89825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.DB", ".\Module.DB\Module.DB.csproj", "{4040E8A0-5698-4EDF-A255-3197A08FB00C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.DB", "Module.DB\Module.DB.csproj", "{4040E8A0-5698-4EDF-A255-3197A08FB00C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Core", ".\Module.Core\Module.Core.csproj", "{822873D5-76F5-4769-B471-D6CD2AA7FC17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.Core", "Module.Core\Module.Core.csproj", "{822873D5-76F5-4769-B471-D6CD2AA7FC17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "reports", ".\reports\reports.csproj", "{B9928C09-7E4D-4C0C-891D-EDE58B45B321}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "reports", "reports\reports.csproj", "{B9928C09-7E4D-4C0C-891D-EDE58B45B321}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HRLogixMobileLib", ".\HRLogixMobileLib\HRLogixMobileLib.csproj", "{C55C6AB3-C069-43BE-B3F6-99659DCAE75F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HRLogixMobileLib", "HRLogixMobileLib\HRLogixMobileLib.csproj", "{C55C6AB3-C069-43BE-B3F6-99659DCAE75F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoAuth_Location", ".\GeoAuth_Location\GeoAuth_Location.csproj", "{366E2F12-5AB7-4D4C-A47D-866E9650E23B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeoAuth_Location", "GeoAuth_Location\GeoAuth_Location.csproj", "{366E2F12-5AB7-4D4C-A47D-866E9650E23B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddressLib", "AddressLib\AddressLib.csproj", "{B1018947-1952-48EC-A31B-C595ADDDD039}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonAPI", "CommonAPI\CommonAPI.csproj", "{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +101,30 @@ Global
 		{366E2F12-5AB7-4D4C-A47D-866E9650E23B}.Release|iPhone.Build.0 = Release|Any CPU
 		{366E2F12-5AB7-4D4C-A47D-866E9650E23B}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{366E2F12-5AB7-4D4C-A47D-866E9650E23B}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Release|iPhone.Build.0 = Release|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B1018947-1952-48EC-A31B-C595ADDDD039}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Release|iPhone.Build.0 = Release|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{1BF32A1E-5DF3-4410-ABBB-61DC8BF0935D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
