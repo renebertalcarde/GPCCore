@@ -1,0 +1,16 @@
+﻿@model tblStakeholder
+@using Module.DB
+@{
+    Layout = "~/Views/Shared/_Canvas_Anonymous.cshtml";
+    ViewBag.Title = "Id Verify";
+
+    string codeData = (string)ViewBag.CodeData;
+}
+
+@Html.Partial("~/Views/Shared/info/_card_stakeholderInfo_idverify.cshtml", Model, new ViewDataDictionary { { "codeData", codeData } })
+
+    <style>
+        #content {
+            color: white;
+        }
+    </style>

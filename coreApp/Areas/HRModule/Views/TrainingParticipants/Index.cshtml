@@ -1,0 +1,185 @@
+﻿@model List<tblEmployee>
+@using Module.DB
+@using coreApp.DAL
+@{
+
+    ViewBag.Title = "Training Participants";
+
+    tblTraining training = (tblTraining)ViewBag.Training;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() {
+        new Breadcrumb { Description = "Trainings", Link = Url.Action("Index", "Trainings") },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+
+    <script>
+
+        function addEmployees(btn) {
+            var opts = {
+                modalCustomWidth: 'modal-xl',
+                modalCustomTitle: 'Add Employees',
+                modalCustomButton: 'Add Selected Employees',
+                preLoadCallback: 'addEmployeesPreLoad',
+                loadCallback: 'load'
+            };
+            var url = '@Url.Action("AddEmployees", new { trainingId = training.Id })';
+            $.fn.list('modalCustom', btn, url, opts);
+        }
+
+        function addEmployeesPreLoad(e) {
+            e.modal.find('.btn-custom').show();
+            return e;
+        }
+
+        function load(e) {
+            if (e.viewType == 'custom') {
+                //for add employees button in index
+                e.modal.find('.btn-custom').unbind('click').bind('click', function () {
+                    postAddEmployees();
+                });
+            }
+            return e;
+        }
+
+        function postAddEmployees() {
+            var addUrl = '@Url.Action("AddEmployees", new { trainingId = training.Id })';
+
+            var employeeIds = [];
+            var sel = $('.search .table').attr('data-selection');
+            if (sel != undefined) {
+                employeeIds = sel.split(',');
+            }
+
+            var data = {
+                employeeIds: employeeIds
+            };
+
+            var proc = modalProcessing();
+
+            $.post(vdUrl(addUrl), data, function (res) {
+                if (res.IsSuccessful) {
+                    sessionStorage.clientMessage = res.Remarks;
+                    window.location.reload(true);
+                } else {
+                    proc.addClass('confirm-close-event').modal('hide');
+                    modalMessage(res.Err.split('\n'), 'Add employees', true);
+                }
+            });
+        }
+
+        function deleteEmployees() {
+            var employeeIds = [];
+            var sel = $('.tbl-1').attr('data-selection');
+            if (sel != undefined) {
+                employeeIds = sel.split(',');
+            }
+
+            if (employeeIds.length == 0) {
+                modalMessage('No employee selected', 'Delete records', true);
+                return;
+            }
+
+            modalConfirm('Are you sure you want to remove the selected employees from this list?', function (res) {
+                if (res) {
+
+                    var deleteUrl = '@Url.Action("DeleteEmployees", new { trainingId = training.Id })';
+
+                    var data = {
+                        employeeIds: employeeIds
+                    };
+
+                    var proc = modalProcessing();
+
+                    $.post(vdUrl(deleteUrl), data, function (res) {
+                        if (res.IsSuccessful) {
+                            sessionStorage.clientMessage = res.Remarks;
+                            window.location.reload(true);
+                        } else {
+                            proc.addClass('confirm-close-event').modal('hide');
+                            modalMessage(res.Err.split('\n'), 'Delete records', true);
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}
+
+
+@Html.Partial("~/Views/Shared/info/trainingInfo.cshtml", "/HR/Batch/Trainings/Participants/Index/")
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="tbl-1 display table table-bordered table-striped table-list multi-select force-itemselection" cellspacing="0" width="100%"
+                    >
+                <thead>
+                    <tr>
+                        <th class="selectcol">
+                            @Html.Partial("_Helper_CheckBox", "SelectAll", new ViewDataDictionary { { "class", "table-select-all" } })
+                        </th>
+                        <th class="idcol">
+                            Id
+                        </th>
+                        <th>
+                            Employee
+                        </th>
+                        <th>
+                            Office/Department
+                        </th>
+                        <th>
+                            Position
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (tblEmployee item in Model)
+                    {
+                        tblEmployee_Career career = new Module.DB.Procs.procs_tblEmployee(item).LatestCareer();
+
+                        <tr record-id="@item.EmployeeId" locked>
+                            <td class="selectcol" data-sort="0">
+                                @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "class", "table-select-item" }, { "id", "Item-" + item.EmployeeId }, { "name", "Selection" }, { "input-value", item.EmployeeId } })
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmployeeId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FullName)
+                            </td>
+
+                            @if (career == null)
+                            {
+                                <td></td>
+                                <td></td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @career.DepartmentPath()
+                                </td>
+                                <td>
+                                    @career.Position.Position
+                                </td>
+                            }
+
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+        @Html.Hidden("SelectedItems")
+    </div>
+</div>
+
+@section FormActions {
+    <button class="btn btn-sm btn-default" onclick="addEmployees(this)" table-selector=".tbl-1">Add Employees</button>
+    <button class="btn btn-sm btn-default btn-danger" onclick="deleteEmployees()">Delete Selected Records</button>
+}

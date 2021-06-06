@@ -1,0 +1,158 @@
+﻿@model List<Module.DB.tblBulletinBoard>
+
+@{
+    ViewBag.Title = "Announcements";
+    ViewBag.Subtitle = "Manage news, memos, announcements and etc.";
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/canvas/html/js/components/tinymce/skins/ui/oxide-dark/skin.min.css" type="text/css" />
+
+    <style>
+        table.createby td label {
+            margin-bottom: 0px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script type='text/javascript' src='~/Assets/canvas/html/js/components/tinymce/tinymce.min.js'></script>
+
+    <script>
+        $(document).ready(function () {
+            if ($("textarea.tmce").length > 0) {
+                tinymce.init({
+                    selector: "textarea.tmce",
+                    height: 400
+                });
+            }
+            if ($("textarea.stmce").length > 0) {
+                tinymce.init({
+                    selector: "textarea.stmce",
+                    toolbar: "bold italic | alignleft aligncenter alignright alignjustify | undo redo",
+                    menu: [],
+                    height: 200
+                });
+            }        
+        });
+
+        function preSubmit(proc, e) {
+            try {
+                e.modal.find('textarea.tmce').val(
+                    tinymce.get('Contents').getContent()
+                );
+            } catch (err) { }
+            return true;
+        }
+    </script>
+}
+
+<div class="block">
+    <div class="table-responsive">
+        <div class="table-actions">
+            
+        </div>
+
+        <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%" data-url="/HR/Manage/Announcements/Details/{0}">
+            <thead>
+                <tr>
+                    <th class="idcol">
+                        Id
+                    </th>
+                    <th>
+                        Title
+                    </th>
+                    <th>
+                        Doc Type
+                    </th>
+                    <th>
+                        Created By
+                    </th>
+                    <th>
+                        Last Updated By
+                    </th>
+                    <th>
+                        Date of Posting
+                    </th>
+                    <th>
+                        End of Posting
+                    </th>
+                    <th>
+                        Enabled
+                    </th>
+                    <th>
+                        For Dashboard
+                    </th>
+                    <th>
+                        For Kiosk
+                    </th>
+                </tr>
+                <tr class="tr-filters">
+                    <th data-orderable="false"></th>
+                    <th data-orderable="false"></th>
+                    <th class="dropdown" data-orderable="false"></th>
+                    <th class="dropdown" data-orderable="false"></th>
+                    <th class="dropdown" data-orderable="false"></th>
+                    <th data-orderable="false"></th>
+                    <th data-orderable="false"></th>
+                    <th class="dropdown" data-orderable="false"></th>
+                    <th class="dropdown" data-orderable="false"></th>
+                    <th class="dropdown" data-orderable="false"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Module.DB.tblBulletinBoard item in Model)
+                {
+                    <tr record-id="@item.Id">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                          <td>
+                            @Html.DisplayFor(modelItem => item.DocType_Desc)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedBy)
+                            <div class="small">
+                                @Html.DisplayFor(modelItem => item.DateCreated)
+                            </div>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+                            <div class="small">
+                                @Html.DisplayFor(modelItem => item.LastUpdated)
+                            </div>
+                        </td>
+                        <td data-order="@item.DateOfPosting.Ticks">
+                            @Html.DisplayFor(modelItem => item.DateOfPosting)
+                        </td>
+                        <td data-order="@item.EndOfPosting.Ticks">
+                            @Html.DisplayFor(modelItem => item.EndOfPosting)
+                        </td>
+                        <td>
+                            @Html.DisplayBooleanFor(modelItem => item.Enabled)
+                        </td>
+                        <td>
+                            @Html.DisplayBooleanFor(modelItem => item.ShowInDashboard)
+                        </td>
+                        <td>
+                            @Html.DisplayBooleanFor(modelItem => item.ShowInKiosk)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section FormActions {
+    <a href="@Url.Action("Create", "BulletinBoard", new { area = "HRModule" })" class="btn btn-sm btn-default btn-create">New</a>
+}

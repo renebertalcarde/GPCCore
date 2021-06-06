@@ -1,0 +1,374 @@
+﻿
+@{
+    ViewBag.Title = "Attendance Monitoring";
+
+
+    DateTime dt = DateTime.Today;
+
+    int[] departmentIds = new int[] { coreApp.Cache.Get().userAccess.career.DepartmentId };
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Styles {
+    <style>
+        .con-ui {
+            min-height: 400px;
+        }
+
+        .result-section {
+            display: none;
+        }
+
+        .search .search-active-cont {
+            display: none !important;
+        }
+
+        .attendance-table {
+            font-size: 14px !important;
+        }
+
+        .title-cont {
+            position: relative;
+        }
+
+        .item-count-cont {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        }
+
+        .date-search-cont {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 5px 5px 0;
+        }
+
+            .date-search-cont label {
+                font-size: 21px;
+                margin-bottom: 0 !important;
+            }
+
+            .date-search-cont > label,
+            .date-search-cont > input {
+                display: inline-block;
+                height: 31px !important;
+                vertical-align: bottom;
+            }
+
+
+        .filters {
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .filters li {
+            margin-top: 10px;
+        }
+
+        .filters li .small {
+            margin-left: 30px;
+        }
+
+        .selected-employees {
+            border: 1px solid #e0e0e0;
+            min-height: 345px;
+            padding: 20px;
+        }
+    </style>
+
+}
+
+@section Scripts {
+
+    <script>
+        var sessionId;
+        var errors;
+
+        var criteria = {
+            lastName: '',
+            firstName: '',
+            mfoId: -1,
+            officeId: -1,
+            departmentId: -1,
+            positionId: -1,
+            groupId: -1,
+            employmentType: -1,
+            employmentType_Desc: '',
+            active: '',
+            date: '@dt.ToString("MM-dd-yyyy")'
+        };
+
+        var cont = $('.cont-ui');
+        var search = $('.search');
+
+        var btnSearchAM = $('.btn-search-am');
+
+        $(document).ready(function () {
+            cont.keypress(function (e) {
+                if (e.which == 13) {
+                    btnSearchAM.click();
+                }
+            });
+
+            btnSearchAM.click(function () {
+                goSearch();
+            });
+
+            $('.filters input').click(function () {
+                applyFilters();
+            });
+
+            $('.search').employeeSearch('showSearchPanel', false);
+        });
+
+        function selectedAll() {
+            applyFilters();
+        }
+
+        function getCriteria() {
+
+            criteria.lastName = search.find('.search-lastname').val();
+            criteria.firstName = search.find('.search-firstname').val();
+
+            var mfo = search.find('.search-mfoid');
+            criteria.mfoId = mfo.val();
+
+            var office = search.find('.search-officeid');
+            criteria.officeId = office.val();
+            
+            criteria.departmentIds = search.find('.office-structure').attr('data-selection');
+
+            var position = search.find('.search-positionid');
+            criteria.positionId = position.val();
+
+            var group = search.find('.search-groupid');
+            criteria.groupId = group.val();
+
+            var empType = search.find('.search-employmenttype');
+            criteria.employmentType = empType.val();
+
+            var active = search.find('.search-active');
+            criteria.active = active.val();
+
+            var nodept = search.find('.search-nodepartment');
+            criteria.nodepartment = nodept.val();
+
+            criteria.date = $('#Date').val();
+        }
+
+        function getFilters(prefix) {
+            var ret = [];
+            if ($('#Filter_Reported').prop('checked')) ret.push(prefix + '_reported');
+            if ($('#Filter_Late').prop('checked')) ret.push(prefix + '_late');
+            if ($('#Filter_UT').prop('checked')) ret.push(prefix + '_ut');
+            if ($('#Filter_Absent').prop('checked')) ret.push(prefix + '_absent');
+            if ($('#Filter_NoSchedule').prop('checked')) ret.push(prefix + '_noschedule');
+
+            return ret;
+        }
+
+        function goSearch() {
+            loadingUI(cont, true);
+
+            getCriteria();
+            loadTable();
+        }
+
+        function loadTable() {
+            var modal = $($('#progress-ui-template').prop('content')).find('.modal').clone();
+
+            modal.find('.modal-title').html('Searching');
+
+            var pui = modal.find('.progress-ui');
+
+            pui.progressUI([{
+                text: 'searching employees...'
+            }]);
+            pui.css('display', 'block');
+
+            var url = '@Url.Action("GenerateList")' +
+                '?date=' + criteria.date +
+                '&lastName=' + criteria.lastName +
+                '&firstName=' + criteria.firstName +
+                '&mfoId=' + criteria.mfoId +
+                '&officeId=' + criteria.officeId +
+                '&departmentIds=' + criteria.departmentIds +
+                '&positionId=' + criteria.positionId +
+                '&groupId=' + criteria.groupId +
+                '&employmentType=' + criteria.employmentType +
+                '&employmentType_Desc=' + criteria.employmentType_Desc +
+                '&active=' + criteria.active;
+
+            var progress = new Progress(
+                url,
+                function (res) {
+                    if (res.IsSuccessful) {
+                        var data = res.Data;
+
+                        searchType = data.searchType;
+                        sessionId = data.sessionId;
+                        errors = data.errors;
+
+                        viewList();
+                    } else {
+                        modalMessage(res.Err.split('\n'), 'Generate List', true, null, null, function (modal) {                            
+                            loadingUI(e.modal.find('.modal-content'), false);
+                        });
+                    }
+                    
+                    setTimeout(function () {
+                        modal.addClass('confirm-close-event').modal('hide');
+                    }, 500);
+                },
+                function (data) {
+
+                    var perc = parseFloat(data.Percentage).toFixed(0) + '%';
+                    var text = data.Current + '/' + data.Total + ' (' + parseFloat(data.Percentage).toFixed(0) + '%)';
+                    pui.progressUI('update', perc, 1, text);
+
+                },
+                function (err) {
+
+                }
+            );
+
+            modal.modal({
+                backdrop: 'static',
+                show: true
+            });
+        }
+
+        function applyFilters() {
+            var filters = getFilters('tr.');
+
+            var tbody = $('.selected-employees .attendance-table tbody');
+            tbody.find('tr').hide();
+
+            if (filters.length > 0) {
+                var cl = filters.join(', ');
+                tbody.find(cl).show();
+            }
+
+            var c = tbody.find('tr:visible').length;
+            $('.item-count').html(c);
+        }
+
+
+        function viewList() {
+            var url = '@Url.Action("ViewList")';
+
+            var data = {
+                date: criteria.date,
+                sessionId: sessionId,
+                searchType: searchType
+            };
+            
+            var cont = $('.selected-employees');
+            loadingUI(cont, true);
+            cont.load(vdUrl(url), data, function () {
+
+                setTables(cont);                
+                applyFilters()
+
+                document.getElementById('am-results').scrollIntoView();
+
+                adjustFormActions();
+                loadingUI(cont, false);
+
+                if (errors.length > 0) {
+                    modalMessage(errors, 'Attendance Monitoring', true);
+                }
+            });
+        }
+
+    </script>
+}
+
+<div class="con-ui">
+    @Html.Action("Search", "EmployeeSearch", new
+{
+    area = "HRModule",
+    model = new coreApp.Models.EmployeeSearchUIModel
+    {
+        DataUrl = "",
+        MultiSelect = true,
+        ExcludeNoCareer = true,
+        ExcludeNoOffice = true,
+        ShowSearchBtn = false,
+        LessParameters = false,
+        InitialParam_DepartmentIds = departmentIds
+    }
+})
+
+    
+    
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="filters">
+                <h3>Filters</h3>
+
+                <div class="entry-ui select-all select-all-parent-inverse">
+                    <ul>
+                        <li data-updatedcallback="selectedAll">
+                            @Html.Partial("_Helper_CheckBox", "SelectAllTrigger", new ViewDataDictionary { { "value", true }, { "text", "Select All" } })
+
+                            <ul>
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "id", "Filter_Reported" }, { "name", "Filter" }, { "value", true }, { "input-value", "reported" }, { "text", "Reported" } })
+                                    <div class="small">
+                                        Show employees who logged in
+                                    </div>
+                                </li>
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "id", "Filter_Late" }, { "name", "Filter" }, { "value", true }, { "input-value", "late" }, { "text", "Late" } })
+                                    <div class="small">
+                                        Show employees who came in late
+                                    </div>
+                                </li>
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "id", "Filter_UT" }, { "name", "Filter" }, { "value", true }, { "input-value", "ut" }, { "text", "Undertime" } })
+                                    <div class="small">
+                                        Show employees who logged out early
+                                    </div>
+                                </li>
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "id", "Filter_Absent" }, { "name", "Filter" }, { "value", true }, { "input-value", "absent" }, { "text", "Absent" } })
+                                    <div class="small">
+                                        Show employees who didn't come to work
+                                    </div>
+                                </li>
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "id", "Filter_NoSchedule" }, { "name", "Filter" }, { "value", true }, { "input-value", "scheduled" }, { "text", "No Schedule" } })
+                                    <div class="small">
+                                        Show employees who have no schedule for today
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div id="am-results" class="selected-employees">
+                [click search to continue]
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+@section FormActions {
+    <div class="date-search-cont">
+        <label>Date</label>
+        @Html.TextBox("Date", dt.ToString("MM/dd/yyyy"), new { @class = "form-control datepicker", data_vertical_orientation = "top" })
+        <input type="hidden" id="_Date" value="@dt.ToString("MM/dd/yyyy")" />
+    </div>
+
+    <button class="btn btn-sm btn-default btn-search-am">Search</button>
+}

@@ -1,0 +1,300 @@
+﻿@model Module.DB.tblStakeholder_Info
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    string q34 = "Are you related by consanguinity or affinity to the appointing or recommending authority, or to the chief of bureau or office or to the person who has immediate supervision over you in the Office, Bureau or Department where you will be appointed";
+    string q34a = "Within the third degree?";
+    string q34b = "Within the fourth degree (for Local Government Unit – Career Stakeholders)?";
+    string q35a = "Have you ever been found guilty of any administrative offense?";
+    string q35b = "Have you been criminally charged before any court?";
+    string q36 = "Have you ever been convicted of any crime or violation of any law, decree, ordinance or regulation by any court or tribunal?";
+    string q37 = "Have you ever been separated from the service in any of the following modes: resignation, retirement, dropped from the rolls, dismissal, termination, end of term, finished contract or phased out (abolition) in the public or private sector?";
+    string q38a = "Have you ever been a candidate in a national or local election held within the last year (except Barangay election)?";
+    string q38b = "Have you resigned from the government service during the three (3)-month period before the last election to promote/ actively campaign for a national or local candidate?";
+    string q39 = "Have you acquired the status of an immigrant or permanent resident of another country?";
+    string q40 = "Pursuant to: (a) Indigenous People's Act (RA 8371); (b) Magna Carta for Disabled Persons (RA 7277); and (c) Solo Parents Welfare Act of 2000(RA 8972), please answer the following items:";
+    string q40a = "Are you a member of any indigenous group?";
+    string q40b = "Are you a person with disability?";
+    string q40c = "Are you a solo parent?";
+}
+
+<style>
+
+    ol.questions,
+    ol.questions > li,
+    ol.questions > li > ol,
+    ol.questions > li > ol > li {
+        padding-left: initial;
+        padding-right: initial;
+        padding-top: initial;
+        padding-bottom: initial;
+        padding-inline-start: 40px;
+    }
+
+    ol.questions li textarea,
+    ol.questions li div.details {
+        display: none;
+    }
+
+    ol.questions li {
+        margin-bottom: 5px;
+        color: darkgray;
+    }
+
+        ol.questions li.value-yes textarea,
+        ol.questions li.value-yes div.details {
+            display: block;
+        }
+
+    ol.question {
+        list-style-type: lower-alpha;
+    }
+
+    .ans {
+        display: inline-block;
+        margin-left: 20px;
+        font-weight: bold;
+        text-decoration: underline;
+        vertical-align: top;
+    }
+</style>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Home_CountryId)
+    @Html.HiddenFor(model => model.Nationality_CountryId)
+    @Html.HiddenFor(model => model.Perm_CountryId)
+    @Html.HiddenFor(model => model.POB_CountryId)
+
+    if (isReadOnly)
+    {
+        <ol class="questions" start="34">
+            <li>
+                @q34
+                <ol class="question">
+                    <li>
+                        @q34a
+                        <div class="ans">
+                            @(Model.PDSQ34a == true ? "Yes" : "No")
+                        </div>
+                    </li>
+                    <li>
+                        @q34b
+                        <div class="ans">
+                            @(Model.PDSQ34b == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ34b_Details) ? ", " + Model.PDSQ34b_Details : "") : "No")
+                        </div>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <ol class="question">
+                    <li>
+                        @q35a
+                        <div class="ans">
+                            @(Model.PDSQ35a == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ35a_Details) ? ", " + Model.PDSQ35a_Details : "") : "No")
+                        </div>
+                    </li>
+                    <li>
+                        @q35b
+                        <div class="ans">
+                            @(Model.PDSQ35b == true ? "Yes" : "No")
+                            @if (Model.PDSQ35b == true)
+                            {
+                                <div>
+                                    Date Filed: @(Model.PDSQ35b_DateFiled == null ? "" : Model.PDSQ35b_DateFiled.Value.ToString("MM/dd/yyyy"))<br />
+                                    Status: @Model.PDSQ35b_Status
+                                </div>
+                            }
+                        </div>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                @q36
+                <div class="ans">
+                    @(Model.PDSQ36 == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ36_Details) ? ", " + Model.PDSQ36_Details : "") : "No")
+                </div>
+            </li>
+            <li>
+                @q37
+                <div class="ans">
+                    @(Model.PDSQ37 == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ37_Details) ? ", " + Model.PDSQ37_Details : "") : "No")
+                </div>
+            </li>
+            <li>
+                <ol class="question">
+                    <li>
+                        @q38a
+                        <div class="ans">
+                            @(Model.PDSQ38a == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ38a_Details) ? ", " + Model.PDSQ38a_Details : "") : "No")
+                        </div>
+                    </li>
+                    <li>
+                        @q38b
+                        <div class="ans">
+                            @(Model.PDSQ38b == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ38b_Details) ? ", " + Model.PDSQ38b_Details : "") : "No")
+                        </div>
+                    </li>
+                </ol>
+            </li>
+            <li>
+                @q39
+                <div class="ans">
+                    @(Model.PDSQ39 == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ39_Details) ? ", " + Model.PDSQ39_Details : "") : "No")
+                </div>
+            </li>
+            <li>
+                @q40
+                <ol class="question">
+                    <li>
+                        @q40a
+                        <div class="ans">
+                            @(Model.PDSQ40a == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ40a_Details) ? ", " + Model.PDSQ40a_Details : "") : "No")
+                        </div>
+                    </li>
+                    <li>
+                        @q40b
+                        <div class="ans">
+                            @(Model.PDSQ40b == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ40b_Details) ? ", " + Model.PDSQ40b_Details : "") : "No")
+                        </div>
+                    </li>
+                    <li>
+                        @q40c
+                        <div class="ans">
+                            @(Model.PDSQ40c == true ? "Yes" + (!string.IsNullOrEmpty(Model.PDSQ40c_Details) ? ", " + Model.PDSQ40c_Details : "") : "No")
+                        </div>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    }
+    else
+    {
+        @Html.HiddenFor(model => model.InfoId)
+        @Html.HiddenFor(model => model.StakeholderId)
+
+        <ol class="questions" start="34">
+            <li>
+                @q34
+                <ol class="question">
+                    <li class="@(Model.PDSQ34a == true ? "value-yes" : "")">
+                        @q34a
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ34a-yes" }, { "name", "PDSQ34a" }, { "value", Model.PDSQ34a == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block"} })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ34a-no" }, { "name", "PDSQ34a" }, { "value", Model.PDSQ34a != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })                            
+                        </div>                        
+                    </li>
+                    <li class="@(Model.PDSQ34b == true ? "value-yes" : "")">
+                        @q34b
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ34b-yes" }, { "name", "PDSQ34b" }, { "value", Model.PDSQ34b == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ34b-no" }, { "name", "PDSQ34b" }, { "value", Model.PDSQ34b != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ34b_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                </ol>
+            </li>
+            <li>
+                <ol class="question">
+                    <li class="@(Model.PDSQ35a == true ? "value-yes" : "")">
+                        @q35a
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ35a-yes" }, { "name", "PDSQ35a" }, { "value", Model.PDSQ35a == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ35a-no" }, { "name", "PDSQ35a" }, { "value", Model.PDSQ35a != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ35a_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                    <li class="@(Model.PDSQ35b == true ? "value-yes" : "")">
+                        @q35b
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ35b-yes" }, { "name", "PDSQ35b" }, { "value", Model.PDSQ35b == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ35b-no" }, { "name", "PDSQ35b" }, { "value", Model.PDSQ35b != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        <div class="details">
+                            Date Filed: @Html.TextBoxFor(model => model.PDSQ35b_DateFiled, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                            Status: @Html.TextBoxFor(model => model.PDSQ35b_Status, new { @class = "form-control", placeholder = "[Enter Status]" })
+                        </div>
+                    </li>
+                </ol>
+            </li>
+            <li class="@(Model.PDSQ36 == true ? "value-yes" : "")">
+                @q36
+                <div>
+                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ36-yes" }, { "name", "PDSQ36" }, { "value", Model.PDSQ36 == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ36-no" }, { "name", "PDSQ36" }, { "value", Model.PDSQ36 != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                </div>
+                @Html.TextAreaFor(m => m.PDSQ36_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+            </li>
+            <li class="@(Model.PDSQ37 == true ? "value-yes" : "")">
+                @q37
+                <div>
+                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ37-yes" }, { "name", "PDSQ37" }, { "value", Model.PDSQ37 == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ37-no" }, { "name", "PDSQ37" }, { "value", Model.PDSQ37 != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                </div>
+                @Html.TextAreaFor(m => m.PDSQ37_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+            </li>
+            <li>
+                <ol class="question">
+                    <li class="@(Model.PDSQ38a == true ? "value-yes" : "")">
+                        @q38a
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ38a-yes" }, { "name", "PDSQ38a" }, { "value", Model.PDSQ38a == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ38a-no" }, { "name", "PDSQ38a" }, { "value", Model.PDSQ38a != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ38a_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                    <li class="@(Model.PDSQ38b == true ? "value-yes" : "")">
+                        @q38b
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ38b-yes" }, { "name", "PDSQ38b" }, { "value", Model.PDSQ38b == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ38b-no" }, { "name", "PDSQ38b" }, { "value", Model.PDSQ38b != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ38b_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                </ol>
+            </li>
+            <li class="@(Model.PDSQ39 == true ? "value-yes" : "")">
+                @q39
+                <div>
+                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ39-yes" }, { "name", "PDSQ39" }, { "value", Model.PDSQ39 == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ39-no" }, { "name", "PDSQ39" }, { "value", Model.PDSQ39 != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                </div>
+                @Html.TextAreaFor(m => m.PDSQ39_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+            </li>
+            <li>
+                @q40
+                <ol class="question">
+                    <li class="@(Model.PDSQ40a == true ? "value-yes" : "")">
+                        @q40a
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ40a-yes" }, { "name", "PDSQ40a" }, { "value", Model.PDSQ40a == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ40a-no" }, { "name", "PDSQ40a" }, { "value", Model.PDSQ40a != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ40a_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                    <li class="@(Model.PDSQ40b == true ? "value-yes" : "")">
+                        @q40b
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ40b-yes" }, { "name", "PDSQ40b" }, { "value", Model.PDSQ40b == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ40b-no" }, { "name", "PDSQ40b" }, { "value", Model.PDSQ40b != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ40b_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                    <li class="@(Model.PDSQ40c == true ? "value-yes" : "")">
+                        @q40c
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ40c-yes" }, { "name", "PDSQ40c" }, { "value", Model.PDSQ40c == true }, { "text", "Yes" }, { "small-type", true }, { "style", "display:inline-block" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "PDSQ40c-no" }, { "name", "PDSQ40c" }, { "value", Model.PDSQ40c != true }, { "text", "No" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "False" } })
+                        </div>
+                        @Html.TextAreaFor(m => m.PDSQ40c_Details, new { @class = "form-control", placeholder = "[Enter Details]" })
+                    </li>
+                </ol>
+            </li>
+        </ol>
+        
+    }
+}

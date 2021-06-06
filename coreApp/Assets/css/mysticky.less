@@ -1,0 +1,36 @@
+﻿.mysticky-parent {
+    position: relative;
+}
+
+.mysticky {
+    position: sticky;
+    z-index: 99;
+    background-color: white;
+}
+
+.mysticky-header-cont {
+    top: 60px !important;
+    box-shadow: 0 5px 5px -5px #333;
+
+    .scroll-cont {
+        overflow: hidden;
+    }
+}
+
+.mysticky-header-cont-table,
+.mysticky-table {
+    table-layout: fixed;
+    margin-bottom: 0;
+    width: initial;
+}
+
+.mysticky-table-responsive {
+    overflow-y: hidden;
+}
+
+
+.mobile-view {
+    .mysticky-header-cont {
+        top: 0px !important;
+    }
+}

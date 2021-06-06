@@ -1,0 +1,154 @@
+﻿@{
+    Layout = "~/Views/Shared/_Canvas_Anonymous.cshtml";
+
+    ViewBag.Title = "Application License";
+    Licenses.License lic = MvcApplication.ApplicationLicense;
+
+    string sn = ViewBag.SN;
+
+    coreApp.UserAccess access = coreApp.Cache.Get().userAccess;
+
+    string error = "";
+    if (TempData["GlobalError"] != null)
+    {
+        error = TempData["GlobalError"].ToString();
+        TempData["GlobalError"] = null;
+    }
+}
+
+@section Styles {
+    <link href="~/Content/license.less" rel="stylesheet" type="text/css" />
+
+}
+
+<div class="license">
+    <h3>
+        Application Name: @FixedSettings.ApplicationName
+        <br />Server S/N: @sn
+    </h3>
+    <hr />
+
+    @if (lic.IsValid)
+    {
+        <div class="license-info">
+            This @lic.Info.ApplicationName application is licensed to <b>@lic.Info.Client</b>
+            <br />Registered Server S/N: @lic.Info.MotherboardSN
+
+            @if (lic.Info.ShowExpiry)
+            {
+                <br /><span>Expiry Date: @lic.Info.ExpiryString</span>
+            }
+        </div>
+
+        <div class="inclusion">
+            @if (lic.AsposeLicenseSet.Any())
+            {
+                <div>
+                    <h4>Third-Party Licenses</h4>
+
+                    <ul>
+                        @foreach (Licenses.AsposeLicenseInfo info in lic.AsposeLicenseSet)
+                    {
+                            <li>
+                                <span>@info.Type: </span>
+                                @if (info.IsSet)
+                        {
+                                    <span class="text-success">Ok</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Not set. @info.Error</span>
+                                }
+                            </li>
+
+                        }
+                    </ul>
+
+                </div>
+            }
+
+            <div>
+                <h4>Integrated Modules</h4>
+
+                @if (lic.HasModule)
+                {
+                    <ul>
+                        @if (lic.Info.Modules_HL)
+                    {
+                            <li>HRLogix</li>
+                        }
+                        @if (lic.Info.Modules_PL)
+                    {
+                            <li>PurchaseLogix</li>
+                        }
+                        @if (lic.Info.Modules_IL)
+                    {
+                            <li>InventoryLogix</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <br />
+                    <div>[None]</div>
+                }
+            </div>
+
+            
+        </div>       
+    }
+    else
+    {
+
+        <div class="bg-danger">
+            @if (error != "")
+            {
+                <span>@error</span>
+
+            }
+            else if (lic.HasLicenseFile)
+            {
+                int c = 0;
+
+                foreach (string err in lic.ValidationErrors)
+                {
+                    if (c > 0)
+                    {
+                        <br />
+                    }
+                    <span>@err</span>
+
+                    c++;
+                }
+            }
+            else
+            {
+                <span>This application is unlicensed</span>
+            }
+        </div>
+
+    }
+
+    @if (!lic.IsValid || (User.Identity.IsAuthenticated && access.IsAdmin))
+    {
+        <hr />
+        <h3>Upload License File</h3>
+
+
+        using (Html.BeginForm("UploadLicenseFile", "License", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <input type="file" class="form-control" name="LicenseFile" />
+            <button type="submit" class="btn btn-sm btn-default">Upload</button>
+
+        }
+    }
+    
+    <div class="backtoportal">
+        License library ver. @(lic.GetType().Assembly.GetName().Version)
+        <br /><br />
+
+        <a href="~/"><i class="icon-torii-gate"></i> &nbsp;&nbsp;Back to Portal</a>
+    </div>
+</div>

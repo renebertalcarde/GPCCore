@@ -1,0 +1,161 @@
+﻿@model etPeriodFilter
+@using Module.Time
+@{ 
+    string clientCallback = Convert.ToString(ViewData["clientCallback"]);
+    string _class = Convert.ToString(ViewData["class"]);
+    string label = Convert.ToString(ViewData["label"]);
+
+    etPeriodFilterParamItem[] v = Model.GetFilters();
+    etPeriodFilterParamItem[] disp = v.Where(x => x.value != -1).ToArray();
+}
+
+<div class="etperiodfilter-cont @_class" event-change="@clientCallback">
+    @if (!string.IsNullOrEmpty(label))
+    {
+        <label>@label</label>
+    }
+    <div class="etperiodfilter-set">
+        <div class="cmds">
+            <a href="#" class="resetall">[Reset]</a>&nbsp;
+            <a href="#" class="trueall">[All True]</a>&nbsp;
+            <a href="#" class="falseall">[All False]</a>
+        </div>
+
+        <table>
+            <tbody>
+                @foreach (etPeriodFilterParamItem s in v)
+                {
+                    <tr data-prop="@s.name">
+                        <td>
+                            @s.name
+                        </td>
+                        <td>
+                            &nbsp;:&nbsp;
+                        </td>
+                        <td>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", s.name + "-exclude" }, { "name", s.name }, { "value", s.value == -1 }, { "text", "Exclude" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "-1" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", s.name + "-true" }, { "name", s.name }, { "value", s.value == 1 }, { "text", "True" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "1" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", s.name + "-false" }, { "name", s.name }, { "value", s.value == 0 }, { "text", "False" }, { "small-type", true }, { "style", "display:inline-block" }, { "input-value", "0" } })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="cmds">
+            <button class="btn btn-sm btn-default canceletperiodfilter">Cancel</button>
+            <button class="btn btn-sm btn-default applyetperiodfilter">Apply</button>
+        </div>
+    </div>
+    <div class="etperiodfilter-view">
+        <div>
+            <a href="#" class="setetperiodfilter">[Set Filter]</a>
+        </div>
+
+        @if (disp.Any())
+        {
+            <div class="table-cont">
+                <table>
+                    <tbody>
+                        @foreach (etPeriodFilterParamItem s in disp)
+                        {
+                            <tr>
+                                <td>
+                                    @s.name
+                                </td>
+                                <td>
+                                    &nbsp;:&nbsp;
+                                </td>
+                                <td>
+                                    @(s.value == 1 ? "true" : "false")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>            
+        }
+        else
+        {
+            <span>[No filter]</span>
+        }
+    </div>    
+</div>
+
+<script>
+    
+    $(document).ready(function () {
+        var cont = $('.etperiodfilter-cont');
+
+        var getFilters = function () {
+            var ret = [];
+
+            $('.etperiodfilter-set table tbody tr').each(function (i, v) {
+                var tr = $(v);                
+                var name = tr.attr('data-prop');
+                var val = tr.find('input:checked').val();
+
+                if (val != '-1') {
+                    var p = i + '-' + val;
+                    ret.push(p);
+                }
+            });
+
+            return ret;
+        };
+
+        var setAll = function (value) {            
+            cont.find('.etperiodfilter-set table tbody tr').each(function (i, v) {
+                var tr = $(v);
+                var prop = tr.attr('data-prop');
+
+                tr.find('input[name="' + prop + '"][value="' + value + '"]').prop('checked', true);
+            });
+        };
+        
+        $('.setetperiodfilter').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            cont.addClass('setmode');
+        });
+
+        $('.canceletperiodfilter').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            cont.removeClass('setmode');
+        });
+
+        $('.resetall').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            setAll('-1');
+        });
+
+        $('.trueall').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            setAll('1');
+        });
+
+        $('.falseall').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            setAll('0');
+        });
+
+        $('.applyetperiodfilter').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var filters = getFilters();
+            var param = filters.length == 0 ? '' : '[' + filters.join(',') + ']';
+
+            var callback = cont.attr('event-change');
+            window[callback](param);
+        });
+    });
+</script>

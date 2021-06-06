@@ -1,0 +1,134 @@
+﻿@model List<Module.DB.tblEmployee_Travel>
+
+@{
+    Layout = "~/Areas/TimeModule/Views/Shared/_Schedules_Layout.cshtml";
+
+    ViewBag.Title = "Travels";
+
+
+
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function load(e) {
+            if (e.viewType == 'view') {
+                var fromApplication = $('#FromApplication').val() == 'True';
+                var editBtn = e.modal.find('.btn-edit');
+                var deleteBtn = e.modal.find('.btn-delete');
+
+                editBtn.show();
+                deleteBtn.show();
+
+                if (fromApplication) {
+                    editBtn.hide();
+                    deleteBtn.hide();
+                }
+            }
+        }
+
+        function applyPeriod(start, end) {
+            $('#StartDate').val(start);
+            $('#EndDate').val(end);
+        }
+    </script>
+}
+
+
+@section PreWrapper {
+    <div class="body-overlay"></div>
+    <div id="side-panel">
+        <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+        <div class="side-panel-wrap">
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { ForScheduling = true, DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/Travels/Index/{0}", MinimalView = true, LessParameters = true } })
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", employee)
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-load-callback="load"
+           modal-view-url="/HR/Manage/Employee/Travels/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/Travels/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/Travels/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/Travels/Create/@employee.EmployeeId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Period
+                </th>
+                <th>
+                    Purpose
+                </th>
+                <th>
+                    Destination
+                </th>
+                <th>
+                    Created/Approved By
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblEmployee_Travel item in Model)
+            {
+                Module.DB.tblTravelApplication application = item.GetApplication();
+
+                <tr record-id="@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InclusiveDays)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Purpose)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Destination)
+                    </td>
+
+                    @if (application == null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedBy)
+                            <div class="small">
+                                @item.CreateDate.ToShortDateString()
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => application.ApprovedBy)
+                            <div class="small">
+                                @application.ApproveDate.Value.ToShortDateString()
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

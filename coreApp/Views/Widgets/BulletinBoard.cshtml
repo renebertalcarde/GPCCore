@@ -1,0 +1,61 @@
+﻿@model List<Module.DB.tblBulletinBoard>
+@using Module.DB
+@{ 
+    int limit = 7;
+}
+<style>
+    .dashboard-item .bulletin-board .dataTables_length,
+    .dashboard-item .bulletin-board .dataTables_info,
+    .dashboard-item .bulletin-board .dataTables_paginate {
+        display: none;
+    }
+
+</style>
+
+<div class="bulletin-board card">
+    <div class="card-header">
+        <span class="card-title">Announcements</span>
+    </div>
+    <div class="card-body">
+        <div style="text-align:right">
+            Showing @(limit > Model.Count ? Model.Count : limit) of @Model.Count items
+        </div>
+
+        <ul>
+            @for (int i = 1; i <= limit; i++)
+            {
+                if (Model.Count >= i)
+                {
+                    tblBulletinBoard item = Model[i - 1];
+
+                    <li>
+                        <a href="@Url.Action("Details", "BulletinBoardView", new { area = "HRModule", id = item.Id })" target="_blank">
+                            <table>
+                                <tr>
+                                    <td class="first-col">
+                                        @item.DateOfPosting.ToString("dd MMM yyyy h:mm tt")
+                                    </td>
+                                    <td>
+                                        @item.Title
+                                    </td>
+                                </tr>
+                            </table>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>&nbsp;</li>
+                }
+            }
+        </ul>
+
+    </div>    
+    <div class="card-footer">
+        <div style="text-align:right">
+            <a href="@Url.Action("Index", "BulletinBoardView", new { area = "HRModule" })" target="_blank">View full list...</a>
+        </div>
+    </div>
+</div>
+
+

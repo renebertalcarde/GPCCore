@@ -1,0 +1,804 @@
+﻿@using coreApp
+@{ 
+    coreApp.UserAccess access = coreApp.Cache.Get().userAccess;
+
+    var _area = HttpContext.Current.Request.RequestContext.RouteData.DataTokens["area"];
+    string area = _area == null ? "" : _area.ToString().ToLower();
+
+    string activitylogs_module = "Sys";
+}
+
+
+
+    <ul>
+        @if ((access.HasAccess("hr_config")))
+        {
+            <li class="mega-menu">
+                <a href="#">Settings<div></div></a>
+                <div class="mega-menu-content style-2 clearfix">
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Organizational Structure</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "Groups", new { area = "HRModule" })">
+                                        Stakeholder Groups
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MFOs", new { area = "HRModule" })">
+                                        Office Groups
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "OfficeStructure", new { area = "HRModule" })">
+                                        Office Structure
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Reports</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "Signatories", new { area = "HRModule" })">
+                                        Signatories
+                                    </a>
+                                </li>
+                                @if (access.IsAdmin)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "ActivityLogs", new { area = "", module = activitylogs_module })">
+                                            Activity Logs
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Personnel Compensation & Priviledges</h4>
+                            <ul style="display: none;">
+                                @if (FixedSettings.RatesBySalaryGrade)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Positions", new { area = "HRModule" })">
+                                            Job Titles
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Details", "SalaryGrades", new { area = "HRModule" })">
+                                            Salary Grades
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Positions", new { area = "HRModule" })">
+                                            Job Titles & Rates
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Leave Type Definitions</h4>
+                            <ul style="display: none;">
+                                @if (access.HasAccess("leave_module_settings"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "LeaveRules", new { area = "LeaveModule" })">
+                                            Leave Rules
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "LeaveTypes", new { area = "LeaveModule" })">
+                                            Leave Types
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Leave Rules</li>
+                                    <li class="text-muted">Leave Types</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Time Keeping</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "GlobalScheduleSegments", new { area = "TimeModule" })">
+                                        Global Segments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "ScheduleTemplates", new { area = "TimeModule" })">
+                                        Schedule Templates
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "OTTemplates", new { area = "TimeModule" })">
+                                        Overtime Templates
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        @if (FixedSettings.AllowGeoLocation)
+                        {
+                            <li class="mega-menu-title sub-menu">
+                                <h4>Geo-Location</h4>
+                                <ul style="display: none;">
+                                    <li>
+                                        <a href="@Url.Action("Index", "GeoAuthAreas", new { area = "HRModule" })">
+                                            Attendance Areas
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </li>
+        }
+
+        @if (access.IsHRStaff || access.HasAccess("hr_holidays") || access.HasAccess("hr_permissions") || access.HasAccess("hr_bulletinboard") || 
+            access.HasAccess("hr_devices") || access.HasAccess("hr_emp_sched") || access.HasOnlineApplicationsAccess)
+        {
+            <li class="mega-menu">
+                <a href="#">HR Office<div></div></a>
+                <div class="mega-menu-content style-2 clearfix">
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Reports</h4>
+                            <ul style="display: none;">
+                                @if (access.IsHRStaff)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "MasterList", new { area = "ReportsModule" })">
+                                            Master List
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "SummaryOfAbsences", new { area = "ReportsModule" })">
+                                            Summary of Absences
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "DTR", new { area = "ReportsModule" })">
+                                            Daily Time Records
+                                        </a>
+                                    </li>
+                                    if (FixedSettings.UseStartInGovService)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "Loyalty", new { area = "ReportsModule" })">
+                                                Loyalty Awardees
+                                            </a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderLocations", new { area = "ReportsModule" })">
+                                            Stakeholder Locations
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Master List</li>
+                                    <li class="text-muted">Summary of Absences</li>
+                                    <li class="text-muted">Daily Time Records</li>
+
+                                    if (FixedSettings.UseStartInGovService)
+                                    {
+                                        <li class="text-muted">Loyalty Awardees</li>
+                                    }
+
+                                    <li class="text-muted">Stakeholder Locations</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Batch Processes</h4>
+                            <ul style="display: none;">
+                                @if (access.IsHRStaff)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "SetAllowancesDeductions", new { area = "HRModule" })">
+                                            Allowances & Deductions
+                                        </a>
+                                    </li>
+
+                                    if (FixedSettings.AllowGeoLocation)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "SetGeoAuthAreas", new { area = "HRModule" })">
+                                                Geo-Location Attendance Areas
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <a href="@Url.Action("Index", "SetUserAccounts", new { area = "HRModule" })">
+                                            Stakeholder Accounts
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="@Url.Action("Index", "Trainings", new { area = "HRModule" })">
+                                            Trainings
+                                        </a>
+                                    </li>
+
+                                    if (access.HasAccess("hr_permissions"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "SetHRPermissions", new { area = "HRModule" })">
+                                                Update Permissions
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Allowances & Deductions</li>
+                                    if (FixedSettings.AllowGeoLocation)
+                                    {
+                                        <li class="text-muted">Geo-Location Attendance Areas</li>
+                                    }
+                                    <li class="text-muted">Stakeholder Accounts</li>
+                                    if (access.HasAccess("hr_permissions"))
+                                    {
+                                        <li class="text-muted">Update Permissions</li>
+
+                                    }
+                                }
+
+                                @if (access.HasAccess("hr_emp_sched"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "SetSchedules", new { area = "TimeModule" })">
+                                            Stakeholder Schedules
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Stakeholder Schedules</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Online Applications</h4>
+                            <ul style="display: none;">
+                                @if (access.HasAccess("hr_emp_leave_app_approve"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "LeaveApplications", new { area = "HRModule", showRecommended = true })">
+                                            Leaves
+                                        </a>
+                                    </li>
+                                }
+                                else if (access.HasAccess("hr_emp_leave_app"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "LeaveApplications", new { area = "HRModule" })">
+                                            Leaves
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Leaves</li>
+                                }
+
+                                @if (access.HasAccess("hr_emp_ot_app"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "OTApplications", new { area = "HRModule" })">
+                                            Overtimes
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Overtimes</li>
+                                }
+
+                                @if (access.HasAccess("hr_emp_travel_app"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "TravelApplications", new { area = "HRModule" })">
+                                            Travels
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Travels</li>
+                                }
+                            </ul>
+                        </li>
+                        <li class="mega-menu-title sub-menu">
+                            <h4>General</h4>
+                            <ul style="display: none;">
+
+                                @if (access.HasAccess("hr_bulletinboard"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "BulletinBoard", new { area = "HRModule" })">
+                                            Announcements
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "BulletinBoardDocTypes", new { area = "HRModule" })">
+                                            Announcement Doc Types
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Announcements</li>
+                                    <li class="text-muted">Announcement Doc Types</li>
+                                }
+
+                                @if (access.HasAccess("hr_holidays"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Holidays", new { area = "TimeModule" })">
+                                            Holidays
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Holidays</li>
+                                }
+
+                                @if (access.HasAccess("hr_devices"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Devices", new { area = "TimeModule" })">
+                                            Biometric Devices
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Biometric Devices</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Manage Stakeholders</h4>
+                            <ul style="display: none;">
+                                @if (access.IsHRStaff)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Stakeholders", new { area = "HRModule" })">
+                                            Stakeholder Profiles
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Stakeholder Profiles</li>
+                                }
+
+                                @if (access.HasAccess("hr_emp_sched"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderSchedules })">
+                                            Schedules
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderScheduleOverride })">
+                                            Schedule Overrides
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Schedules</li>
+                                    <li class="text-muted">Schedule Overrides</li>
+                                }
+
+                                @if (access.IsHRStaff || access.HasAccess("hr_emp_sched"))
+                                {
+
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderRD })">
+                                            Rest Days
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderTravels })">
+                                            Travels
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderOT })">
+                                            Overtimes
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Rest Days</li>
+                                    <li class="text-muted">Travels</li>
+                                    <li class="text-muted">Overtimes</li>
+                                }
+                            </ul>
+                        </li>
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Queries</h4>
+                            <ul style="display: none;">
+
+                                @if (access.IsHRStaff || access.HasAccess("hr_emp_sched"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderTimeLogs })">
+                                            Time Logs
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderSchedules_View })">
+                                            Schedule View
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "StakeholderSearch", new { area = "TimeModule", dest = (int)EmpSearchDest.StakeholderAttendance })">
+                                            Attendance
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Time Logs</li>
+                                    <li class="text-muted">Schedule View</li>
+                                    <li class="text-muted">Attendance</li>
+                                }
+
+                                @if (access.IsHRStaff)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "AttendanceMonitoring", new { area = "HRModule" })">
+                                            Attendance Monitoring
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Attendance Monitoring</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        }
+
+        @if (access.IsFinanceStaff || access.HasAccess("finance_stakeholder_loans") || access.HasAccess("finance_ps"))
+        {
+            <li class="mega-menu">
+                <a href="#">Finance Office<div></div></a>
+                <div class="mega-menu-content style-2 clearfix">
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Payroll Item Definitions</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "FinanceAllowanceDefs", new { area = "FinanceModule" })">
+                                        Allowances
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "FinanceDeductionDefs", new { area = "FinanceModule" })">
+                                        Deductions
+                                    </a>
+                                </li>
+
+                                @if (FixedSettings.UseCommissionDefs)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "FinanceCommissionDefs", new { area = "FinanceModule" })">
+                                            Commissions
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Commissions</li>
+                                }
+
+                                @if (access.HasAccess("finance_stakeholder_loans"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "FinanceLoanDefs", new { area = "FinanceModule" })">
+                                            Loans
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Loans</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Miscellaneous Tables</h4>
+                            <ul style="display: none;">
+                                @if (access.HasAccess("finance_definitions"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Details", "Tables_GSIS", new { area = "FinanceModule" })">
+                                            GSIS Table
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Details", "Tables_SSS", new { area = "FinanceModule" })">
+                                            SSS Table
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Details", "Tables_PH", new { area = "FinanceModule" })">
+                                            PHILHEALTH Table
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Details", "Tables_PAGIBIG", new { area = "FinanceModule" })">
+                                            PAGIBIG Table
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Details", "Tables_BIR", new { area = "FinanceModule" })">
+                                            BIR Table
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">GSIS Table</li>
+                                    <li class="text-muted">SSS Table</li>
+                                    <li class="text-muted">PHILHEALTH Table</li>
+                                    <li class="text-muted">PAGIBIG Table</li>
+                                    <li class="text-muted">BIR Table</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Stakeholder Payroll Entries</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "FinanceStakeholderPayrollSettings", new { area = "FinanceModule" })">
+                                        Fixed Payroll Settings
+                                    </a>
+                                </li>
+
+                                @if (FixedSettings.UseCommissionDefs)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "FinanceStakeholderCommissionSettings", new { area = "FinanceModule" })">
+                                            Stakeholder Commissions
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Policies & Processes</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "TMSettings", new { area = "TimeModule", officeId = -1 })">
+                                        Rules and Incentives Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "FinancePayroll", new { area = "FinanceModule" })">
+                                        Payroll Reports
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Manage</h4>
+                            <ul style="display: none;">
+                                @if (access.HasAccess("finance_stakeholder_loans"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("SelectStakeholder", "FinanceStakeholderLoans", new { area = "FinanceModule" })">
+                                            Stakeholder Loans
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Index", "SetStakeholderLoans", new { area = "FinanceModule" })">
+                                            Set Stakeholder Loans (By Batch)
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="text-muted">Stakeholder Loans</li>
+                                    <li class="text-muted">Set Stakeholder Loans (By Batch)</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+        }
+
+        @if (access.IsAdmin || FixedSettings.AllowGeoLocation)
+        {
+            <li class="mega-menu">
+                <a href="@Url.Action("Index", "Downloads", new { area = "" })">Downloads</a>
+            </li>
+        }
+
+        @if (access.IsStakeholder)
+        {
+            <li class="mega-menu">
+                <a href="#">My<div></div></a>
+                <div class="mega-menu-content style-2 clearfix">
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Employment</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Details", "MyProfile", new { area = "StakeholderModule" })">
+                                        Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyCareers", new { area = "StakeholderModule" })">
+                                        <div>Career</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyDeviceIdNos", new { area = "StakeholderModule" })">
+                                        <div>Device Id Nos.</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyAllowancesDeductions", new { area = "StakeholderModule" })">
+                                        <div>Allowances & Deductions</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyGroups", new { area = "StakeholderModule" })">
+                                        <div>Groups</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyIssuances", new { area = "StakeholderModule" })">
+                                        <div>Issuances</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Applications</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "MyLeaveApplications", new { area = "StakeholderModule" })">
+                                        Leave Applications
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyOTApplications", new { area = "StakeholderModule" })">
+                                        Overtime Applications
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyTravelApplications", new { area = "StakeholderModule" })">
+                                        Travel Applications
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Schedules</h4>
+                            <ul style="display: none;">
+
+                                <li>
+                                    <a href="@Url.Action("Index", "MySchedules", new { area = "StakeholderModule" })">
+                                        Work Schedules
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyRD", new { area = "StakeholderModule" })">
+                                        Rest Days
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyOT", new { area = "StakeholderModule" })">
+                                        Overtimes
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyTravels", new { area = "StakeholderModule" })">
+                                        Travels
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Holidays", new { area = "StakeholderModule" })">
+                                        Holidays
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="mega-menu-column col-md-3">
+                        <li class="mega-menu-title sub-menu">
+                            <h4>Queries</h4>
+                            <ul style="display: none;">
+                                <li>
+                                    <a href="@Url.Action("Index", "MyLeaveCredits", new { area = "StakeholderModule" })">
+                                        Leave Credits
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyTimeLogs", new { area = "StakeholderModule" })">
+                                        TimeLogs
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyAttendance", new { area = "StakeholderModule" })">
+                                        Attendance
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "MyPayslips", new { area = "StakeholderModule" })">
+                                        Payslips
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        @if (FixedSettings.AllowGeoLocation)
+                        {
+                            <li class="mega-menu-title sub-menu">
+                                <h4>Geo-Location</h4>
+                                <ul style="display: none;">
+                                    <li>
+                                        <a href="@Url.Action("Index", "MyGeoAuth", new { area = "StakeholderModule" })">
+                                            Attendance
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("RegisterIndex", "MyGeoAuth", new { area = "StakeholderModule" })">
+                                            Attendance Device Registration
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </li>
+        }
+    </ul>

@@ -1,0 +1,146 @@
+﻿@model tblOTApplication
+@using Module.DB
+@{ 
+    tblOTTemplate template = coreApp.Cache.Get_Tables().OTTemplates.Where(x => x.Id == Model.OTTemplateId).Single();
+
+}
+@Html.HiddenFor(m => m.Id)
+
+@Html.Hidden("HasBeenSubmitted", Model.HasBeenSubmitted)
+@Html.Hidden("HasBeenServed", Model.HasBeenServed)
+
+<div class="modal-view-ui pattern-bg">
+    <div class="view-title">
+        @Html.DisplayFor(model => model.employee.FullName_FN)
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <label>Application Id</label>
+                    <div>
+                        @Html.DisplayFor(model => model.Id)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Date_Desc)
+                    <div>
+                        <b>
+                            @Html.DisplayFor(model => model.Date_Desc)
+                        </b>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Remarks)
+                    <div>
+                        @Html.DisplayMultiLineFor(model => model.Remarks)
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">
+                    Days & Time
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.Days)
+                    <div>
+                        @Html.DisplayFor(model => template.Days)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <label>Time</label>
+                    <div>
+                        @Html.DisplayFor(model => template.TimeString)
+                    </div>
+                </li>
+
+                @if (Model.HasBeenSubmitted && !Model.IsApproved && !Model.IsDenied)
+                { }
+                else
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => template.WorkDayEq)
+                        <div>
+                            @Html.DisplayFor(model => template.WorkDayEq) Day
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => template.AutoBreak)
+                        <div>
+                            @Html.DisplayFor(model => template.AutoBreak) Hours
+                        </div>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Application_Status_Desc)
+                    <div class="@(Model.IsApproved ? "text-success" : Model.IsDenied ? "text-danger" : Model.IsReturned ? "text-warning" : "")">
+                        @Html.DisplayFor(model => model.Application_Status_Desc)
+                    </div>
+                </li>
+
+                @if (Model.HasBeenSubmitted)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateSubmitted)
+                        <div>
+                            @Html.DisplayFor(model => model.DateSubmitted)
+                        </div>
+                    </li>
+                }
+
+                @if (Model.IsApproved)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ApprovedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ApprovedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.ApproveDate)
+                        </div>
+                    </li>
+                }
+                else if (Model.IsDenied)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DeniedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.DeniedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.DenyDate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DenyMessage)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.DenyMessage)
+                        </div>
+                    </li>
+                }
+                else if (Model.IsReturned)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ReturnedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ReturnedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.ReturnDate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ReturnMessage)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.ReturnMessage)
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+﻿@model List<Module.DB.tblRate>
+
+@{
+    ViewBag.Title = "Rates";
+    
+
+    Module.DB.tblPosition position = (Module.DB.tblPosition)ViewBag.Position;
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() {
+        new Breadcrumb { Description = "Positions", Link = "/HR/Config/Positions" },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@Html.Partial("~/Views/Shared/info/positionInfo.cshtml")
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view"
+           modal-view-url="/HR/Config/Position/Rates/Details/@position.PositionId/{0}" modal-edit-url="/HR/Config/Position/Rates/Edit/@position.PositionId/{0}" modal-delete-url="/HR/Config/Position/Rates/Delete/@position.PositionId" modal-create-url="/HR/Config/Position/Rates/Create/@position.PositionId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Date Effective
+                </th>
+                <th>
+                    Step
+                </th>
+                <th>
+                    Rate
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblRate item in Model)
+            {
+                <tr record-id="@item.RateId">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RateId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateEffective)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PositionLevel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rate)
+                        @if (item.IsDailyRate == true)
+                        {
+                            <div class="small text-muted">[Daily Rate]</div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

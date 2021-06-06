@@ -1,0 +1,213 @@
+﻿@{
+    string area = "";
+    string controller = "";
+    string action = "";
+
+    RouteData rd = HttpContext.Current.Request.RequestContext.RouteData;
+
+    if (rd.DataTokens["area"] != null)
+    {
+        area = rd.DataTokens["area"].ToString().ToLower();
+    }
+
+    if (rd.Values["controller"] != null)
+    {
+        controller = rd.Values["controller"].ToString().ToLower();
+    }
+
+    if (rd.Values["action"] != null)
+    {
+        action = rd.Values["action"].ToString().ToLower();
+    }
+}
+
+@if (area == "hrmodule" && controller == "offices")
+{
+    <a href="#" data-link="/HR/Config/Office/Departments/Index/{0}" class="btn btn-sm btn-default for-view">View Departments</a>
+}
+else if (area == "hrmodule" && controller == "groups")
+{
+    <a href="#" data-link="/HR/Config/Group/Members/Index/{0}" class="btn btn-sm btn-default for-view">View Members</a>
+}
+else if (area == "hrmodule" && controller == "positions")
+{
+    if (!FixedSettings.RatesBySalaryGrade)
+    {
+        <a href="#" data-link="/HR/Config/Position/Rates/Index/{0}" class="btn btn-sm btn-default for-view">View Rates</a>
+    }
+}
+else if (area == "hrmodule" && controller == "leaveapplications")
+{
+    <a href="#" data-link="/HR/OnlineApplications/Leaves/Return/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-return">Return</a>
+    <a href="#" data-link="/HR/OnlineApplications/Leaves/Recommend/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-recommendapproval">Recommend Approval</a>
+    <a href="#" data-link="/HR/OnlineApplications/Leaves/Recommend/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-recommenddisapproval">Recommend Disapproval</a>
+    <a href="#" data-link="/HR/OnlineApplications/Leaves/Deny/{0}" data-link-custom class="btn btn-sm btn-default btn-danger for-view btn-deny">Deny</a>
+    <a href="#" data-link="/HR/OnlineApplications/Leaves/Approve/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-approve">Approve</a>
+    <a href="#" data-link="/HR/OnlineApplications/Leaves/RevertApproval/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-revert-approval">Revert Approval/Disapproval</a>
+
+    <div class="btn-group dropup for-view">
+        <button type="button" class="btn btn-sm btn-default btn-print" data-link="/HR/OnlineApplications/Leaves/Print/{0}" data-link-custom>
+            Print Application Form
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-dlword" href="#">Download Word Document</a>
+        </div>
+    </div>
+}
+else if (area == "hrmodule" && controller == "travelapplications")
+{
+    <a href="#" data-link="/HR/OnlineApplications/Travels/Return/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-return">Return</a>
+    <a href="#" data-link="/HR/OnlineApplications/Travels/Deny/{0}" data-link-custom class="btn btn-sm btn-default btn-danger for-view btn-deny">Deny</a>
+    <a href="#" data-link="/HR/OnlineApplications/Travels/Approve/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-approve">Approve</a>
+    <a href="#" data-link="/HR/OnlineApplications/Travels/RevertApproval/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-revert-approval">Revert Approval/Disapproval</a>
+
+    <div class="btn-group dropup for-view">
+        <button type="button" class="btn btn-sm btn-default btn-print" data-link="/HR/OnlineApplications/Travels/Print/{0}" data-link-custom>
+            Print Application Form
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-dlword" href="#">Download Word Document</a>
+        </div>
+    </div>
+}
+else if (area == "hrmodule" && controller == "otapplications")
+{
+    <a href="#" data-link="/HR/OnlineApplications/Overtimes/Return/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-return">Return</a>
+    <a href="#" data-link="/HR/OnlineApplications/Overtimes/Deny/{0}" data-link-custom class="btn btn-sm btn-default btn-danger for-view btn-deny">Deny</a>
+    <a href="#" data-link="/HR/OnlineApplications/Overtimes/Approve/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-approve">Approve</a>
+    <a href="#" data-link="/HR/OnlineApplications/Overtimes/RevertApproval/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-revert-approval">Revert Approval/Disapproval</a>
+
+    <div class="btn-group dropup for-view">
+        <button type="button" class="btn btn-sm btn-default btn-print" data-link="/HR/OnlineApplications/Overtimes/Print/{0}" data-link-custom>
+            Print Application Form
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-dlword" href="#">Download Word Document</a>
+        </div>
+    </div>
+}
+else if (area == "hrmodule" && controller == "trainings")
+{
+    <a href="#" data-link="/HR/Batch/Trainings/Participants/Index/{0}" class="btn btn-sm btn-default for-view">View Participants</a>
+}
+else if (area == "financemodule" && controller == "financepayroll")
+{
+    <a href="#" data-link="/Finance/Payroll/Stakeholders/Index/{0}" class="btn btn-sm btn-default for-view">View Stakeholders</a>
+}
+else if (area == "timemodule" && controller == "scheduletemplates")
+{
+    <a href="#" data-link="/HR/Config/ScheduleTemplate/Segments/Index/{0}" class="btn btn-sm btn-default for-view">View Segments</a>
+}
+else if (area == "timemodule" && controller == "stakeholderschedules")
+{
+    string stakeholderId = coreProcs.getRouteParam(Request, "stakeholderId");
+
+    <a href="#" data-link="/HR/Manage/Stakeholder/WorkSchedules/Customize/@stakeholderId" data-link-custom class="btn btn-sm btn-default btn-customize for-view">Customize</a>
+    <a href="#" data-link="/HR/Manage/Stakeholder/WorkSchedules/Copy/@stakeholderId/{0}?keyCode=@Module.DB.Procs.Common.SCHEDULE_KEYCODE" data-link-custom class="btn btn-sm btn-default btn-copy for-view">Copy</a>
+}
+else if (area == "timemodule" && controller == "stakeholderscheduleoverride")
+{
+    string stakeholderId = coreProcs.getRouteParam(Request, "stakeholderId");
+
+    <a href="#" data-link="/HR/Manage/Stakeholder/WorkScheduleOverride/Copy/@stakeholderId/{0}?keyCode=@Module.DB.Procs.Common.OVERRIDE_SCHEDULE_KEYCODE" data-link-custom class="btn btn-sm btn-default btn-copy for-view">Copy</a>
+}
+else if (area == "timemodule" && controller == "devices")
+{
+    <a href="#" data-link="/HR/Manage/BiometricDevices/Logs/Index/{0}" class="btn btn-sm btn-default for-view">View Device Logs</a>
+}
+else if (area == "leavemodule" && controller == "leavetypes")
+{
+    <a href="#" data-link="/HR/Config/LeaveType/Rules/Index/{0}" class="btn btn-sm btn-default for-view">View Rules</a>
+}
+else if (area == "stakeholdermodule" && controller == "myleaveapplications")
+{
+    <a href="#" data-link="/My/LeaveApplications/Submit/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-submit">Submit</a>
+    <button type="button" class="btn btn-sm btn-default for-view btn-saveAndSubmit for-create for-edit"></button>
+
+    <div class="btn-group dropup for-view">
+        <button type="button" class="btn btn-sm btn-default btn-print" data-link="/My/LeaveApplications/Print/{0}" data-link-custom>
+            Print Leave Form
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-dlword" href="#">Download Word Document</a>
+        </div>
+    </div>
+}
+else if (area == "stakeholdermodule" && controller == "mytravelapplications")
+{
+    <a href="#" data-link="/My/TravelApplications/Submit/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-submit">Submit</a>
+
+    <div class="btn-group dropup for-view">
+        <button type="button" class="btn btn-sm btn-default btn-print" data-link="/My/TravelApplications/Print/{0}" data-link-custom>
+            Print Travel Form
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-dlword" href="#">Download Word Document</a>
+        </div>
+    </div>
+}
+else if (area == "stakeholdermodule" && controller == "myotapplications")
+{
+    <a href="#" data-link="/My/OTApplications/Submit/{0}" data-link-custom class="btn btn-sm btn-default for-view btn-submit">Submit</a>
+
+    <div class="btn-group dropup for-view">
+        <button type="button" class="btn btn-sm btn-default btn-print" data-link="/My/OTApplications/Print/{0}" data-link-custom>
+            Print Overtime Form
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item btn-dlword" href="#">Download Word Document</a>
+        </div>
+    </div>
+}
+else if (area == "financemodule" && controller == "financeloandefs")
+{
+    <a href="#" data-link="/Finance/Definitions/Loan/PaymentSchedule/{0}" class="btn btn-sm btn-default for-view">Payment Schedule</a>
+}
+else if (area == "financemodule" && controller == "financestakeholderloans")
+{
+    Module.DB.tblStakeholder stakeholder = (Module.DB.tblStakeholder)ViewBag.Stakeholder;
+
+    if (stakeholder != null)
+    {
+        <a href="#" data-link="/Finance/Manage/StakeholderLoans/PaymentSchedule/@stakeholder.StakeholderId/{0}" class="btn btn-sm btn-default for-view btn-payment-schedule">Payment Schedule</a>
+        <a href="#" data-link="/Finance/Manage/StakeholderLoans/LoanCard/Index/{0}" class="btn btn-sm btn-default for-view btn-loan-card">Loan Card</a>
+    }
+}
+
+else if (area == "procurement" && controller == "items")
+{
+    <a href="#" data-link="{0}" data-link-custom class="btn btn-sm btn-default for-view btn-updatedocitems">Update Items</a>
+    <a href="#" data-link="@Url.Action("Index", "ItemSet", new { area = "Procurement" })/{0}" class="btn btn-sm btn-default for-view btn-viewitems">Package Items</a>
+}
+else if (area == "procurement" && controller == "bacgroups")
+{
+    <a href="#" data-link="@Url.Action("Index", "BACGroupMembers", new { area = "Procurement" })/{0}" class="btn btn-sm btn-default for-view btn-viewitems">View Members</a>
+}
+else if (area == "procurement" && controller == "bacgroupmembers")
+{
+    <a href="#" data-link="{0}" data-link-custom class="btn btn-sm btn-default for-view btn-changerole" onclick="changeRole(this)">Change Role</a>
+}
+else if (area == "sam" && controller == "items")
+{
+    <a href="#" data-link="{0}" data-link-custom class="btn btn-sm btn-default for-view btn-copy" table-selector=".tbl-1">Copy</a>
+    <a href="#" data-link="{0}" data-link-custom class="btn btn-sm btn-default for-view btn-updatedocitems">Update Items</a>
+    <a href="#" data-link="@Url.Action("Index", "ItemSet", new { area = "SAM" })/{0}" class="btn btn-sm btn-default for-view btn-viewitems">Package Items</a>
+}

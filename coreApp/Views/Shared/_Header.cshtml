@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNet.Identity
+@{ 
+    string homePath = ViewData["homePath"].ToString();
+    string logoPath = ViewData["logoPath"].ToString();
+    string menuPath = ViewData["menuPath"].ToString();
+    string settingsPath = ViewData["settingsPath"].ToString();
+
+    var _area = Request.RequestContext.RouteData.DataTokens["area"];
+    string area = _area == null ? "" : _area.ToString().ToLower();
+
+    Licenses.LicenseInfo lic = MvcApplication.ApplicationLicense.Info;
+    Dictionary<string, string> modules = new Dictionary<string, string>();
+
+    if (lic.Modules_HL)
+    {
+        modules.Add("HR", Url.Action("Index", "HLHome", new { area = "" }));
+    }
+
+    if (lic.Modules_PL)
+    {
+        modules.Add("PL", Url.Action("Index", "PLHome", new { area = "Procurement" }));
+    }
+
+    if (lic.Modules_IL)
+    {
+        modules.Add("IL", Url.Action("Index", "ILHome", new { area = "SAM" }));
+    }
+}
+
+
+<!-- Top Bar
+        ============================================= -->
+<div id="top-bar">
+
+    <div class="container-fullwidth clearfix">
+
+        <div class="col_half nobottommargin">
+            @if (Request.IsAuthenticated)
+            {
+                <div class="top-links">
+                    <ul>
+                        @if (modules.Count <= 1)
+                        {
+                            <li>
+                                <a href="~/" title="Back to Portal">
+                                    <i class="icon-torii-gate"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <div class="btn-group dropup">
+                                    <a href="~/" title="Back to Portal">
+                                        <i class="icon-torii-gate"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @foreach (var item in modules)
+                                        {
+                                            <a class="dropdown-item" href="@item.Value" onclick="">@item.Key</a>
+                                        }                                        
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                        <li>
+                            <a href="#" class="top-link-section-pw-trigger">Change Password</a>
+                            <div class="top-link-section-pw">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        @Html.Action("ChangePassword", "Manage", new { area = "" })
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="javascript:document.getElementById('logoutForm').submit()">Log Off</a>
+                            @using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm" }))
+                            { }
+                        </li>
+                        <li>
+                            <a class="aslabel">[Logged as @User.Identity.GetUserName()]</a>
+                        </li>
+
+                    </ul>
+                </div>
+            }            
+        </div>
+
+        <div class="col_half fright col_last nobottommargin">
+
+            <!-- Top Social
+            ============================================= -->
+            <div id="top-social">
+                @*<ul>
+                    <li><a href="#" class="si-facebook"><span class="ts-icon"><i class="icon-facebook"></i></span><span class="ts-text">Facebook</span></a></li>
+                    <li><a href="#" class="si-twitter"><span class="ts-icon"><i class="icon-twitter"></i></span><span class="ts-text">Twitter</span></a></li>
+                    <li><a href="#" class="si-dribbble"><span class="ts-icon"><i class="icon-dribbble"></i></span><span class="ts-text">Dribbble</span></a></li>
+                    <li><a href="#" class="si-github"><span class="ts-icon"><i class="icon-github-circled"></i></span><span class="ts-text">Github</span></a></li>
+                    <li><a href="#" class="si-pinterest"><span class="ts-icon"><i class="icon-pinterest"></i></span><span class="ts-text">Pinterest</span></a></li>
+                    <li><a href="#" class="si-instagram"><span class="ts-icon"><i class="icon-instagram2"></i></span><span class="ts-text">Instagram</span></a></li>
+                    <li><a href="tel:+91.11.85412542" class="si-call"><span class="ts-icon"><i class="icon-call"></i></span><span class="ts-text">+91.11.85412542</span></a></li>
+                    <li><a href="mailto:sales@ilogixphils.com" class="si-email3"><span class="ts-icon"><i class="icon-email3"></i></span><span class="ts-text">sales@ilogixphils.com</span></a></li>
+                </ul>*@
+            </div><!-- #top-social end -->
+
+        </div>
+
+    </div>
+
+</div><!-- #top-bar end -->
+
+<!-- Header
+        ============================================= -->
+<header id="header" class="transparent-header full-header @area" data-sticky-class="not-dark">
+
+    <div id="header-wrap">
+
+        <div class="container-fullwidth clearfix">
+
+            <div id="primary-menu-trigger"><i class="icon-reorder"></i></div>
+
+            <!-- Logo
+            ============================================= -->
+            <div id="logo">
+                <a href="@homePath" class="standard-logo" data-dark-logo="@logoPath"><img src="@logoPath" alt="Application Logo"></a>
+                <a href="@homePath" class="retina-logo" data-dark-logo="@logoPath"><img src="@logoPath" alt="Application Logo"></a>
+            </div><!-- #logo end -->
+            
+            <!-- Primary Navigation
+            ============================================= -->
+            <nav id="primary-menu">
+
+                @Html.Partial(menuPath)
+
+                @if (coreApp.Cache.Get().userAccess.IsAdmin)
+                {
+                    <div id="top-settings">
+                        <a href="@settingsPath" title="Application Settings">
+                            <i class="icon-et-gears"></i>
+                        </a>
+                    </div>
+                }
+            </nav>
+            
+            <!-- #primary-menu end -->
+
+            
+        </div>
+
+    </div>
+
+</header><!-- #header end -->

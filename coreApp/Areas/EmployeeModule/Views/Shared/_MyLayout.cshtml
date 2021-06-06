@@ -1,0 +1,55 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_ModuleLayout.cshtml";
+
+    var _area = HttpContext.Current.Request.RequestContext.RouteData.DataTokens["area"];
+    string area = _area == null ? "" : _area.ToString().ToLower();
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    bool noProfile = ViewBag.NoProfile == true;
+
+}
+@section Styles {
+    @RenderSection("Styles", false)
+}
+
+@section Breadcrumbs {
+    @RenderSection("Breadcrumbs", false)
+}
+
+@section SubMenu {
+    @RenderSection("SubMenu", false)
+}
+
+@section PreWrapper {
+    @RenderSection("PreWrapper", false)
+}
+
+
+@RenderSection("RightNavigation", false)
+
+
+@if (!noProfile)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", employee)
+        </div>
+    </div>
+}
+
+
+
+@RenderBody()
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
+
+@section BodyScripts {
+    @RenderSection("BodyScripts", false)
+}
+
+@section FormActions {
+    @RenderSection("FormActions", required: false)
+}

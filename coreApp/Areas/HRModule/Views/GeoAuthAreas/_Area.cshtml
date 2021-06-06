@@ -1,0 +1,95 @@
+﻿@model Module.DB.tblGeoAuth_Area
+
+@{
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+}
+
+@if (isReadOnly)
+{
+    @Html.HiddenFor(model => model.GMaps_LatLng)
+    @Html.HiddenFor(model => model.Radius)
+
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.AreaName)
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Description)
+                        <div>
+                            @Html.DisplayFor(model => model.Description)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Radius)
+                        <div>
+                            @Html.DisplayFor(model => model.Radius)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-7">
+                <div class="view-map-location"></div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.GMaps_LatLng)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.AreaName)
+                    <div>
+                        @Html.TextBoxFor(model => model.AreaName, new { @class = "form-control", placeholder = "[Enter Area Name]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Description)
+                    <div>
+                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control", placeholder = "[Enter Description]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.GMaps_LatLng)
+                    <div>
+                        <div class="map-location-value"></div>
+                        <a href="#" class="set-map-location">[Set Location]</a> &nbsp;
+                        <a href="#" class="use-mylocation">[Use My Location]</a>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Radius)
+                    <div>
+                        @Html.TextBoxFor(model => model.Radius, new { @class = "form-control", placeholder = "[Enter Radius]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

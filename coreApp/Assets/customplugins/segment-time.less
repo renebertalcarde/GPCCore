@@ -1,0 +1,77 @@
+﻿.days-ui {
+    td {
+        width: 30px;
+        text-align: left;
+    }
+}
+
+.segment-time {
+    margin-bottom: 10px;
+
+    .segment-toggle {
+        font-size: small;
+    }
+
+    .row.for-advanced {
+        margin-top: 10px;
+    }
+
+    .for-advanced {
+        display: none;
+    }
+
+    .form-row div.checkbox label {
+        color: black;
+    }
+
+    .checkbox-style-3-label:before {
+        padding-left: 13px;
+    }
+}
+
+.segment-time.advanced {
+    .for-advanced {
+        display: block;
+
+        .row {
+            text-align: left;
+
+            > div {
+                border: 1px solid #e0e0e0;
+                padding: 10px;
+                background-color: rgba(0,0,0,0.2);
+
+                > div {
+                    width: 100%;
+                    max-width: 75%;
+                    text-align: right;
+                    float: right;
+                }
+
+                input {
+                    border: 1px solid #e0e0e0;
+                    background-color: rgba(255,255,255,0.2) !important;
+                }
+            }
+        }
+    }
+}
+
+.global-segment {
+    color: darkgray;
+}
+
+.ws-warning {
+    display: none;
+}
+
+form[segment-type="3"] { //work span
+    div.segment-time,
+    .not-for-workspan {
+        display: none;
+    }
+
+    .ws-warning {
+        display: block;
+    }
+}

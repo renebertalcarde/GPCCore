@@ -1,0 +1,119 @@
+﻿@model List<Module.DB.tblEmployee>
+
+@{
+    ViewBag.Title = "Group Members";
+    
+
+    Module.DB.tblGroup group = (Module.DB.tblGroup)ViewBag.Group;
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() {
+        new Breadcrumb { Description = "Employee Groups", Link = "/HR/Config/Groups" },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function addEmployees(btn) {
+            var opts = {
+                modalCustomWidth: 'modal-xl',
+                modalCustomTitle: 'Add Members',
+                modalCustomButton: 'Add Selected Employees',
+                preLoadCallback: 'addEmployeesPreLoad',
+                preSubmitCallback: 'addEmployeesPreSubmit'
+            };
+            var url = '/HR/Config/Group/Members/Add/@group.Id';
+            $.fn.list('modalCustom', btn, url, opts);
+        }
+
+        function clearEmployees(btn) {
+            if (modalConfirm('Are you sure you want to clear all members of this group?', function (res) {
+                if (res) {
+                    var url = '@Url.Action("Clear", new { groupId = group.Id })';
+                    $.post(vdUrl(url), null, function (res) {
+                        if (res.IsSuccessful) {
+                            sessionStorage.clientMessage = res.Remarks;
+                            window.location.reload(true);
+                        } else {
+                            modalMessage(res.Err.split('\n'), 'Clear group members', true);
+                        }
+                    }, 'json');
+                }
+            }));
+        }
+
+        function addEmployeesPreSubmit(viewType, e) {
+            if (viewType == 'custom') {
+
+                var selectedItems = $('.search .selectedItems');
+
+                var employeeIds = e.modal.find('#employeeIds');
+
+                employeeIds.val('');
+
+                if (selectedItems.val() == '') {
+                    modalMessage('No employee selected', 'Add Members', true);
+                    return false;
+                } else {
+
+                    employeeIds.val(selectedItems.val());
+                    return true;
+                }
+            }
+        }
+
+        function addEmployeesPreLoad(e) {
+            e.modal.find('.btn-custom').show();
+            return e;
+        }
+
+        function load(e) {
+
+            if (e.viewType == 'view') {
+                var editBtn = e.modal.find('.btn-edit');
+                editBtn.hide();
+            }
+        }
+    </script>
+}
+
+@Html.Partial("~/Views/Shared/info/groupInfo.cshtml", "/HR/Config/Group/Members/Index/")
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-load-callback="load"
+           modal-view-url="/HR/Config/Group/Members/Details/@group.Id/{0}" modal-edit-url="/HR/Config/Group/Members/Edit/@group.Id/{0}" modal-delete-url="/HR/Config/Group/Members/Delete/@group.Id" modal-create-url="/HR/Config/Group/Members/Create/@group.Id">
+        <thead>
+            <tr>
+                <th class="idcol">Id</th>
+                <th>Member</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblEmployee item in Model)
+            {
+                <tr record-id="@item.EmployeeId">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default" onclick="addEmployees(this)" table-selector=".tbl-1">Add Members</button>
+    <button class="btn btn-sm btn-default btn-danger" onclick="clearEmployees(this)" table-selector=".tbl-1">Clear Members</button>
+}

@@ -1,0 +1,75 @@
+﻿@{
+    Layout = "~/Areas/EmployeeModule/Views/Shared/_MyLayout.cshtml";
+
+}
+
+@section Styles {
+    <style>
+        .btn-group a {
+            border-radius: initial;
+        }
+    </style>
+    @RenderSection("Styles", false)
+}
+
+@section Breadcrumbs {
+    @RenderSection("Breadcrumbs", required: false)
+}
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
+
+@section SubMenu {
+    <!-- Page Sub Menu
+        ============================================= -->
+    <div id="page-menu">
+
+        <div id="page-menu-wrap">
+
+            <div class="container-fullwidth clearfix">
+
+                <div class="menu-title">
+
+                </div>
+
+                <nav>
+                    @Html.Partial("_MyDetails_Menu")
+                </nav>
+
+                <div id="page-submenu-trigger"><i class="icon-reorder"></i></div>
+
+            </div>
+
+        </div>
+
+    </div><!-- #page-menu end -->
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @RenderBody()
+    </div>
+</div>
+
+@section RightNavigation {
+
+    <div id="right-navigation" class="sidebar sticky-sidebar-wrap nobottommargin col_one_sixth col_last clearfix hidden-xs">
+        <div class="sidebar-widgets-wrap">
+
+            <div class="widget widget_group_links clearfix">
+                <ul class="widget_group_links_list list-group">
+                    <li class="list-group-item list-group-header widget_group_links_title"></li>
+                </ul>
+            </div>
+
+            <div class="widget clearfix"></div>
+
+        </div>
+    </div>
+
+}
+
+@section FormActions {
+    @RenderSection("FormActions", false)
+}

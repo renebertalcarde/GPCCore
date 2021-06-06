@@ -1,0 +1,103 @@
+﻿@model Module.DB.tblEmployee_RD
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+    
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Description)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.InclusiveDays)
+                        <div>
+                            @Html.DisplayFor(model => model.InclusiveDays)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Days)
+                        <div>
+                            @Html.DisplayFor(model => model.Days)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.Hidden("StartDate")
+        @Html.Hidden("EndDate")
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Description)
+                    <div>
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control", placeholder = "[Enter Description]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.InclusiveDays)
+                    <div>
+                        @Html.Partial("_Helper_Period", new coreLib.Objects.PeriodModel(Model.StartDate, Model.EndDate), new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Days)
+                    <div>
+                        <table class="days-ui pull-right">
+                            <tr>
+                                <td>Sun</td>
+                                <td>Mon</td>
+                                <td>Tue</td>
+                                <td>Wed</td>
+                                <td>Thu</td>
+                                <td>Fri</td>
+                                <td>Sat</td>
+                            </tr>
+                            <tr>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Sun", new ViewDataDictionary { { "value", Model.Days_Sun } })</td>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Mon", new ViewDataDictionary { { "value", Model.Days_Mon } })</td>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Tue", new ViewDataDictionary { { "value", Model.Days_Tue } })</td>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Wed", new ViewDataDictionary { { "value", Model.Days_Wed } })</td>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Thu", new ViewDataDictionary { { "value", Model.Days_Thu } })</td>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Fri", new ViewDataDictionary { { "value", Model.Days_Fri } })</td>
+                                <td>@Html.Partial("_Helper_CheckBox", "Days_Sat", new ViewDataDictionary { { "value", Model.Days_Sat } })</td>
+                            </tr>
+                        </table>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

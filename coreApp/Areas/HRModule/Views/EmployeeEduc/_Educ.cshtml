@@ -1,0 +1,140 @@
+﻿@model coreApp.DAL.tblEmployee_Educ
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.EducLevel_Desc)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.EducId)
+                        <div>
+                            @Html.DisplayFor(model => model.EducId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.School)
+                        <div>
+                            @Html.DisplayFor(model => model.School)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Degree)
+                        <div>
+                            @Html.DisplayFor(model => model.Degree)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.YearGraduated)
+                        <div>
+                            @Html.DisplayFor(model => model.YearGraduated)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.UnitsEarned)
+                        <div>
+                            @if (Model.UnitsEarned != null)
+                            {
+                                @Model.UnitsEarned.Value.ToString("#,##0.00")
+                            }
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.Label("Period")
+                        <div>
+                            @Model.YearFrom - @Model.YearTo_Desc
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.HonorsReceived)
+                        <div>
+                            @Html.DisplayFor(model => model.HonorsReceived)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.EducId)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.EducId)
+                        <div>
+                            @Html.DisplayFor(model => model.EducId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EducLevel)
+                    <div>
+                        @Html.DropDownListFor(m => m.EducLevel, coreApp.SelectItems.getEducLevel(), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.School)
+                    <div>
+                        @Html.TextBoxFor(model => model.School, new { @class = "form-control", placeholder = "[Enter School]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Degree)
+                    <div>
+                        @Html.TextBoxFor(model => model.Degree, new { @class = "form-control", placeholder = "[Enter Degree]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.YearGraduated)
+                    <div>
+                        @Html.TextBoxFor(model => model.YearGraduated, new { @class = "form-control", placeholder = "[Enter Year]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.UnitsEarned)
+                    <div>
+                        @Html.TextBoxFor(model => model.UnitsEarned, new { @class = "form-control", placeholder = "[Enter Units]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.YearFrom)
+                    <div>
+                        @Html.DropDownListFor(m => m.YearFrom, coreApp.SelectItems.getYears(), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.YearTo)
+                    <div>
+                        @Html.DropDownListFor(m => m.YearTo, coreApp.SelectItems.getYears(showPresent: true), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.HonorsReceived)
+                    <div>
+                        @Html.TextBoxFor(model => model.HonorsReceived, new { @class = "form-control", maxlength = "100", placeholder = "[Enter Honors]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}
+

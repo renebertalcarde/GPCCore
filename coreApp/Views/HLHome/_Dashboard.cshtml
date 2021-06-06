@@ -1,0 +1,42 @@
+﻿@{ 
+    coreApp.UserAccess userAccess = coreApp.Cache.Get().userAccess;
+    Module.DB.tblStakeholder_Career career = new Module.DB.Procs.procs_tblStakeholder(userAccess.stakeholder).LatestCareer();
+}
+
+@if (userAccess.HasOnlineApplicationsAccess)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Action("Applications", "Widgets", new { area = "" })
+        </div>
+    </div>
+}
+
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="dashboard-item">
+            @Html.Action("BulletinBoard", "Widgets", new { area = "" })
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="dashboard-item onrequest" data-widgetname="pa" data-url="@Url.Action("PeriodAttendance", "Widgets", new { area = "", stakeholderId = userAccess.stakeholder.StakeholderId })">
+            <img src="~/Assets/images/dashboard-period-attendance.jpg" />
+            <div class="overlay">
+                <div class="caption">
+                    Click here to view widget
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="dashboard-item onrequest" data-widgetname="dam" data-url="@Url.Action("DailyAttendanceMonitor", "Widgets", new { area = "", stakeholderId = userAccess.stakeholder.StakeholderId })">
+            <img src="~/Assets/images/dashboard-todays-attendance.jpg" />
+            <div class="overlay">
+                <div class="caption">
+                    Click here to view widget
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

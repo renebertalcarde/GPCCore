@@ -1,0 +1,71 @@
+﻿@model Module.Time.lateUTDetails
+@{ 
+    bool forDay = (bool)ViewData["forday"];
+
+    bool hasLate = Model.TotalMinsLate > 0;
+    bool hasUT = Model.TotalMinsUT > 0;        
+}
+
+<div class="lateut-info">
+    @if (forDay)
+    {
+        <ul>
+            @if (hasLate)
+            {
+                <li>
+                    Late: @Model.TotalMinsLate.ToTimeString(TimeStringConv.MinAuto)
+
+                    @if (Model.HasLateTolerance)
+                    {
+                        <span>, Tolerance: @Model.MinsLateTolerance.ToTimeString(TimeStringConv.MinAuto)</span>
+                    }
+                    else if (Model.HasLateRoundOff)
+                    {
+                        <span>, Round-off: @Model.MinsLateRoundOff.ToTimeString(TimeStringConv.MinAuto)</span>
+                    }
+
+                    @if (Model.HasFlexiTime)
+                    {
+                        <span>, Flexi: @Model.MinsFlexiTime.ToTimeString(TimeStringConv.MinAuto)</span>
+                    }
+                </li>
+            }
+
+            @if (hasUT)
+            {
+                <li>
+                    Undertime: @Model.TotalMinsUT.ToTimeString(TimeStringConv.MinAuto)
+
+                    @if (Model.HasUTTolerance)
+                    {
+                        <span>, Tolerance: @Model.MinsUTTolerance.ToTimeString(TimeStringConv.MinAuto)</span>
+                    }
+                    else if (Model.HasUTRoundOff)
+                    {
+                        <span>, Round-off: @Model.MinsUTRoundOff.ToTimeString(TimeStringConv.MinAuto)</span>
+                    }
+                </li>
+            }
+
+        </ul>
+    }
+    else
+    {
+        <ul>
+            @if (Model.TotalMinsLate > 0)
+            {
+                <li>
+                    Total late: @Model.TotalMinsLate.ToTimeString(TimeStringConv.MinAuto)
+                </li>
+            }
+
+            @if (Model.TotalMinsUT > 0)
+            {
+                <li>
+                    Total undertime: @Model.TotalMinsUT.ToTimeString(TimeStringConv.MinAuto)
+                </li>
+            }
+
+        </ul>
+    }
+</div>

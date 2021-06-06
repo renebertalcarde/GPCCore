@@ -1,0 +1,77 @@
+@import "~/Assets/theme/colors.less";
+
+.license {
+    .theme-dark;
+    background-color: initial;
+    padding: 20px 20px;
+    text-align: center;
+
+    h3, h5 {
+        color: @color_secondary_complement;
+    }
+
+    hr {
+        border-top-color: @color_highlight_1;
+    }
+
+    form {
+        margin-top: 5px;
+
+        > * {
+            display: inline-block;
+            margin-bottom: 10px;
+            vertical-align: top;
+        }
+
+        input[type="file"] {
+            max-width: 300px;
+            height: 31px;
+            font-size: small;
+        }
+    }
+
+
+    ul {
+        background-color: initial !important;
+        margin-left: 20px;
+    }
+
+    .license-info {
+        padding: 20px;
+        margin-bottom: 40px;
+        background-color: @color_highlight_2_transparent;
+        border: none;
+        color: @color_secondary_complement;
+    }
+
+    .inclusion {
+        display: flex;
+        justify-content: center;
+
+        h4 {
+            color: @color_highlight_1;
+        }
+
+        > div {
+            text-align: left;
+            margin: 0 40px 40px 0;
+
+            ul {
+                margin-top: 20px;
+
+                li {
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
+
+    .backtoportal {
+        position: fixed;
+        bottom: 20px;
+        text-align: center;
+        width: 100%;
+        border-top: 1px solid @color_highlight_1;
+        padding: 20px;
+    }
+}

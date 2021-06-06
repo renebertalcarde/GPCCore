@@ -1,0 +1,71 @@
+﻿@model List<Module.Time.EmployeeDeviceIdNoModel>
+
+@{
+
+    ViewBag.Title = "My Device Id Nos.";
+
+
+
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+}
+
+@section Breadcrumbs {
+@Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+        .table tr th:first-child,
+        .table tr td:first-child {
+            width: 300px;
+        }
+    </style>    
+}
+
+
+<div class="table-responsive">
+    <table id="general-table" class="display table table-bordered table-striped table-list" cellspacing="0" width="100%">
+
+        <thead>
+            <tr>
+                <th>
+                    Device Name
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    Model
+                </th>
+                <th>
+                    Id No.
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.Time.EmployeeDeviceIdNoModel item in Model)
+            {
+                <tr record-id="@item.device.DeviceId" locked>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.device.DeviceName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.device.DeviceBrand)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.device.DeviceModel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdNo)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

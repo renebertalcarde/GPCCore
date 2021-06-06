@@ -1,0 +1,176 @@
+﻿@model List<Module.DB.tblEmployee_Career>
+
+@{
+
+    ViewBag.Title = "My Career";    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function print(dlWord) {
+            window.open(vdUrl('/My/Career/Print?dlWord=' + dlWord), '_blank');
+        }
+    </script>
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Date Effective
+                </th>
+                <th>
+                    Event/
+                    Remarks
+                </th>
+                @if (FixedSettings.UseMFO)
+                {
+                    <th>
+                        MFO
+                    </th>
+                }
+                <th>
+                    Department
+                </th>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Salary Grade
+                </th>
+                <th>
+                    Step
+                </th>
+                <th>
+                    Rate
+                </th>
+                <th>
+                    Fund
+                </th>
+                <th>
+                    Employment Type
+                </th>
+                <th>
+                    Faculty
+                </th>
+                <th>
+                    End Event Date
+                </th>
+                <th>
+                    End Event/
+                    Remarks
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+           @foreach (Module.DB.tblEmployee_Career item in Model)
+            {
+                bool isDailyRate = false;
+                double rate = item.GetRate(out isDailyRate);
+
+            <tr record-id="@item.CareerId" locked>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CareerId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateEffective)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Events_Desc)
+                    @if (!string.IsNullOrEmpty(item.EventRemarks))
+                    {
+                        <hr style="margin:0" />
+                            @Html.DisplayMultiLineFor(model => item.EventRemarks)
+                    }
+                </td>
+                @if (FixedSettings.UseMFO)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MFO_Desc)
+                    </td>
+                }
+                <td>
+                    @item.DepartmentPath()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position.Position)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SalaryGrade)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PositionLevel)
+                </td>
+                <td>
+                    @rate.ToString("#,##0.00")
+                    <div>
+                        @if (item.IsCustomRate)
+                        {
+                            <span class="small">[Custom Rate]</span>
+                        }
+                        @if (isDailyRate)
+                        {
+                            <span class="small">[Daily Rate]</span>
+                        }
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fund)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmploymentType_Desc)
+                </td>
+                <td>
+                    @(item.IsFaculty ? "Yes" : "No")
+                    @if (item.IsDesignated)
+                    {
+                        <br />
+                            <small>(with Designation)</small>
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndEventDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndEvent_Desc)
+                    @if (!string.IsNullOrEmpty(item.EndEventRemarks))
+                    {
+                        <hr style="margin:0" />
+                            @Html.DisplayMultiLineFor(model => item.EndEventRemarks)
+                    }
+                </td>
+            </tr>
+           }
+        </tbody>
+    </table>
+</div>
+
+
+
+@section FormActions {
+    <div class="btn-group dropup">
+        <button type="button" class="btn btn-sm btn-default btn-print" onclick="print()">
+            Print Service Record
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" onclick="print(true)">Download Word Document</a>
+        </div>
+    </div>
+}

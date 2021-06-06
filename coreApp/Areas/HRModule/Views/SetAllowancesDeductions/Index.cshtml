@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "Allowances & Deductions";
+    ViewBag.Subtitle = "Set employee allowances & deductions by batch";
+
+    List<coreApp.DAL.tblFin_AllowanceDef> allowances = (List<coreApp.DAL.tblFin_AllowanceDef>)ViewBag.Allowances;
+    List<coreApp.DAL.tblFin_DeductionDef> deductions = (List<coreApp.DAL.tblFin_DeductionDef>)ViewBag.Deductions;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            var btnApply = $('.btn-apply');
+
+            btnApply.click(function () {
+                
+                if (modalConfirm('Are you sure you want to apply these settings?', function (res) {
+                    if (res) {
+                        var employeeIds = $('.search').employeeSearch('getSelectedItems');
+
+                        if (employeeIds == '') {
+                            modalMessage('No employee selected', 'Allowances & Deductions', true);
+                            return;
+                        }
+
+                        var allowances = [];
+                        $('[name="Allowances"]:checked').each(function () {
+                            var cb = $(this);
+                            allowances.push(cb.val());
+                        });
+
+                        var deductions = [];
+                        $('[name="Deductions"]:checked').each(function () {
+                            var cb = $(this);
+                            deductions.push(cb.val());
+                        });
+
+                        var url = '@Url.Action("SaveSelection")';
+                        var data = {
+                            employeeIds: employeeIds,
+                            allowances: allowances.join(','),
+                            deductions: deductions.join(',')
+                        };
+
+                        var proc = modalProcessing();
+
+                        $.post(vdUrl(url), data, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientModalMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                proc.addClass('confirm-close-event').modal('hide');
+                                modalMessage(res.Err.split('\n'), 'Allowances & Deductions', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+        });
+
+        function onSearch(params, table) {
+            $('.btn-apply').removeClass('hidden');
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-sm-8">
+        <fieldset>
+            <legend>Select Employees</legend>
+
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { DataUrl = "", MultiSelect = true, ExcludeNoCareer = true, ExcludeNoOffice = true, LessParameters = false, AllowSingleSelection = false, SearchCallback = "onSearch" } })
+        </fieldset>
+    </div>
+    <div class="col-sm-4">
+        <fieldset>
+            <legend>Select Allowances</legend>
+
+            @Html.Partial("~/Areas/HRModule/Views/EmployeeAllowancesDeductions/_AllowanceList.cshtml", new List<coreApp.DAL.tblEmployee_Allowance>(), new ViewDataDictionary { { "ReadOnly", "False" }, { "Allowances", allowances } })
+        </fieldset>
+
+        <br />
+
+        <fieldset>
+            <legend>Select Deductions</legend>
+
+            @Html.Partial("~/Areas/HRModule/Views/EmployeeAllowancesDeductions/_DeductionList.cshtml", new List<coreApp.DAL.tblEmployee_Deduction>(), new ViewDataDictionary { { "ReadOnly", "False" }, { "Deductions", deductions } })
+        </fieldset>
+    </div>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-apply hidden">
+        Apply
+    </button>
+}

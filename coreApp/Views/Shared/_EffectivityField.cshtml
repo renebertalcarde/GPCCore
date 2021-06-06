@@ -1,0 +1,13 @@
+﻿@model string
+@{
+    string effectivity = ViewBag.effectivity;
+
+    List<DateTime> effectivites = (List<DateTime>)ViewBag.Effectivities;
+
+    string e = effectivity ?? Module.DB.TMSettings.DEFAULT_EFFECTIVITY;
+}
+
+<div class="effectivity-field form-control" data-value="@e">
+    <input type="hidden" name="@Model" class="effectivity-field-hf" value="@e" />    
+    <span>@e</span>
+</div>

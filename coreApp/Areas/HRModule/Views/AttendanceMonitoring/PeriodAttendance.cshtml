@@ -1,0 +1,75 @@
+﻿@model tblEmployee
+@using Module.DB
+@using coreApp.Models
+@{
+    ViewBag.Title = "Period Attendance";
+    
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Styles {
+    <style>
+        .tblData tbody tr td {
+            text-align: right;
+        }
+
+        .tblData tbody tr td:first-child {
+            text-align: center;
+        }
+
+        .tblData tfoot tr td {
+            text-align: right;
+        }
+
+        .tblData tfoot tr td:first-child {
+            text-align: left;
+        }
+
+        .tblData tbody tr td.zero {
+            color: gray;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="~/Assets/canvas/html/js/chart.js"></script>
+    <script src="~/Assets/canvas/html/js/chart-utils.js"></script>
+    <script type='text/javascript' src='~/Assets/js/widgets/pa.js'></script>
+
+    <script>
+        var url_pa = '@Url.Action("PeriodAttendance", "Widgets", new { area = "", employeeId = Model.EmployeeId, showData = true })';
+        var url_att = '@Url.Action("Index", "EmployeeAttendance", new { area = "HRModule", employeeId = Model.EmployeeId })';
+
+        $(document).ready(function () {
+            setPA();
+        });
+
+        function openAttendanceDetails() {
+            var paCont = $('.period-cont');
+            var startDate = paCont.attr('data-start-date').replace(/\//g, '-');
+            var endDate = paCont.attr('data-end-date').replace(/\//g, '-');
+            var url = url_att + '/' + startDate + '/' + endDate;
+
+            window.open(vdUrl(url), '_blank');
+        }
+    </script>
+}
+
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", Model)
+    </div>
+</div>
+
+<div class="pa-cont">
+    @Html.Action("PeriodAttendance", "Widgets", new { area = "", employeeId = Model.EmployeeId, showData = true, contSelector = ".pa-cont" })
+</div>
+
+
+@section FormActions {
+   <button class="btn btn-sm btn-default btn-attendance-details" onclick="openAttendanceDetails()">Attendance Details</button>
+}

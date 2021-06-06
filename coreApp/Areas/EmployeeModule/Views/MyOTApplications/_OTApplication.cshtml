@@ -1,0 +1,81 @@
+﻿@model tblOTApplication
+@using Module.DB
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    bool isNew = !includeId;
+    
+}
+
+@Html.Hidden("HasBeenSubmitted", Model.HasBeenSubmitted)
+@Html.Hidden("HasBeenServed", Model.HasBeenServed)
+
+@if (isReadOnly)
+{
+    @Html.Partial("~/Areas/EmployeeModule/Views/MyOTApplications/_OTApplicationView.cshtml")
+}
+else
+{
+    using (Html.BeginForm(isNew ? "Create" : "Edit", "MyOTApplications", new { area = "EmployeeModule", employeeId = Model.EmployeeId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+
+            @Html.HiddenFor(model => model.EmployeeId)
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.StartDate)
+            @Html.HiddenFor(model => model.EndDate)
+
+        <div class="modal-edit-ui pattern-bg">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Overtime
+                        </li>
+
+                        @if (includeId)
+                        {
+                            <li class="list-group-item dimmed">
+                                @Html.LabelFor(model => model.Id)
+                                <div>
+                                    @Html.DisplayFor(model => model.Id)
+                                </div>
+                            </li>
+                        }
+
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.OTTemplateId)
+                            <div>
+                                @Html.DropDownListFor(model => model.OTTemplateId, coreApp.SelectItems.getOTTemplates(), new { @class = "form-control select2" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Remarks)
+                            <div>
+                                @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", placeholder = "[Enter Remarks]" })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Period & Days
+                        </li>
+                        <li class="list-group-item">
+                            <label>Inclusive Days</label>
+                            <div>
+                                @Html.Partial("_Helper_Period", new coreLib.Objects.PeriodModel(Model.StartDate, Model.EndDate), new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    }
+}

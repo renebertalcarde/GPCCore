@@ -1,0 +1,53 @@
+﻿@model string
+@{
+    bool showApproved = (bool)ViewBag.ShowApproved;
+    bool showDenied = (bool)ViewBag.ShowDenied;
+
+    string approvedUrl = Url.Action("Index", Model, new { area = "HRModule", showApproved = !showApproved, showDenied = showDenied });
+    string deniedUrl = Url.Action("Index", Model, new { area = "HRModule", showApproved = showApproved, showDenied = !showDenied });
+}
+
+<div class="approved-denied-params">
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <i class="fa fa-info-circle"></i>
+                </td>
+                <td>
+                    @if (showApproved)
+                    {
+                        <div>
+                            "Approved" applications included in the list.
+                        </div>
+
+                        <a href="@approvedUrl">[Hide "Approved" applications]</a>
+                    }
+                    else
+                    {
+                        <div>
+                            "Approved" applications hidden from the list.
+                        </div>
+                        <a href="@approvedUrl">[Show "Approved" applications]</a>
+                    }
+                </td>
+                <td>
+                    @if (showDenied)
+                    {
+                        <div>
+                            "Denied" applications included in the list.
+                        </div>
+                        <a href="@deniedUrl">[Hide "Denied" applications]</a>
+                    }
+                    else
+                    {
+                        <div>
+                            "Denied" applications hidden from the list.
+                        </div>
+                        <a href="@deniedUrl">[Show "Denied" applications]</a>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

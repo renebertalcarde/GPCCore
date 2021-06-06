@@ -1,0 +1,123 @@
+﻿@model coreApp.DAL.tblEmployee_Voluntary
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateFrom)
+                        <div>
+                            @Html.DisplayFor(model => model.DateFrom)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateTo)
+                        <div>
+                            @Html.DisplayFor(model => model.DateTo_Desc)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Organization)
+                        <div>
+                            @Html.DisplayFor(model => model.Organization)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Address)
+                        <div>
+                            @Html.DisplayFor(model => model.Address)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.NoOfHours)
+                        <div>
+                            @Html.DisplayFor(model => model.NoOfHours)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.PositionNatureOfWork)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.PositionNatureOfWork)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateFrom)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateFrom, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateTo)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateTo, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                        @Html.Partial("_Helper_CheckBox", "DateTo_Present", new ViewDataDictionary { { "value", Model.DateTo_Present == true }, { "text", "Present" } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Organization)
+                    <div>
+                        @Html.TextBoxFor(m => m.Organization, new { @class = "form-control", placeholder = "[Enter Organization]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Address)
+                    <div>
+                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Address]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.NoOfHours)
+                    <div>
+                        @Html.TextBoxFor(m => m.NoOfHours, new { @class = "form-control", placeholder = "[Enter No. of Hours]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.PositionNatureOfWork)
+                    <div>
+                        @Html.TextAreaFor(m => m.PositionNatureOfWork, new { @class = "form-control", placeholder = "[Enter Nature of Work]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}
+

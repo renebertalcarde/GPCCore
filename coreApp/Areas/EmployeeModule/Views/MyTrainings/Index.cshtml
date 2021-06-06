@@ -1,0 +1,123 @@
+﻿@model List<coreApp.DAL.tblEmployee_Training>
+
+@{
+    Layout = "~/Areas/EmployeeModule/Views/Shared/_PDS.cshtml";
+
+    ViewBag.Title = "My Trainings";
+
+
+
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    bool readOnly = !coreApp.Cache.Get().userAccess.HasPermission("EmployeeTrainings");
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "My Profile", Link = Url.Action("Details", "MyProfile", new { area = "EmployeeModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+        .staff-encoded .list-commands-cont {
+            display: none !important;
+        }
+    </style>
+}
+
+@section Scripts
+{
+    <script>
+        function load(e) {
+            if (e.viewType == 'view') {
+                var pdsEntry = $('#PDSEntry').val() == 'True';
+                if (!pdsEntry) {
+                    $('.btn-edit, .btn-delete').hide();
+                }
+            }
+        }
+    </script>
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-load-callback="load"
+           modal-view-url="/HR/Manage/Employee/Trainings/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/Trainings/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/Trainings/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/Trainings/Create/@employee.EmployeeId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    From
+                </th>
+                <th>
+                    To
+                </th>
+                <th>
+                    No. of Hours
+                </th>
+                <th>
+                    Type of Training
+                </th>
+                <th>
+                    Conducted By
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (coreApp.DAL.tblEmployee_Training item in Model)
+            {
+            <tr record-id="@item.TrainingId" @(readOnly ? "locked" : "") class="@(item.PDSEntry ? "" : "staff-encoded")">
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrainingId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateFrom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTo)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.NoOfHours)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type_Desc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ConductedBy)
+                </td>
+                <td class="text-center">
+                    @if (!item.PDSEntry)
+                    {
+                        <i class="fa fa-lock" title="staff-encoded record"></i>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+@section FormActions {
+    @if (!readOnly)
+    {
+        <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+    }
+}

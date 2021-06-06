@@ -1,0 +1,82 @@
+﻿@model List<Module.DB.tblPosition>
+
+@{
+    ViewBag.Title = "Job Titles";
+    
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view"
+           modal-view-url="/HR/Config/Positions/Details/{0}" modal-edit-url="/HR/Config/Positions/Edit/{0}" modal-delete-url="/HR/Config/Positions/Delete" modal-create-url="/HR/Config/Positions/Create">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Job Title
+                </th>
+                <th>
+                    Code
+                </th>
+                <th>
+                    Faculty
+                </th>
+                <th>
+                    Confidential
+                </th>
+                <th>
+                    Rank & File
+                </th>
+            </tr>
+            <tr class="tr-filters">
+                <th data-orderable="false"></th>
+                <th data-orderable="false"></th>
+                <th data-orderable="false"></th>
+                <th data-orderable="false"></th>
+                <th data-orderable="false"></th>
+                <th data-orderable="false"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblPosition item in Model)
+            {
+                <tr record-id="@item.PositionId">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PositionId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Position)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Code)
+                    </td>
+                    <td>
+                        @Html.DisplayBooleanFor(modelItem => item.IsFaculty)
+                    </td>
+                    <td>
+                        @Html.DisplayBooleanFor(modelItem => item.Confidential)
+                    </td>
+                    <td>
+                        @Html.DisplayBooleanFor(modelItem => item.RankAndFile)
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

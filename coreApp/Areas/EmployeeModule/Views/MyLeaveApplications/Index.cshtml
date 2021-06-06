@@ -1,0 +1,260 @@
+﻿@model List<Module.DB.tblLeaveApplication>
+
+@{
+    ViewBag.Title = "My Leave Applications";
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Scripts {
+    <script>
+        function load(e) {
+            var saveAndSubmitBtn = e.modal.find('.btn-saveAndSubmit');
+            saveAndSubmitBtn.hide();
+
+            if (e.viewType == 'view') {
+                var hasBeenSubmitted = $('#HasBeenSubmitted').val() == 'True';
+
+                var editBtn = e.modal.find('.btn-edit');
+                var deleteBtn = e.modal.find('.btn-delete');
+                var printBtn = e.modal.find('.btn-print');
+                var dlWordBtn = e.modal.find('.btn-dlword');
+
+                var submitBtn = e.modal.find('.btn-submit');
+                var link = submitBtn.attr('data-link-tmp');
+
+                submitBtn.unbind('click').bind('click', function (ee) {
+                    ee.preventDefault();
+
+                    modalConfirm('Are you sure you want to submit this leave application?', function (ret) {
+                        if (ret) {
+                            $.post(vdUrl(link), null, function (res) {
+                                if (res.IsSuccessful) {
+                                    sessionStorage.clientMessage = res.Remarks;
+                                    window.location.reload(true);
+                                } else {
+                                    modalMessage(res.Err.split('\n'), 'Leave Application', true);
+                                }
+                            }, 'json');
+                        }
+                    });
+
+                });
+
+                var printlink = printBtn.attr('data-link-tmp');
+
+                printBtn.unbind('click').bind('click', function (ee) {
+                    ee.preventDefault();
+                    window.open(vdUrl(printlink + '?dlWord=false'), '_blank');
+                });
+
+                dlWordBtn.unbind('click').bind('click', function (ee) {
+                    ee.preventDefault();
+                    window.open(vdUrl(printlink + '?dlWord=true'), '_blank');
+                });
+
+                if (hasBeenSubmitted) {
+                    printBtn.parent().show();
+                    editBtn.hide();
+                    deleteBtn.hide();
+                    submitBtn.hide();
+                } else {
+                    printBtn.parent().hide();
+                    editBtn.show();
+                    deleteBtn.show();
+                    submitBtn.show();
+                }
+            } else if (e.viewType == 'create' || e.viewType == 'edit') {
+                var isNew = e.viewType == 'create';
+
+                var form = e.modal.find('.modal-body form');
+                var rbVLReason = form.find('[name="VL_Reason"]');
+                var rbVLLocation = form.find('[name="VL_Location"]');
+                var cbSL_InHospital = form.find('[name="SL_InHospital"]');
+
+                form.removeClass('show-vl-others show-vl-abroad');
+
+                form.find('textarea').unbind();
+
+                rbVLReason.click(function () {
+                    var rb = $(this);
+                    form.removeClass('show-vl-others');
+
+                    if (rb.val() == 'VL_Others') {
+                        form.addClass('show-vl-others');
+                    }
+                });
+
+                rbVLLocation.click(function () {
+                    var rb = $(this);
+                    form.removeClass('show-vl-abroad');
+
+                    if (rb.val() == 'VL_Abroad') {
+                        form.addClass('show-vl-abroad');
+                    }
+                });
+
+                form.find('input[type="radio"]:checked').click();
+
+                saveAndSubmitBtn.click(function () {
+                    form.find('#AutoSubmit').val('True');
+
+                    e.modal.find(isNew ? '.btn-create' : '.btn-update').click();
+                });
+
+                if (isNew) {
+                    saveAndSubmitBtn.html('Save and Submit');
+                } else {
+                    saveAndSubmitBtn.html('Update and Submit');
+                }
+
+                saveAndSubmitBtn.show();
+            }
+
+            return e;
+        }
+
+        function create(btn) {
+
+            modalEmpty('New Record', function (modal, recallback) {
+                var div = $('<div />');
+                modal.find('.modal-body').append(div);
+                modal.find('.modal-footer .btn-ok').hide();
+
+                var btnNext = $('<button type="button" class="btn btn-sm btn-default btn-next">Next</button>');
+                modal.find('.modal-footer').append(btnNext);
+
+                loadingUI(div, true);
+
+                div.load(vdUrl('@Url.Action("SelectLeaveType")'), null, function () {
+
+                    btnNext.click(function () {
+                        var leaveTypeId = modal.find('[name="LeaveTypeSelection"]').val();
+
+                        if (leaveTypeId == -1) {
+                            modalMessage('No leave type selected', 'Select Leave Type', true);
+                        } else {
+
+                            var url = '@Url.Action("Create")?leaveTypeId=' + leaveTypeId;
+                            var opts = {
+                                loadCallback: 'load',
+                                modalCreateWidth: 'modal-lg'
+                            };
+
+                            $.fn.list('modalOp', this, 'create', url, opts);
+
+                            modal.addClass('confirm-close-event').modal('hide');
+                        }
+                    });
+
+                    if (recallback) recallback();
+
+                    loadingUI(div, false);
+                });
+
+
+            });
+        }
+
+        function applyPeriod(start, end, sender) {
+            $.fn.leaveEntry('update', { src: sender });
+        }
+    </script>
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-load-callback="load" modal-view-width="modal-xl" modal-edit-width="modal-xl" modal-create-width="modal-xl"
+           modal-view-url="/My/LeaveApplications/Details/{0}" modal-edit-url="/My/LeaveApplications/Edit/{0}" modal-delete-url="/My/LeaveApplications/Delete" modal-create-url="/My/LeaveApplications/Create">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Leave Type
+                </th>
+                <th>
+                    Period
+                </th>
+                <th>
+                    Reason
+                </th>
+                <th>
+                    Has Support File
+                </th>
+                <th>
+                    Submitted
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Message
+                </th>
+                <th>
+                    Recommendation
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblLeaveApplication item in Model)
+            {
+            <tr record-id="@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LeaveType.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date_Desc)
+                </td>
+                <td>
+                    @Html.DisplayMultiLineFor(modelItem => item.Reason)
+                </td>
+                <td>
+                    @Html.DisplayBooleanFor(modelItem => item.HasSupportFile)
+                </td>
+                <td>
+                    @if (item.HasBeenSubmitted)
+                    {
+                        @Html.DisplayFor(modelItem => item.DateSubmitted)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Application_Status_Desc)
+                </td>
+                <td>
+                    @if (item.IsDenied)
+                    {
+                        @Html.DisplayMultiLineFor(modelItem => item.DenyMessage)
+                    }
+                    else if (item.IsReturned)
+                    {
+                        @Html.DisplayMultiLineFor(modelItem => item.ReturnMessage)
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecommendAction_Desc)
+                </td>
+            </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="create(this)" table-selector=".tbl-1">New</button>
+}

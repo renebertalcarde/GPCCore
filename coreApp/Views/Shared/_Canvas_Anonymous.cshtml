@@ -1,0 +1,35 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_Canvas.cshtml";
+}
+
+@section Styles {
+    <style>
+        html, body, #wrapper, #content, #content > .content-wrap {
+            height: 100% !important;
+        }
+    </style>
+
+    @RenderSection("Styles", false)
+}
+
+@section Footer {
+    @RenderSection("Footer", false)
+}
+
+@section Scripts {
+    @RenderSection("Scripts", false)
+}
+
+<!-- Content
+        ============================================= -->
+<section id="content">
+
+    <div class="content-wrap nopadding">
+        <div class="section nopadding nomargin" style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; background: url('@Procs.vdUrl("/Assets/images/backgrounds/ilogix-3.jpg")') center center no-repeat; background-size: cover;"></div>
+
+        <div class="section nobg full-screen nopadding nomargin">
+            @RenderBody()
+        </div>
+    </div>
+
+</section><!-- #content end -->

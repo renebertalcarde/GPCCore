@@ -1,0 +1,28 @@
+﻿@model HRLogixMobileLib.GeoAuth_Employee
+
+
+@if (Model.RegisteredDevice)
+{
+    <div class="alert alert-info">Device is already registered</div>
+}
+else if (!string.IsNullOrEmpty(Model.GeoAuthDeviceRef))
+{
+    <div class="alert alert-danger">Another device is already registered</div>
+    <p class="text-info">
+        If you wish to register a new device, please contact your system administrator and request for a "Geo-Location Device Reset", and then refresh or revisit this page or go to "My > Geo-Location > Attendance Device Registration" menu.
+    </p>
+}
+else
+{
+    <center>
+        <p class="text-danger">
+            You have no registered device yet, you may click the button below to register the device you are currently using.
+        </p>
+        <p class="text-info">
+            <i class="fa fa-info-circle"></i> You can only use a registered device to login/out using geo-location.
+        </p>
+        <br />
+
+        <button class="btn btn-sm btn-default btn-register" type="button">Register this device</button>
+    </center>
+}

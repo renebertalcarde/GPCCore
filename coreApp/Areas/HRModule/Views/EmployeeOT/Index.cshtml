@@ -1,0 +1,169 @@
+﻿@model List<Module.DB.tblEmployee_OT>
+
+@{
+    Layout = "~/Areas/TimeModule/Views/Shared/_Schedules_Layout.cshtml";
+
+    ViewBag.Title = "Overtimes";
+
+
+
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function load(e) {
+            if (e.viewType == 'view') {
+                var fromApplication = $('#FromApplication').val() == 'True';
+                var editBtn = e.modal.find('.btn-edit');
+                var deleteBtn = e.modal.find('.btn-delete');
+
+                editBtn.show();
+                deleteBtn.show();
+
+                if (fromApplication) {
+                    editBtn.hide();
+                    deleteBtn.hide();
+                }
+            }
+        }
+
+        function applyPeriod(start, end) {
+            $('#DateFrom').val(start);
+            $('#DateTo').val(end);
+        }
+    </script>
+}
+
+@section PreWrapper {
+    <div class="body-overlay"></div>
+    <div id="side-panel">
+        <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+        <div class="side-panel-wrap">
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { ForScheduling = true, DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/OT/Index/{0}", MinimalView = true, LessParameters = true } })
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", employee)
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-view-width="modal-xl" modal-create-width="modal-xl" modal-edit-width="modal-xl" modal-load-callback="load"
+           modal-view-url="/HR/Manage/Employee/OT/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/OT/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/OT/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/OT/Create/@employee.EmployeeId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Period
+                </th>
+                <th>
+                    Time In
+                </th>
+                <th>
+                    Time Out
+                </th>
+                <th>
+                    Skip Last Log
+                </th>
+                <th>
+                    Apply OT Rate Only
+                </th>
+                <th>
+                    Breaks
+                </th>
+                <th>
+                    Days
+                </th>
+                <th>
+                    Remarks
+                </th>
+                <th>
+                    Created/Approved By
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblEmployee_OT item in Model)
+            {
+                Module.DB.tblOTApplication application = item.GetApplication();
+
+                <tr record-id="@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InclusiveDays)
+                    </td>
+                    <td>
+                        @Html.Partial("_Helper_SegmentTime", item, new ViewDataDictionary { { "IsTimeIn", true } })
+                    </td>
+                    <td>
+                        @Html.Partial("_Helper_SegmentTime", item, new ViewDataDictionary { { "IsTimeIn", false } })
+                    </td>
+                    <td>
+                        @Html.DisplayBooleanFor(modelItem => item.SkipLastLog)
+                    </td>
+                    <td>
+                        @Html.DisplayBooleanFor(modelItem => item.OTRateOnly)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Breaks) Hours
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Days)
+                    </td>
+                    <td>
+                        @Html.DisplayMultiLineFor(modelItem => item.Remarks)
+                    </td>
+
+                    @if (application == null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedBy)
+                            <div class="small">
+                                @item.CreateDate.ToShortDateString()
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => application.ApprovedBy)
+                            <div class="small">
+                                @application.ApproveDate.Value.ToShortDateString()
+                            </div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

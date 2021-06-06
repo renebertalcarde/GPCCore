@@ -1,0 +1,54 @@
+﻿@model coreApp.OfficeStructureItem
+@{ 
+    bool hasActive = Model.StakeholderCount_Active > 0;
+    bool hasInactive = Model.StakeholderCount_Inactive > 0;
+}
+<div class="office-structure-item @(Model.Expanded ? "expanded" : "") @(Model.Expandable ? "expandable" : "")" data-itemid="@Model.Id" data-itemname="@Model.Name" data-itemtype="@Model.ItemType" data-parentid="@Model.ParentId" 
+     data-stakeholdercountdesc="@Model.StakeholderCountDesc">
+
+    @if (Model.Expandable)
+    {
+        <span class="item-handle">
+            <i class="fa fa-plus"></i><i class="fa fa-minus"></i>
+        </span>
+        
+        <span class="item-name">
+            @Model.Name
+            @if (hasActive)
+            {
+                <i class="fa fa-user active-stakeholders-icon"></i>
+            }
+            @if (hasInactive)
+            {
+                <i class="fa fa-user inactive-stakeholders-icon"></i>
+            }
+        </span>
+
+        <ul>
+            @foreach (coreApp.OfficeStructureItem item in Model.Children)
+            {
+                <li>
+                    @Html.Partial("_OfficeStructure_Item", item)
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <span class="item-handle dummy">
+            <i class="fa fa-minus"></i>
+        </span>
+
+        <span class="item-name">
+            @Model.Name 
+            @if (hasActive)
+            {
+                <i class="fa fa-user active-stakeholders-icon"></i>
+            }
+            @if (hasInactive)
+            {
+                <i class="fa fa-user inactive-stakeholders-icon"></i>
+            }
+        </span>        
+    }
+</div>

@@ -1,0 +1,84 @@
+﻿@model coreApp.Models.LineChartModel
+@{
+    bool showData = (bool)ViewBag.ShowData;
+    string contSelector = (string)ViewBag.ContSelector;
+}
+
+@if (showData)
+{
+    double totalAtt = 0;
+    int n = Model.Labels.Count;
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h3>Work Graph</h3>
+            
+            @Html.Partial("_PeriodAttendance", Model, new ViewDataDictionary { { "showData", true }, { "contSelector", contSelector } })
+        </div>
+        <div class="col-sm-4">
+            <h3>Data</h3>
+            
+            <table class="tblData table table-striped static-table">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Work Hours</th>
+                        <th>Hours Worked</th>
+                        <th>Attendance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < n; i++)
+                    {
+                        double wh = Model.Data[0][i];
+                        double hw = Model.Data[1][i];
+                        double att = (hw / wh) * 100;
+                        totalAtt += att;
+
+                        <tr>
+                            <td>
+                                @Model.Labels[i]
+                            </td>
+                            <td class="@(wh == 0 ? "zero" : "")">
+                                @wh.ToString("#,##0.##")
+                            </td>
+                            <td class="@(hw == 0 ? "zero" : "")">
+                                @hw.ToString("#,##0.##")
+                            </td>
+                            <td class="@(att == 0 ? "zero" : "")">
+                                @att.ToString("#,##0.##")%
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            Total
+                        </td>
+                        <td>
+                            @Model.Data[0].Sum(x => x).ToString("#,##0.##")
+                        </td>
+                        <td>
+                            @Model.Data[1].Sum(x => x).ToString("#,##0.##")
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            Average Attendance
+                        </td>
+                        <td>
+                            @((totalAtt / n).ToString("#,##0.##"))%
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+}
+else
+{
+    @Html.Partial("_PeriodAttendance", Model, new ViewDataDictionary { { "showData", false }, { "contSelector", contSelector } })
+}

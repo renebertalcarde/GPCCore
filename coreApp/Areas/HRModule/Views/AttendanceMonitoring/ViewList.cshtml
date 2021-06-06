@@ -1,0 +1,122 @@
+﻿@model List<AMModel>
+@using coreApp.Models
+@using Module.DB
+@using Module.Time
+@{     
+    Module.DB.TimeSettingsModel settings = new Module.DB.TimeSettingsModel(DateTime.Now, coreApp.Cache.Get().userAccess.career.Office.OfficeId);
+    DateTime date = (DateTime)ViewBag.Date;
+
+    bool DateIsToday = date.Date == DateTime.Today;
+}
+
+<h4>@date.ToLongDateString()</h4>
+
+<div class="title-cont">
+    <h3>LIST OF EMPLOYEES</h3>
+    <div class="item-count-cont">
+        <span class="item-count"></span> out of @Model.Count item(s)
+    </div>    
+</div>
+@if (!Model.Any())
+{
+    <span>[No record found]</span>
+}
+else
+{
+    <div class="attendance-table table-responsive">
+        <table border="1" class="tbl-1 display table table-bordered table-striped table-list attendance-table" cellspacing="0" width="100%" 
+            data-paging="false" data-url="@Url.Action("PeriodAttendance", "AttendanceMonitoring", new { area = "HRModule", id = -9999 }).Replace("-9999", "{0}")">
+            <thead>
+                <tr>
+                    <th>Id No.</th>
+                    <th>Employee</th>
+                    <th>Position</th>
+                    <th>Reported</th>
+                    <th>Late (mins.)</th>
+                    <th>Undertime (mins.)</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (AMModel item in Model.OrderBy(x => x.EmployeeName))
+                {
+                    tblEmployee_Career career = new Module.DB.Procs.procs_tblEmployee(item.employee).LatestCareer();
+                    string position = career.Position == null ? "" : career.Position.Position;
+
+                    string clFilters = string.Join(" ", item.Filters);
+
+                    <tr record-id="@item.employee.EmployeeId" class="@clFilters" newtab>
+                        <td>
+                            @item.employee.IdNo
+                        </td>
+                        <td class="text-left">
+                            @item.EmployeeName
+                        </td>
+                        <td>
+                            @position
+                        </td>
+
+                        @if (item.Reported)
+                        {
+                            <td>
+                                @item.ReportTime.Log.Actual_TimeIn.ToString("h:mm tt")
+                            </td>
+                            <td>
+                                @item.MinsLate
+                            </td>
+
+                            if (item.Present)
+                            {
+                                <td>
+                                    @item.MinsUT
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                        else
+                        {
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        }
+                        
+                        @if (item.IsScheduled)
+                        {
+                            if (item.IsAbsent)
+                            {
+                                <td>
+                                    Absent
+                                    @if (DateIsToday)
+                                    {
+                                        <span class="text-warning">
+                                            &nbsp;
+                                            <i class="fa fa-info-circle" title="Employees may have been marked absent because they have not yet logged out"></i>
+                                        </span>
+                                    }
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                        else
+                        {
+                            <td>
+                                No schedule
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@{ 
+    string sessionId = ViewBag.SessionId;
+    Session.Remove(sessionId);
+}

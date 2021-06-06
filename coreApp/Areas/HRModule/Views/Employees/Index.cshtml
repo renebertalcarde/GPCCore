@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Employee Profile";
+    ViewBag.Subtitle = "Search Employee";
+
+    string DetailsUrl = "/HR/Manage/Employee/Details/{0}";
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+
+@Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { DataUrl = DetailsUrl, LessParameters = false } })
+
+
+
+
+@section FormActions {
+    <div class="details" modal-width="modal-xl">
+        <a href="#" class="btn btn-sm btn-default btn-create" style="margin-bottom:5px;" data-url="@Url.Action("Create")" data-redirect-url="@DetailsUrl">Create new employee</a>
+    </div>
+}

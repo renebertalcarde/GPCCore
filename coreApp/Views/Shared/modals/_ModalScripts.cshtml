@@ -1,0 +1,489 @@
+﻿<script>
+    function showModalFooter(modal) {
+        modal.find('.modal-footer').css('visibility', 'visible');
+    }
+
+    var modalProgress = {
+        title: '',
+        continueButtonText: '',
+        cancelable: true,
+        cancelledCallback: null,
+        continueCallback: null,
+        showCallback: null,
+        currentValue: 0,
+        maxValue: 100,
+        showLabel: true,
+        showContinueBtn: false,
+        _modal: null,
+        _btnContinue: null,
+        _btnCancel: null,
+        _progressBar: null,
+        _progressLabel: null,
+        progressResults: null,
+        init: function () {
+            var me = this;
+
+            me._modal = getModalUI();
+
+            var modalBody = getTemplateUIById('modalProgressTemplate');
+            me._modal.find('.modal-body').append(modalBody.children());
+
+            me._modal.find('.modal-footer .btn-ok')
+                .removeClass('btn-ok')
+                .addClass('btn-continue')
+                .html('Continue');
+
+            var header_title = me._modal.find('.modal-title');
+            me._btnCancel = me._modal.find('.btn-cancel');
+            me._btnContinue = me._modal.find('.btn-continue');
+            me._progressBar = me._modal.find('.progress-bar');
+            me._progressLabel = me._modal.find('.progress-label');
+            me.progressResults = me._modal.find('.progress-results');
+
+            header_title.html(me.title);
+            me._progressBar.parent().addClass('active');
+
+            if (me.continueButtonText != '') {
+                me._btnContinue.html(me.continueButtonText);
+            }
+
+            me._btnContinue.hide();
+
+            me._btnContinue.unbind().bind('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                me._modal.addClass('confirm-close-event').modal('hide');
+
+                if (me.continueCallback) {
+                    me.continueCallback();
+                }
+            });
+
+            me._btnCancel.unbind().bind('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                me._modal.addClass('confirm-close-event').modal('hide');
+
+                if (me.cancelledCallback) {
+                    me.cancelledCallback();
+                }
+            });
+
+            me.progressResults.empty();
+            me._setButtons(false);
+
+            me._modal
+                .unbind('hide.bs.modal')
+                .unbind('shown.bs.modal')
+                .on('shown.bs.modal', function (e) {
+                    setModalHeights(me._modal);
+                    if (me.showCallback) {
+                        me.showCallback(me._modal, me, function () {
+                            showModalFooter(me._modal);
+                        });
+                    } else {
+                        showModalFooter(me._modal);
+                    }
+                })
+                .on('hide.bs.modal', function (e) {
+                    return closeModal(me._modal, e);
+                })
+                .modal({
+                    backdrop: 'static',
+                    show: true
+                });
+        },
+        showProgress: function () {
+            var me = this;
+            var v = Math.round((me.currentValue / me.maxValue) * 100);
+
+            me._progressBar.attr('aria-valuenow', v);
+            me._progressBar.css('width', v + '%');
+
+            if (me.showLabel) {
+                var text = me.currentValue + '/' + me.maxValue + ' completed (' + v + '%)';
+                me._progressLabel.html(text);
+            }
+        },
+        _setButtons: function (isCompleted, hasErr) {
+            var me = this;
+            if (isCompleted) {
+                me._btnCancel.hide();
+
+                if (me.showContinueBtn || hasErr) {
+                    me._btnContinue.show();
+                } else {
+                    me._btnContinue.click();
+                }
+                
+            } else {
+                me._btnContinue.hide();
+
+                if (me.cancelable) {
+                    me._btnCancel.show();
+                } else {
+                    me._btnCancel.hide();
+                }
+            }
+        },
+        completed: function (hasErr) {
+            var me = this;
+            me._progressBar.parent().removeClass('active');
+            me._setButtons(true, hasErr);
+        }
+    };
+
+    function modalMessage(msg, title, isError, zindex, showCallback, hideCallback) {
+        var cont = $('<div />').addClass((isError ? 'text-danger' : 'text-success'));
+
+        var m = getMessageElement(msg);
+        cont.append(m);
+
+        modalMsg(cont, title, zindex, showCallback, hideCallback);
+    }
+
+    function modalMsg(body, title, zindex, showCallback, hideCallback) {
+
+        var modal = getModalUI();
+
+        if (zindex) {
+            modal.css('z-index', zindex);
+        }
+
+        modal.find('.modal-title').html(title);
+        modal.find('.modal-body').html(body);
+        modal.find('.modal-footer .btn-cancel').remove();
+        modal.find('.modal-footer .btn-ok').unbind().click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            modal.addClass('confirm-close-event').modal('hide');
+        });
+
+        modal
+            .unbind('hide.bs.modal')
+            .unbind('show.bs.modal')
+            .unbind('shown.bs.modal')
+            .on('shown.bs.modal', function (e) {
+                setModalHeights(modal);
+                if (showCallback) {
+                    showCallback(modal, function () {
+                        showModalFooter(modal);
+                    });
+                } else {
+                    showModalFooter(modal);
+                }
+            })
+            .on('show.bs.modal', function () {
+                $('#side-panel').addClass('panel-locked');
+            })
+            .on('hide.bs.modal', function (e) {
+
+                return closeModal(modal, e, function () {
+                    $('#side-panel').removeClass('panel-locked');
+                    if (hideCallback) hideCallback(modal);
+                });
+            })
+            .modal({
+                backdrop: 'static',
+                show: true
+            });
+    }
+
+    function modalEmpty(title, showCallback, doneCallback, modalClasses, modalMessage, modalErrorMessage) {
+        var ret = false;
+
+        var modal = getModalUI().addClass(modalClasses);
+        modal.find('.modal-title').html(title);
+        
+        var msg = modal.find('.modal-messages');
+        var body = modal.find('.modal-body');
+
+        if (modalMessage) {
+            msg.find('.modalMessage').empty().html(modalMessage);
+        }
+
+        if (modalErrorMessage) {
+            msg.find('.modalErrorMessage').empty().html(modalErrorMessage);
+        }
+
+        modal.find('.btn-ok').unbind().bind('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            ret = true;
+            modal.addClass('confirm-close-event').modal('hide');
+        });
+
+        modal
+            .unbind('hide.bs.modal')
+            .unbind('shown.bs.modal')
+            .on('shown.bs.modal', function (e) {
+                setModalHeights(modal);                
+                if (showCallback) {
+                    showCallback(modal, function () {
+                        showModalFooter(modal);
+                    });
+                } else {
+                    showModalFooter(modal);
+                }
+            })
+            .on('hide.bs.modal', function (e) {
+                return closeModal(modal, e, function () {
+                    if (doneCallback) doneCallback(ret, modal);
+                });
+            })
+            .modal({
+                backdrop: 'static',
+                show: true
+            });
+    }
+
+    function modalSetDate(label, _dt, selectedCallback) {
+
+        modalEmpty('Set Date', function (modal, recallback) {
+            var dt = new Date();
+            if (_dt != null) {
+                dt = _dt;
+            }
+
+            var body = modal.find('.modal-body');
+            var div = $('<div />');
+            div.addClass('dt-maxwidth');
+
+            if (label != null) {
+                var lbl = $('<label />').text(label);
+                body.append(lbl)
+            }
+            
+            body.append(div);
+
+            div.datetimepicker({
+                date: dt,
+                format: 'MM/DD/YYYY',
+                inline: true
+            });
+
+            var btnOk = modal.find('.modal-footer .btn-ok');
+            btnOk.unbind('click').click(function (e) {
+                var dt = div.data('date');
+                if (selectedCallback) selectedCallback(dt);
+
+                modal.addClass('confirm-close-event').modal('hide');
+            });
+
+            if (recallback) recallback();
+        });        
+    }
+
+    function modalConfirm(msg, callback, showCallback) {
+        var ret = false;
+
+        var modal = getModalUI();
+        modal.find('.modal-footer .btn-cancel')
+            .html('No');
+        modal.find('.modal-footer .btn-ok')
+            .removeClass('btn-ok')
+            .addClass('btn-yes')
+            .html('Yes');
+
+        modal.find('.modal-title').html('Confirm');
+        modal.find('.modal-body').html(msg);
+
+        modal.find('.btn-yes').unbind().bind('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            ret = true;
+            modal.addClass('confirm-close-event').modal('hide');
+        });
+
+        modal
+            .unbind('hide.bs.modal')
+            .unbind('shown.bs.modal')
+            .on('shown.bs.modal', function (e) {
+                setModalHeights(modal);
+                if (showCallback) {
+                    showCallback(modal, function () {
+                        showModalFooter(modal);
+                    });
+                } else {
+                    showModalFooter(modal);
+                }
+            })
+            .on('hide.bs.modal', function (e) {
+                return closeModal(modal, e, function () {
+                    if (callback) callback(ret, modal);
+                });
+            })
+            .modal({
+                backdrop: 'static',
+                show: true
+            });
+    }
+
+    function modalInput(title, msg, callback, type, showCallback) {
+        var ret = false;
+
+        var modal = getModalUI();
+        modal.find('.modal-body')
+            .append($('<label />'))
+            .append($('<div />'));
+
+        modal.find('.modal-title').html(title);
+
+        var body = modal.find('.modal-body');
+
+        body.find('label').html(msg);
+
+        var obj;
+        if (type == null || type == 'input') {
+            obj = $('<input type="text" class="user-input form-control" />');
+
+            obj.keyup(function (e) {
+                if (e.which == 13) {
+                    modal.find('.btn-ok').click();
+                }
+            });
+
+        } else if (type == 'textarea') {
+            obj = $('<textarea class="user-input form-control" />');
+        }
+
+        body.find('div').empty().append(obj);
+
+        var userInput = body.find('.user-input');
+
+        modal.find('.btn-ok').unbind().bind('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            ret = true;
+            modal.addClass('confirm-close-event').modal('hide');
+        });
+
+        modal
+            .unbind('hide.bs.modal')
+            .unbind('shown.bs.modal')
+            .on('shown.bs.modal', function (e) {
+                setModalHeights(modal);
+                if (showCallback) {
+                    showCallback(modal, function () {
+                        showModalFooter(modal);
+                    });
+                } else {
+                    showModalFooter(modal);
+                }
+
+                body.find('input,textarea').first().focus();
+            })
+            .on('hide.bs.modal', function (e) {
+
+                return closeModal(modal, e, function () {
+                    if (callback) callback(ret, userInput.val());
+                });
+            })
+            .modal({
+                backdrop: 'static',
+                show: true
+            });
+    }
+
+    function modalProcessing(msg, title, showCallback) {
+        var ret = false;
+
+        if (title == null) title = 'Processing';
+        if (msg == null) msg = 'Please wait...';
+
+        var modal = getModalUI();
+
+        modal.find('.modal-body')
+            .css('background-color', '#fff')
+            .append('<img src="' + vdUrl('/Assets/images/loading.gif') + '" alt=""/>')
+            .append('&nbsp;<label style="color:#000"></label>');
+
+        modal.find('.modal-header .close').remove();
+        modal.find('.modal-footer').remove();
+
+        modal.find('.modal-title').html(title);
+        modal.find('.modal-body label').html(msg);
+
+        modal
+            .unbind('show.bs.modal')
+            .unbind('hide.bs.modal')
+            .unbind('shown.bs.modal')
+            .on('shown.bs.modal', function (e) {
+                setModalHeights(modal);
+                if (showCallback) {
+                    showCallback(modal, function () {
+                        showModalFooter(modal);
+                    });
+                }
+            })
+            .on('hide.bs.modal', function (e) {
+
+                return closeModal(modal, e);
+            })
+            .modal({
+                backdrop: 'static',
+                show: true,
+                keyboard: false
+            });
+
+        return modal;
+    }
+
+    function printParam(callback) {
+        var ret = false;
+
+        var modal = getModalUI();
+        modal.find('.modal-title').html('Select Receipient Supplier');
+
+        var body = modal.find('.modal-body');
+        body.append('<select name="Suppliers"></select>');
+
+        var supplierSelect = body.find('[name="Suppliers"]');
+        var suppliersData = $('[name="SuppliersData"]');
+        var suppliers = JSON.parse(suppliersData.val());
+
+        supplierSelect.empty();
+        suppliers.forEach(function (data) {
+            supplierSelect.append($('<option />').attr('value', data.Id).html(data.Name));
+        });
+
+        modal.find('.btn-ok').unbind().bind('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            ret = true;
+            modal.addClass('confirm-close-event').modal('hide');
+        });
+
+        modal
+            .unbind('hide.bs.modal')
+            .unbind('shown.bs.modal')
+            .on('shown.bs.modal', function (e) {
+                setModalHeights(modal);
+                showModalFooter(modal);
+            })
+            .on('hide.bs.modal', function (e) {
+                return closeModal(modal, e, function () {
+                    if (callback) callback(ret, supplierSelect.val());
+                });
+            })
+            .modal({
+                backdrop: 'static',
+                show: true
+            });
+    }
+
+    function getModalUI() {
+        return getTemplateUIById('modalTemplate');
+    }
+
+    function getTemplateUIById(modalId) {
+        var t = $('#' + modalId).html();
+        return $(t);
+    }
+</script>

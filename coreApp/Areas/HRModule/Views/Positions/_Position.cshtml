@@ -1,0 +1,105 @@
+﻿@model Module.DB.tblPosition
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Position)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.PositionId)
+                        <div>
+                            @Html.DisplayFor(model => model.PositionId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Code)
+                        <div>
+                            @Html.DisplayFor(model => model.Code)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.IsFaculty)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.IsFaculty)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Confidential)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.Confidential)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.RankAndFile)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.RankAndFile)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.PositionId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.PositionId)
+                        <div>
+                            @Html.DisplayFor(model => model.PositionId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Position)
+                    <div>
+                        @Html.TextBoxFor(m => m.Position, new { @class = "form-control", placeholder = "[Enter Position]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Code)
+                    <div>
+                        @Html.TextBoxFor(m => m.Code, new { @class = "form-control", placeholder = "[Enter Code]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.IsFaculty)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "IsFaculty", new ViewDataDictionary { { "value", Model.IsFaculty } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Confidential)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "Confidential", new ViewDataDictionary { { "value", Model.Confidential } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.RankAndFile)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "RankAndFile", new ViewDataDictionary { { "value", Model.RankAndFile } })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

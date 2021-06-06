@@ -1,0 +1,370 @@
+﻿@model Module.DB.tblEmployee_Career
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+
+@if (isReadOnly)
+{
+    bool isDailyRate = false;
+    double rate = Model.GetRate(out isDailyRate);
+
+    <div class="modal-view-ui pattern-bg">
+        
+        <ul class="list-group">
+            <li class="list-group-item list-group-header">
+                Career
+            </li>
+            <li class="list-group-item">
+                @Html.LabelFor(model => model.CareerId)
+                <div>
+                    @Html.DisplayFor(model => model.CareerId)
+                </div>
+            </li>
+            <li class="list-group-item">
+                @Html.LabelFor(model => model.Events_Desc)
+                <div>
+                    @Html.DisplayFor(model => model.Events_Desc)
+                </div>
+            </li>
+            <li class="list-group-item">
+                @Html.LabelFor(model => model.EventRemarks, "Remarks")
+                <div>
+                    @Html.DisplayFor(model => model.EventRemarks)
+                </div>
+            </li>
+            <li class="list-group-item">
+                @Html.LabelFor(model => model.DateEffective)
+                <div>
+                    @Html.DisplayFor(model => model.DateEffective)
+                </div>
+            </li>
+        </ul>
+
+        <br />
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Office Assignment
+                    </li>
+                    @if (FixedSettings.UseMFO)
+                    {
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.MFOId)
+                            <div>
+                                @Html.DisplayFor(model => model.MFO_Desc)
+                            </div>
+                        </li>
+                    }
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Branch.Description)
+                        <div>
+                            @Html.DisplayFor(model => model.Branch.Description)
+                            <div class="small">
+                                @Html.DisplayFor(model => model.Branch.BranchAddress)
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Office.Office)
+                        <div>
+                            @Html.DisplayFor(model => model.Office.Office)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Department)
+                        <div>
+                            @Html.DisplayFor(model => model.Department)
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Designation & Compensation
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Position)
+                        <div>
+                            @Html.DisplayFor(model => model.Position.Position)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.EmploymentType)
+                        <div>
+                            @Html.DisplayFor(model => model.EmploymentType_Desc)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.SalaryGrade)
+                        <div>
+                            @Html.DisplayFor(model => model.SalaryGrade)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.PositionLevel)
+                        <div>
+                            @Html.DisplayFor(model => model.PositionLevel)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label>Rate</label>
+                        <div>
+                            @rate.ToString("#,##0.00")
+                            <div>
+                                @if (Model.IsCustomRate)
+                                {
+                                    <span class="small">[Custom Rate]</span>
+                                }
+                                @if (isDailyRate)
+                                {
+                                    <span class="small">[Daily Rate]</span>
+                                }
+                            </div>                            
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <br />
+        <ul class="list-group">
+            <li class="list-group-item list-group-header">
+                Others
+            </li>
+            <li class="list-group-item">
+                @Html.LabelFor(model => model.Fund)
+                <div>
+                    @Html.DisplayFor(model => model.Fund)
+                </div>
+            </li>
+            <li class="list-group-item">
+                @Html.LabelFor(model => model.IsDesignated)
+                <div>
+                    @(Model.IsDesignated ? "Yes" : "None")
+                </div>
+            </li>
+        </ul>
+
+        @if (Model.hasEndEvent())
+        {
+            <br />
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EndEvent)
+                    <div>
+                        @Html.DisplayFor(model => model.EndEvent_Desc)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EndEventDate)
+                    <div>
+                        @Html.DisplayFor(model => model.EndEventDate)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EndEventRemarks)
+                    <div>
+                        @Html.DisplayFor(model => model.EndEventRemarks)
+                    </div>
+                </li>
+            </ul>
+        }
+        
+    </div>
+}
+else
+{
+
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+
+        List<SelectListItem> offices = SelectItems.getOffices(showEmptyItem: false);
+        List<Module.DB.tblDepartment> departments = coreApp.Cache.Get_Tables().Departments.Where(x => offices.Any(y => y.Value == x.OfficeId.ToString())).ToList();
+
+
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.HiddenFor(model => model.CareerId)
+        @Html.HiddenFor(model => model.Events)
+        @Html.Hidden("DepartmentId", Model.DepartmentId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.CareerId)
+                        <div>
+                            @Html.DisplayFor(model => model.CareerId)
+                        </div>
+                    </li>
+                }
+                
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Events_Desc)
+                    <div>
+                        @{ 
+                            int i = 0;
+                            int[] events = new int[] { };
+                            if (!string.IsNullOrEmpty(Model.Events))
+                            {
+                                events = Model.Events.Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x)).ToArray();
+                            }
+                        }
+                        <select name="EventSelection" class="selectpicker event-list" multiple data-actions-box="true" data-width="100%">
+                            @foreach (var item in SelectItems.getCareerEvents().Where(x => x.Value != "-1"))
+                            {
+                                <option value="@i" @(events.Contains(i) ? "selected" : "")>@item.Text</option>
+                                i++;
+                            }
+                        </select>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EventRemarks, "Remarks")
+                    <div>
+                        @Html.TextAreaFor(model => model.EventRemarks, new { @class = "form-control", maxlength = "200", placeholder = "[Enter remarks]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateEffective)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateEffective, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+            </ul>
+            
+            <br />
+            <div class="row">
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Office Assignment
+                        </li>
+                        @if (FixedSettings.UseMFO)
+                        {
+                            <li class="list-group-item">
+                                @Html.LabelFor(model => model.MFOId)
+                                <div>
+                                    @Html.DropDownListFor(m => m.MFOId, coreApp.SelectItems.getMFOs(), new { @class = "form-control" })
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.MFOId)
+                        }
+
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Department)
+                            <div>
+                                @Html.Partial("_OfficeStructure", new OfficeStructureParameters
+                           {
+                               Mode = coreApp.Enums.OfficeStructureMode.InlineTrigger,
+                               InlineTrigger_Param_MultiSelection = false,
+                               SelectedIds = new int[] { Model.DepartmentId },
+                               Classes = "form-control"
+                           })
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Designation & Compensation
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Position)
+                            <div>
+                                @Html.DropDownListFor(m => m.PositionId, coreApp.SelectItems.getPositions(), new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.EmploymentType)
+                            <div>
+                                @Html.DropDownListFor(m => m.EmploymentType, coreApp.SelectItems.getEmploymentType(), new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.SalaryGrade)
+                            <div>
+                                @Html.DropDownListFor(m => m.SalaryGrade, coreApp.SelectItems.getSalaryGrades(showEmptyItem: false), new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.PositionLevel)
+                            <div>
+                                @Html.DropDownListFor(m => m.PositionLevel, coreApp.SelectItems.getMaxLevel(8), new { @class = "form-control" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.CustomRate)
+                            <div>
+                               @Html.TextBoxFor(model => model.CustomRate, new { @class = "form-control", placeholder = "[Enter custom rate]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.CustomRate_IsDailyRate)
+                            <div>
+                                @Html.Partial("_Helper_CheckBox", "CustomRate_IsDailyRate", new ViewDataDictionary { { "value", Model.CustomRate_IsDailyRate } })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <br />
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">
+                    Others
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Fund)
+                    <div>
+                        @Html.TextBoxFor(model => model.Fund, new { @class = "form-control", placeholder = "[Enter employment fund source]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.IsDesignated)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "IsDesignated", new ViewDataDictionary { { "value", Model.IsDesignated } })
+                    </div>
+                </li>
+            </ul>
+
+            <br />
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EndEvent)
+                    <div>
+                        @Html.DropDownListFor(m => m.EndEvent, coreApp.SelectItems.getCareerEvents(true), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EndEventDate)
+                    <div>
+                        @Html.TextBoxFor(model => model.EndEventDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.EndEventRemarks)
+                    <div>
+                        @Html.TextAreaFor(model => model.EndEventRemarks, new { @class = "form-control", maxlength = "200", placeholder = "[Enter remarks]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+
+    }
+}

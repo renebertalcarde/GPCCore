@@ -1,0 +1,47 @@
+﻿<template id="modalTemplate">
+    <div class="modal from-template" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-messages">
+                    <div class="modalMessage alert alert-success" style="display:none"></div>
+                    <div class="modalErrorMessage alert alert-danger" style="display:none"></div>
+                </div>
+                <div class="modal-body clearfix"></div>
+                <div class="progress-ui"></div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-sm btn-default btn-cancel">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-default btn-ok">Ok</button>                    
+                </div>
+            </div>
+        </div>
+    </div>  
+</template>
+
+<template id="modalProgressTemplate">
+    <div class="modal-body">
+        <div class="progress progress-striped progress-small active">
+            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;height:20px"></div>
+        </div>
+        <div class="progress-label" style="text-align:center;color:#fff"></div>
+        <div class="progress-results text-danger"></div>
+    </div>
+</template>
+
+<template id="modalViewTemplate">
+    <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-sm btn-default btn-close for-create for-edit for-view for-custom">Close</button>
+
+        <button type="button" class="btn btn-sm btn-default btn-edit for-view">Edit</button>
+
+        <button type="button" class="btn btn-sm btn-default btn-cancel for-edit">Cancel</button>
+        <button type="button" class="btn btn-sm btn-default btn-update for-edit">Update</button>
+        <button type="button" class="btn btn-sm btn-default btn-create for-create">Save</button>
+        <button type="button" class="btn btn-sm btn-default btn-custom for-custom"></button>
+        <button type="button" class="btn btn-sm btn-default btn-danger btn-delete for-view">Delete</button>
+        @Html.Partial("_Details_Buttons")
+    </div>
+</template>

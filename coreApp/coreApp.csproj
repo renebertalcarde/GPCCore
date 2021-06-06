@@ -1,0 +1,1117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4FD7A8FE-28A5-44C9-83D5-D6F2E5D89825}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>coreApp</RootNamespace>
+    <AssemblyName>LogixSys</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.BarCode, Version=18.8.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Aspose.BarCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Cells, Version=17.8.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="Aspose.Words, Version=16.7.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Aspose.Words.dll</HintPath>
+    </Reference>
+    <Reference Include="coreLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Module.DB\bin\coreLib.dll</HintPath>
+    </Reference>
+    <Reference Include="coreLibWeb, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\coreLibWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="dotless.Core, Version=1.5.2.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
+      <HintPath>packages\dotless.1.5.2\lib\dotless.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.6.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlAgilityPack.1.6.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlRenderer, Version=1.5.0.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\HtmlRenderer.Core.1.5.0.5\lib\net45\HtmlRenderer.dll</HintPath>
+    </Reference>
+    <Reference Include="machine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\machine.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.TelemetryCorrelation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.TelemetryCorrelation.1.0.0\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.3.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Host.SystemWeb.3.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.3.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.Cookies.3.1.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.Facebook.3.1.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.Google.3.1.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.MicrosoftAccount.3.1.0\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.OAuth.3.1.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Owin.Security.Twitter.3.1.0\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="_Encryption, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\_Encryption.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Filters\APIFilter.cs" />
+    <Compile Include="Controllers\DownloadsController .cs" />
+    <Compile Include="Controllers\ActivityLogsController.cs" />
+    <Compile Include="Controllers\HLBase_AuthorizedController.cs" />
+    <Compile Include="Controllers\HLBase_NoCoreAuthorizedController.cs" />
+    <Compile Include="Controllers\HLHomeController.cs" />
+    <Compile Include="Filters\EffectivityInfoFilter.cs" />
+    <Compile Include="Common\UserAccess.cs" />
+    <Compile Include="Filters\PeriodicChangePasswordFilter.cs" />
+    <Compile Include="Filters\SSLFilter.cs" />
+    <Compile Include="Common\coreObjects.cs" />
+    <Compile Include="Common\coreProcs.cs" />
+    <Compile Include="Common\Interfaces.cs" />
+    <Compile Include="Common\DBProcs.cs" />
+    <Compile Include="Common\Optimizer.cs" />
+    <Compile Include="Common\SelectItems.cs" />
+    <Compile Include="Common\Procs.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Base\BaseAdminController.cs" />
+    <Compile Include="Controllers\Base\BaseAuthorizedController.cs" />
+    <Compile Include="Controllers\Base\BaseEmployeeController.cs" />
+    <Compile Include="Controllers\Base\BaseFinanceStaffController.cs" />
+    <Compile Include="Controllers\Base\Base_NoCoreEmployeeController.cs" />
+    <Compile Include="Controllers\Base\BaseHRStaffController.cs" />
+    <Compile Include="Controllers\Base\Base.cs" />
+    <Compile Include="Controllers\Base\Base_NoCoreFinanceStaffController.cs" />
+    <Compile Include="Controllers\Base\Base_NoCoreHRStaffController.cs" />
+    <Compile Include="Controllers\Base\Base_NoCoreAdminController.cs" />
+    <Compile Include="Controllers\Base\Base_NoCoreAuthorizedController.cs" />
+    <Compile Include="Controllers\Base\CoreController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Filters\Authorization\StakeholderAuthorizeAttribute.cs" />
+    <Compile Include="Filters\Authorization\UserAccessAuthorizeAttribute.cs" />
+    <Compile Include="Filters\Authorization\AccountAuthorizeAttribute.cs" />
+    <Compile Include="Filters\StakeholderFilter.cs" />
+    <Compile Include="Filters\ErrorFilterAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\HelperExtensions.cs" />
+    <Compile Include="Models\PasswordSetting.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CustomIdentityModels.cs" />
+    <Compile Include="Models\IdentityConfig.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Procs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Providers\ApplicationOAuthProvider.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\css\loading-mask-text.css" />
+    <Content Include="Assets\customplugins\statAddress.js" />
+    <Content Include="Assets\images\downloads\clocks.png" />
+    <Content Include="Assets\images\downloads\cogwheel.png" />
+    <Content Include="Assets\images\downloads\download.png" />
+    <Content Include="Assets\images\downloads\fingerprint.png" />
+    <Content Include="Assets\js\slist.js" />
+    <Content Include="Assets\customplugins\changePasswordUI.js" />
+    <Content Include="Assets\customplugins\gmaps-geolocation.js" />
+    <Content Include="Assets\customplugins\multiselect-ui.js" />
+    <Content Include="Assets\customplugins\schedule-ui.js" />
+    <Content Include="Assets\customplugins\segment-time.js" />
+    <Content Include="Assets\customplugins\formActions.js" />
+    <Content Include="Assets\customplugins\leave-entry.js" />
+    <Content Include="Assets\customplugins\dateCollection.js" />
+    <Content Include="Assets\customplugins\intSpinner.js" />
+    <Content Include="Assets\customplugins\office-structure.js" />
+    <Content Include="Assets\customplugins\tableSelection.js" />
+    <Content Include="Assets\fonts\OpenSans-Light.svg" />
+    <Content Include="Assets\images\back.png" />
+    <Content Include="Assets\images\backgrounds\ilogix-1.jpg" />
+    <Content Include="Assets\images\backgrounds\ilogix-2.jpg" />
+    <Content Include="Assets\images\backgrounds\ilogix-3.jpg" />
+    <Content Include="Assets\images\backgrounds\login-bg.jpg" />
+    <Content Include="Assets\images\bg.jpg" />
+    <Content Include="Assets\images\company-logo.png" />
+    <Content Include="Assets\images\dashboard-period-attendance.jpg" />
+    <Content Include="Assets\images\dashboard-todays-attendance.jpg" />
+    <Content Include="Assets\images\error.png" />
+    <Content Include="Assets\images\favicon.ico" />
+    <Content Include="Assets\images\hrlogix-nolabel.png" />
+    <Content Include="Assets\images\hrlogix.png" />
+    <Content Include="Assets\images\hrtrack.png" />
+    <Content Include="Assets\images\inventorylogix-nolabel.png" />
+    <Content Include="Assets\images\inventorylogix.png" />
+    <Content Include="Assets\images\loading.gif" />
+    <Content Include="Assets\images\logixsystems-nolabel.png" />
+    <Content Include="Assets\images\logixsystems.png" />
+    <Content Include="Assets\images\noimage.png" />
+    <Content Include="Assets\images\pattern-dark.png" />
+    <Content Include="Assets\images\purchaselogix-nolabel.png" />
+    <Content Include="Assets\images\purchaselogix.png" />
+    <Content Include="Assets\js\mysticky.js" />
+    <Content Include="Assets\js\file-manager.js" />
+    <Content Include="Assets\js\autoLogout.js" />
+    <Content Include="Assets\js\canvas-functions.js" />
+    <Content Include="Assets\js\widgets\pa.js" />
+    <Content Include="Assets\js\widgets\widgets.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\css\fileinput-rtl.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\css\fileinput-rtl.min.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\css\fileinput.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\css\fileinput.min.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\examples\index.html" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\img\loading-sm.gif" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\img\loading.gif" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\fileinput.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\fileinput.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\ar.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\az.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\bg.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\ca.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\cr.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\cs.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\da.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\de.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\el.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\es.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\et.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\fa.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\fi.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\fr.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\gl.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\hu.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\id.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\it.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\ja.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\kr.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\kz.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\LANG.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\lt.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\nl.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\no.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\pl.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\pt-BR.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\pt.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\ro.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\ru.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\sk.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\sl.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\sv.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\th.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\tr.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\uk.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\vi.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\zh-TW.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\locales\zh.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\plugins\piexif.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\plugins\piexif.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\plugins\purify.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\plugins\purify.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\plugins\sortable.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\js\plugins\sortable.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer-fa\theme.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer-fa\theme.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer-fa\theme.min.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer-fa\theme.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer\theme.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer\theme.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer\theme.min.css" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\explorer\theme.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\fa\theme.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\fa\theme.min.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\gly\theme.js" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\themes\gly\theme.min.js" />
+    <Content Include="Assets\plugins\chosen_v1.8.7\chosen.css" />
+    <Content Include="Assets\plugins\chosen_v1.8.7\chosen.jquery.js" />
+    <Content Include="Assets\plugins\chosen_v1.8.7\chosen.jquery.min.js" />
+    <Content Include="Assets\plugins\chosen_v1.8.7\chosen.min.css" />
+    <Content Include="Assets\plugins\bootstrap-multiselect.css" />
+    <Content Include="Assets\plugins\jquery.maskedinput.min.js" />
+    <Content Include="Assets\plugins\json-viewer-master\src\json-viewer.css" />
+    <Content Include="Assets\plugins\json-viewer-master\src\json-viewer.js" />
+    <Content Include="Assets\plugins\json-viewer-master\test\index.html" />
+    <Content Include="Assets\plugins\pace-master\pace.min.js" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\black\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\blue\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\green\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\orange\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\pink\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\purple\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\red\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\silver\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\white\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-barber-shop.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-big-counter.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-bounce.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-center-atom.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-center-circle.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-center-radar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-center-simple.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-corner-indicator.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-fill-left.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-flash.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-flat-top.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-loading-bar.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-mac-osx.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-material.css" />
+    <Content Include="Assets\plugins\pace-master\themes\yellow\pace-theme-minimal.css" />
+    <Content Include="Assets\plugins\pace\pace.min.js" />
+    <Content Include="Assets\plugins\bootstrap-multiselect.js" />
+    <Content Include="Assets\plugins\select2.min.js" />
+    <Content Include="bin\Aspose.BarCode.dll" />
+    <Content Include="bin\Aspose.Words.dll" />
+    <Content Include="bin\machine.dll" />
+    <Content Include="clients.txt" />
+    <Content Include="fonts\OpenSans-Regular.svg" />
+    <Content Include="Scripts\jquery.password-strength.js" />
+    <Content Include="Assets\css\file-manager.less" />
+    <Content Include="Views\Account\ConfirmEmail.cshtml" />
+    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
+    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\SendCode.cshtml" />
+    <Content Include="Views\Account\VerifyCode.cshtml" />
+    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\ActivityLogs\Details.cshtml" />
+    <Content Include="Views\ActivityLogs\Index.cshtml" />
+    <Content Include="Views\Default\Index.cshtml" />
+    <AndroidResource Include="Assets\images\downloads\hrmobile.png">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <Content Include="Views\HLHome\Index.cshtml" />
+    <Content Include="Views\HLHome\_AppInfo.cshtml" />
+    <Content Include="Views\HLHome\_Dashboard.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\License\Index.cshtml" />
+    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
+    <Content Include="Views\Manage\ChangePassword.cshtml" />
+    <Content Include="Views\Manage\ForceChangePassword.cshtml" />
+    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Manage\ManageLogins.cshtml" />
+    <Content Include="Views\Manage\SetPassword.cshtml" />
+    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
+    <Content Include="Views\Settings\Edit.cshtml" />
+    <Content Include="Views\Settings\Index.cshtml" />
+    <Content Include="Views\Settings\_Setting.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\info\effectivityInfo.cshtml" />
+    <Content Include="Views\Shared\info\groupInfo.cshtml" />
+    <Content Include="Views\Shared\info\positionInfo.cshtml" />
+    <Content Include="Views\Shared\info\_card_employeeInfo.cshtml" />
+    <Content Include="Views\Shared\info\_card_psInfo.cshtml" />
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\modals\_ModalScripts.cshtml" />
+    <Content Include="Views\Shared\modals\_ModalTemplate.cshtml" />
+    <Content Include="Views\Shared\plugins\progress-ui.cshtml" />
+    <Content Include="Views\Shared\SelectedEmployees.cshtml" />
+    <Content Include="Views\Shared\_ApprovedDeniedParams.cshtml" />
+    <Content Include="Views\Shared\_AttendanceDetails.cshtml" />
+    <Content Include="Views\Shared\_BodyScripts.cshtml" />
+    <Content Include="Views\Shared\_Breadcrumbs.cshtml" />
+    <Content Include="Views\Shared\_Canvas.cshtml" />
+    <Content Include="Views\Shared\_Canvas_Anonymous.cshtml" />
+    <Content Include="Views\Shared\_Canvas_Error.cshtml" />
+    <Content Include="Views\Shared\_Canvas_Standard.cshtml" />
+    <Content Include="Views\Shared\_Details_Buttons.cshtml" />
+    <Content Include="Views\Shared\_EffectivityField.cshtml" />
+    <Content Include="Views\Shared\_EmployeeDetails_Menu.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_Footer_Minimal.cshtml" />
+    <Content Include="Views\Shared\_FxArithGuide.cshtml" />
+    <Content Include="Views\Shared\_FxLogicGuide.cshtml" />
+    <Content Include="Views\Shared\_FxOperators.cshtml" />
+    <Content Include="Views\Shared\_FxScopeGuide.cshtml" />
+    <Content Include="Views\Shared\_FxVariables.cshtml" />
+    <Content Include="Views\Shared\_Header.cshtml" />
+    <Content Include="Views\Shared\_HeaderStylesAndScripts.cshtml" />
+    <Content Include="Views\Shared\_Helper_CheckBox.cshtml" />
+    <Content Include="Views\Shared\_Helper_Days.cshtml" />
+    <Content Include="Views\Shared\_Helper_etPeriodFilter.cshtml" />
+    <Content Include="Views\Shared\_Helper_Period.cshtml" />
+    <Content Include="Views\Shared\_Helper_Photo.cshtml" />
+    <Content Include="Views\Shared\_Helper_RadioBox.cshtml" />
+    <Content Include="Views\Shared\_Helper_SegmentTime.cshtml" />
+    <Content Include="Views\Shared\_Helper_SegmentTimeEdit.cshtml" />
+    <Content Include="Views\Shared\_inventoryStatus.cshtml" />
+    <Content Include="Views\Shared\_LeavePeriod.cshtml" />
+    <Content Include="Views\Shared\_LoadingTemplate.cshtml" />
+    <Content Include="Views\Shared\_MainMenu.cshtml" />
+    <Content Include="Views\Shared\_Messages.cshtml" />
+    <Content Include="Views\Shared\_Messages_Unboxed.cshtml" />
+    <Content Include="Views\Shared\_ModuleLayout.cshtml" />
+    <Content Include="Views\Shared\_Multiselect.cshtml" />
+    <Content Include="Views\Shared\_MyDetails_Menu.cshtml" />
+    <Content Include="Views\Shared\_OfficeStructure.cshtml" />
+    <Content Include="Views\Shared\_OfficeStructure_Item.cshtml" />
+    <Content Include="Views\Shared\_PDSQuestions.cshtml" />
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\Widgets\Applications.cshtml" />
+    <Content Include="Views\Widgets\BulletinBoard.cshtml" />
+    <Content Include="Views\Widgets\DailyAttendanceMonitor.cshtml" />
+    <Content Include="Views\Widgets\PeriodAttendance.cshtml" />
+    <Content Include="Views\Widgets\_LateUTInfo.cshtml" />
+    <Content Include="Views\Widgets\_PeriodAttendance.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="xml\PasswordPolicy.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="xml\PasswordPolicy.xslt" />
+    <Content Include="Assets\css\bootstrap-supplement.css" />
+    <Content Include="Assets\css\loading-mask.css" />
+    <Content Include="Assets\customplugins\details.js" />
+    <Content Include="Assets\customplugins\list.js" />
+    <Content Include="Assets\customplugins\employee-search.js" />
+    <Content Include="Assets\images\checked.png" />
+    <Content Include="Assets\images\unchecked.png" />
+    <Content Include="Assets\js\widgets\dam.js" />
+    <Content Include="Assets\customplugins\photo-cont.js" />
+    <Content Include="Assets\customplugins\progress-ui.js" />
+    <Content Include="Assets\customplugins\selectAll.js" />
+    <Content Include="Assets\customplugins\state-manager.js" />
+    <Content Include="Assets\images\anonymous.jpg" />
+    <Content Include="Assets\images\unauthorized.jpg" />
+    <Content Include="Assets\js\ajax-progress.js" />
+    <Content Include="Assets\js\ajax-upload.js" />
+    <Content Include="Assets\js\deleteBtn.js" />
+    <Content Include="Assets\js\miscellaneous.js" />
+    <Content Include="Assets\plugins\datetime-moment.js" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\css\font-awesome.css" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\css\font-awesome.min.css" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.svg" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\HELP-US-OUT.txt" />
+    <Content Include="Assets\plugins\moment.min.js" />
+    <Content Include="Assets\js\page-script.js" />
+    <Content Include="Assets\plugins\daterangepicker\daterangepicker.css" />
+    <Content Include="Assets\plugins\daterangepicker\daterangepicker.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\angularjs.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\basic-plus.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\basic.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\bower-version-update.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\cors\postmessage.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\cors\result.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\demo-ie8.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\demo.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\jquery.fileupload-noscript.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\jquery.fileupload-ui-noscript.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\jquery.fileupload-ui.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\jquery.fileupload.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\css\style.css" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\img\loading.gif" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\img\progressbar.gif" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\index.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\jquery-ui.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\app.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\cors\jquery.postmessage-transport.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\cors\jquery.xdr-transport.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-angular.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-audio.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-image.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-jquery-ui.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-process.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-ui.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-validate.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload-video.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.fileupload.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\jquery.iframe-transport.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\main.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\js\vendor\jquery.ui.widget.js" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\LICENSE.txt" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-go\static\favicon.ico" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-go\static\robots.txt" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-python\static\favicon.ico" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-python\static\robots.txt" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\php\index.php" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\php\UploadHandler.php" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\test\index.html" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\test\test.js" />
+    <Content Include="Assets\plugins\jquery.form.js" />
+    <Content Include="Assets\plugins\numeral.js" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard.min.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard_theme_arrows.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard_theme_arrows.min.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard_theme_circles.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard_theme_circles.min.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard_theme_dots.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\css\smart_wizard_theme_dots.min.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\js\jquery.smartWizard.js" />
+    <Content Include="Assets\plugins\SmartWizard-master\dist\js\jquery.smartWizard.min.js" />
+    <Content Include="Assets\plugins\SmartWizard-master\examples\ajaxtest.php" />
+    <Content Include="Assets\plugins\SmartWizard-master\examples\index.html" />
+    <Content Include="Assets\plugins\SmartWizard-master\examples\smartwizard-ajax.html" />
+    <Content Include="Assets\plugins\SmartWizard-master\examples\smartwizard-events.html" />
+    <Content Include="Assets\plugins\SmartWizard-master\examples\smartwizard-input.html" />
+    <Content Include="Assets\plugins\SmartWizard-master\examples\smartwizard-multiple.html" />
+    <Content Include="Assets\plugins\SmartWizard-master\gulpfile.js" />
+    <Content Include="Assets\plugins\SmartWizard-master\karma.conf.js" />
+    <Content Include="Assets\plugins\SmartWizard-master\src\css\smart_wizard.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\src\css\smart_wizard_theme_arrows.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\src\css\smart_wizard_theme_circles.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\src\css\smart_wizard_theme_dots.css" />
+    <Content Include="Assets\plugins\SmartWizard-master\src\js\jquery.smartWizard.js" />
+    <Content Include="Assets\plugins\SmartWizard-master\test\test-template.html" />
+    <Content Include="Assets\plugins\SmartWizard-master\test\test.js" />
+    <Content Include="bin\Antlr3.Runtime.dll" />
+    <Content Include="bin\dotless.Core.dll" />
+    <Content Include="bin\EntityFramework.dll" />
+    <Content Include="bin\EntityFramework.SqlServer.dll" />
+    <Content Include="bin\Microsoft.AI.Agent.Intercept.dll" />
+    <Content Include="bin\Microsoft.AI.DependencyCollector.dll" />
+    <Content Include="bin\Microsoft.AI.PerfCounterCollector.dll" />
+    <Content Include="bin\Microsoft.AI.ServerTelemetryChannel.dll" />
+    <Content Include="bin\Microsoft.AI.Web.dll" />
+    <Content Include="bin\Microsoft.AI.WindowsServer.dll" />
+    <Content Include="bin\Microsoft.ApplicationInsights.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Core.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.EntityFramework.dll" />
+    <Content Include="bin\Microsoft.AspNet.Identity.Owin.dll" />
+    <Content Include="bin\Microsoft.AspNet.TelemetryCorrelation.dll" />
+    <Content Include="bin\Microsoft.Owin.dll" />
+    <Content Include="bin\Microsoft.Owin.Host.SystemWeb.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Cookies.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Facebook.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Google.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.MicrosoftAccount.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.OAuth.dll" />
+    <Content Include="bin\Microsoft.Owin.Security.Twitter.dll" />
+    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="bin\Owin.dll" />
+    <Content Include="bin\System.Diagnostics.DiagnosticSource.dll" />
+    <Content Include="bin\System.Web.Helpers.dll" />
+    <Content Include="bin\System.Web.Mvc.dll" />
+    <Content Include="bin\System.Web.Optimization.dll" />
+    <Content Include="bin\System.Web.Razor.dll" />
+    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
+    <Content Include="bin\System.Web.WebPages.dll" />
+    <Content Include="bin\System.Web.WebPages.Razor.dll" />
+    <Content Include="bin\WebActivatorEx.dll" />
+    <Content Include="bin\WebGrease.dll" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Assets\customplugins\list.less" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Assets\customplugins\segment-time.less" />
+    <Content Include="Content\attendance-table.less" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\.gitignore" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\.jshintrc" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\.npmignore" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\bower.json" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\CONTRIBUTING.md" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\package.json" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\README.md" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-go\app.yaml" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-go\app\main.go" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-python\app.yaml" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\gae-python\main.py" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\php\docker-compose.yml" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\php\Dockerfile" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\php\files\.gitignore" />
+    <Content Include="Assets\plugins\jQuery-File-Upload-9.19.1\server\php\files\.htaccess" />
+    <Content Include="Assets\customplugins\photo-cont.less" />
+    <Content Include="Assets\plugins\SmartWizard-master\.gitignore" />
+    <Content Include="Assets\plugins\SmartWizard-master\.npmignore" />
+    <Content Include="Assets\plugins\SmartWizard-master\.travis.yml" />
+    <Content Include="Assets\plugins\SmartWizard-master\bower.json" />
+    <Content Include="Assets\plugins\SmartWizard-master\composer.json" />
+    <Content Include="Assets\plugins\SmartWizard-master\CONTRIBUTING.md" />
+    <Content Include="Assets\plugins\SmartWizard-master\LICENSE" />
+    <Content Include="Assets\plugins\SmartWizard-master\package.json" />
+    <Content Include="Assets\plugins\SmartWizard-master\README.md" />
+    <Content Include="Assets\customplugins\selectAll.less" />
+    <Content Include="Assets\customplugins\progress-ui.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\fonts\FontAwesome.otf" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\animated.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\bordered-pulled.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\core.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\fixed-width.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\font-awesome.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\icons.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\larger.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\list.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\mixins.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\path.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\rotated-flipped.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\screen-reader.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\stacked.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\less\variables.less" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\font-awesome.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_animated.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_bordered-pulled.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_core.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_fixed-width.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_icons.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_larger.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_list.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_mixins.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_path.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_rotated-flipped.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_screen-reader.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_stacked.scss" />
+    <Content Include="Assets\plugins\font-awesome-4.7.0\scss\_variables.scss" />
+    <Content Include="Content\widgets.less" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\.github\CODE_OF_CONDUCT.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\.github\CONTRIBUTING.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\.github\ISSUE_TEMPLATE.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\.github\PULL_REQUEST_TEMPLATE.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\.gitignore" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\bower.json" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\CHANGE.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\composer.json" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\LICENSE.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\nuget\build.bat" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\nuget\Package.nuspec" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\package.json" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\README.md" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\scss\fileinput-rtl.scss" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\scss\fileinput.scss" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\scss\themes\explorer-fa\theme.scss" />
+    <Content Include="Assets\plugins\bootstrap-fileinput-master\scss\themes\explorer\theme.scss" />
+    <Content Include="Assets\customplugins\dateCollection.less" />
+    <Content Include="Content\login.less" />
+    <Content Include="Assets\customplugins\formActions.less" />
+    <Content Include="Assets\css\mysticky.less" />
+    <Content Include="Assets\theme\canvas-styles-info.less" />
+    <Content Include="Assets\theme\canvas-styles.less" />
+    <Content Include="Assets\theme\colors.less" />
+    <Content Include="Assets\theme\global.less" />
+    <Content Include="Assets\theme\select.less" />
+    <Content Include="Assets\theme\table.less" />
+    <Content Include="Assets\fonts\OpenSans-Light.eot" />
+    <Content Include="Assets\fonts\OpenSans-Light.otf" />
+    <Content Include="Assets\fonts\OpenSans-Light.ttf" />
+    <Content Include="Assets\fonts\OpenSans-Light.woff" />
+    <Content Include="Assets\fonts\OpenSans-Light.woff2" />
+    <Content Include="Content\schedules-table.less" />
+    <Content Include="Content\portal.less" />
+    <Content Include="Content\license.less" />
+    <Content Include="Assets\customplugins\office-structure.less" />
+    <Content Include="Assets\customplugins\schedule-ui.less" />
+    <Content Include="Assets\customplugins\multiselect-ui.less" />
+    <Content Include="Assets\plugins\json-viewer-master\README.md" />
+    <Content Include="Assets\css\slist.less" />
+    <Content Include="Assets\docs\HRMobile Android Installation Guide.pdf" />
+    <Content Include="Assets\customplugins\employee-search.less" />
+    <Content Include="fonts\OpenSans-Regular.eot" />
+    <Content Include="fonts\OpenSans-Regular.ttf" />
+    <Content Include="fonts\OpenSans-Regular.woff" />
+    <Content Include="fonts\OpenSans-Regular.woff2" />
+    <Content Include="fonts\OpenSans-Regular.otf" />
+    <None Include="Properties\PublishProfiles\DEPLOY PACKAGE.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <None Include="Properties\PublishProfiles\FTPProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\LOCALHOST.pubxml" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <None Include="Scripts\jquery-3.2.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.2.1.min.map" />
+    <Content Include="Templates\dtr-bycutoff.docx" />
+    <None Include="Templates\dtr.docx" />
+    <Content Include="Templates\payroll.docx" />
+    <Content Include="Templates\config\footnote.docx" />
+    <Content Include="Templates\config\header.docx" />
+    <Content Include="Templates\payslip.docx" />
+    <Content Include="Templates\leaveapp.docx" />
+    <Content Include="Templates\servicerecord.docx" />
+    <Content Include="Templates\payrollsummary.docx" />
+    <Content Include="Templates\summaryofabsences.docx" />
+    <Content Include="Templates\leavecard.docx" />
+    <Content Include="Templates\pds.docx" />
+    <Content Include="Templates\procurement-app.docx" />
+    <Content Include="Templates\procurement-apr.docx" />
+    <Content Include="Templates\procurement-ppmp.docx" />
+    <Content Include="Templates\procurement-pr.docx" />
+    <Content Include="Templates\procurement-rfq.docx" />
+    <Content Include="Templates\procurement-aob.docx" />
+    <Content Include="Templates\procurement-po.docx" />
+    <Content Include="Templates\dtr-twin.docx" />
+    <Content Include="Templates\pds-children.docx" />
+    <Content Include="Templates\pds-cs.docx" />
+    <Content Include="Templates\pds-educ.docx" />
+    <Content Include="Templates\pds-trn.docx" />
+    <Content Include="Templates\pds-voluntary.docx" />
+    <Content Include="Templates\pds-wexp.docx" />
+    <Content Include="Templates\payroll-13thmp.docx" />
+    <Content Include="Templates\payslip-13thmp.docx" />
+    <Content Include="Templates\payrollsummary-others.docx" />
+    <Content Include="Templates\payslip-ot.docx" />
+    <Content Include="Templates\payroll-midyear-yearend.docx" />
+    <Content Include="Templates\payroll-ot.docx" />
+    <Content Include="Templates\sam-are.docx" />
+    <Content Include="Templates\sam-stockcard.docx" />
+    <Content Include="Templates\sam-ris.docx" />
+    <Content Include="Templates\sam-ics.docx" />
+    <Content Include="Templates\payroll-acapera.docx" />
+    <Content Include="Templates\timelogs.docx" />
+    <Content Include="Templates\sam-ptr.docx" />
+    <Content Include="Templates\sam-return.docx" />
+    <Content Include="Templates\sam-tag.docx" />
+    <Content Include="Templates\sam-rfi.docx" />
+    <Content Include="Templates\sam-equipmentlist.docx" />
+    <Content Include="Templates\sam-stocklist.docx" />
+    <Content Include="Templates\travelapp.docx" />
+    <Content Include="Templates\otapp.docx" />
+    <Content Include="Templates\pds-otherinfo.docx" />
+    <Content Include="Templates\procurement-prog.docx" />
+    <Content Include="Templates\payslip_4.docx" />
+    <Content Include="Templates\payslip-acapera.docx" />
+    <Content Include="Templates\payslip-midyear-yearend.docx" />
+    <Content Include="Templates\payslip-ot_4.docx" />
+    <Content Include="Templates\payslip-acapera_4.docx" />
+    <Content Include="Templates\payslip-midyear-yearend_4.docx" />
+    <Content Include="Templates\payslip-13thmp_4.docx" />
+    <Content Include="Views\Shared\info\officeInfo.cshtml" />
+    <Content Include="Views\Shared\info\parentListInfo.cshtml" />
+    <Content Include="Views\Shared\info\payrollSummaryInfo.cshtml" />
+    <Content Include="Templates\sam-po.docx" />
+    <Content Include="Templates\sam-equipmenttagslist.docx" />
+    <Content Include="Views\Shared\_SListTemplate.cshtml" />
+    <Content Include="Views\Downloads\Index.cshtml" />
+    <Content Include="Templates\procurement-cpr.docx" />
+    <Content Include="Templates\sam-iar.docx" />
+    <Content Include="Templates\procurement-ppmp.xlsx" />
+    <Content Include="Views\Home\IdVerify.cshtml" />
+    <Content Include="Views\Shared\info\_card_employeeInfo_idverify.cshtml" />
+    <Content Include="Views\Shared\info\trainingInfo.cshtml" />
+    <Content Include="Views\Shared\_Helper_Address.cshtml" />
+    <Content Include="Views\Shared\_Helper_Address_Search.cshtml" />
+    <Content Include="Templates\reports-employee-locations.xlsx" />
+    <Content Include="Templates\procurement-pr_bsu.docx" />
+    <Content Include="Templates\procurement-apr_bsu.docx" />
+    <Content Include="Templates\procurement-po_bsu.docx" />
+    <Content Include="Templates\procurement-app_bsu.xlsx" />
+    <Content Include="Views\Shared\_ApprovedDeniedParamsLeave.cshtml" />
+    <Content Include="Templates\procurement-rfq_bsu.docx" />
+    <Content Include="Templates\procurement-po_bsu - Copy.docx" />
+    <Content Include="Templates\procurement-pr_bsu - Copy %282%29.docx" />
+    <Content Include="Views\Shared\info\bacGroupInfo.cshtml" />
+    <Content Include="Templates\procurement-aoq_bsu.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Code\" />
+    <Folder Include="App_Data\" />
+    <Folder Include="Areas\" />
+    <Folder Include="Temp\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HRLogixMobileLib\HRLogixMobileLib.csproj">
+      <Project>{c55c6ab3-c069-43be-b3f6-99659dcae75f}</Project>
+      <Name>HRLogixMobileLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Module.Core\Module.Core.csproj">
+      <Project>{822873d5-76f5-4769-b471-d6cd2aa7fc17}</Project>
+      <Name>Module.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Module.DB\Module.DB.csproj">
+      <Project>{4040e8a0-5698-4edf-a255-3197a08fb00c}</Project>
+      <Name>Module.DB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\reports\reports.csproj">
+      <Project>{b9928c09-7e4d-4c0c-891d-ede58b45b321}</Project>
+      <Name>reports</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51397</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51398/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

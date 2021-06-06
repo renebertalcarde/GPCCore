@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="SemiColonWeb" />
+    <link href="~/Assets/images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+
+    <!-- Stylesheets
+    ============================================= -->
+    @*<link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700|Raleway:300,400,500,600,700|Crete+Round:400i" rel="stylesheet" type="text/css" />*@
+    <link rel="stylesheet" href="~/Assets/css/bootstrap-supplement.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/style.css" type="text/css" />
+    @*<link rel="stylesheet" href="~/Assets/canvas/html/css/dark.css" type="text/css" />*@
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/font-icons.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/one-page/css/et-line.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/include/rs-plugin/fonts/font-awesome/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/magnific-popup.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/bs-datatable.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/bs-select.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/select-boxes.css" type="text/css" />
+
+    @RenderSection("Styles", false)
+
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/bs-switches.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/radio-checkbox.css" type="text/css" />
+
+    <!-- Date & Time Picker CSS -->
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/datepicker.css" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/timepicker.css" type="text/css" />
+
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/components/bs-filestyle.css" type="text/css" />
+
+    @*<link rel="stylesheet" href="~/Assets/canvas/html/css/components/daterangepicker.css" type="text/css" />*@
+    <link rel="stylesheet" href="~/Assets/plugins/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="~/Assets/canvas/html/css/responsive.css" type="text/css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Document Title
+    ============================================= -->
+    <title>@ViewBag.Title</title>
+
+    <script>
+        var _virtualDirectory = '@MvcApplication.VirtualDirectory';
+    </script>
+
+    <!-- External JavaScripts
+    ============================================= -->
+    <script src="~/Assets/canvas/html/js/jquery.js"></script>
+    <script src="~/Assets/canvas/html/js/plugins.js"></script>
+    <script src="~/Assets/canvas/html/js/components/moment.js"></script>
+    <script src="~/Assets/canvas/html/js/components/bs-datatable.js"></script>
+    <script src="~/Assets/canvas/html/js/components/select-boxes.js"></script>
+
+    <!-- Date & Time Picker JS -->
+    <script src="~/Assets/canvas/html/js/components/datepicker.js"></script>
+    <script src="~/Assets/canvas/html/js/components/timepicker.js"></script>
+
+    <!-- Include Date Range Picker -->
+    @*<script src="~/Assets/canvas/html/js/components/daterangepicker.js"></script>*@
+    <script src="~/Assets/plugins/daterangepicker/daterangepicker.js"></script>
+
+    @Html.Partial("_HeaderStylesAndScripts")
+
+
+    <link rel="stylesheet" href="~/Assets/theme/colors.less" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/theme/global.less" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/theme/table.less" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/theme/select.less" type="text/css" />
+
+    <link rel="stylesheet" href="~/Assets/theme/canvas-styles.less" type="text/css" />
+    <link rel="stylesheet" href="~/Assets/theme/canvas-styles-info.less" type="text/css" />
+</head>
+
+<body class="stretched side-panel-left side-push-panel">
+    @Html.Partial("_LoadingTemplate")
+
+    @RenderSection("PreWrapper", false)
+
+    <!-- Document Wrapper
+    ============================================= -->
+    <div id="wrapper" class="clearfix">
+
+        @RenderSection("Header", false)    
+        @RenderBody()
+        @RenderSection("Footer", false)
+
+    </div><!-- #wrapper end -->
+    <!-- Go To Top
+    ============================================= -->
+    <div id="gotoTop" class="icon-angle-up"></div>
+
+    <template id="ListCommandsTemplate">
+        <div class="list-commands-cont">
+            <a href="#" class="lstcmd lstcmd-edit" title="edit"><i class="fa fa-pencil"></i></a>
+            <a href="#" class="lstcmd lstcmd-delete" title="delete"><i class="fa fa-trash"></i></a>
+        </div>
+    </template>
+
+    @Html.Partial("_SListTemplate")
+    @Html.Partial("~/Views/Shared/modals/_ModalTemplate.cshtml")
+    @Html.Partial("~/Views/Shared/modals/_ModalScripts.cshtml")
+
+    @RenderSection("Scripts", false)
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <!-- Footer Scripts
+    ============================================= -->
+    <script src="~/Assets/canvas/html/js/components/bs-select.js"></script>
+    <script src="~/Assets/canvas/html/js/components/selectsplitter.js"></script>
+    <script src="~/Assets/canvas/html/js/components/bs-switches.js"></script>
+    <script src="~/Assets/canvas/html/js/components/bs-filestyle.js"></script>
+    <script src="~/Assets/canvas/html/js/functions.js"></script>
+    <script src="~/Assets/js/canvas-functions.js"></script>
+
+    @Html.Partial("_BodyScripts")
+    @RenderSection("BodyScripts", false)
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+﻿@model Module.DB.tblEmployee_Info
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_PDS.cshtml";
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    ViewBag.Title = "PDS Form Questions";
+    
+
+    ViewBag.uiIsReadOnly = true;
+    ViewBag.uiIncludeId = true;
+
+    
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = "Employee Profile", Link = Url.Action("Details", "Employees", new { id = employee.EmployeeId, area = "HRModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/BasicInformation/Details/{0}/-1", MinimalView = true, LessParameters = true } })
+}
+
+@section Scripts {
+    <script>
+        function load(e) {
+            $('ol.questions input[type="radio"]').click(function () {
+                var li = $(this).closest('li');
+                var value = $(this).attr('value');
+
+                li.removeClass('value-yes');
+
+                if (value == 'True') {
+                    li.addClass('value-yes');
+                }
+            });
+        }
+    </script>
+}
+
+<div class="card">
+    <div class="card-header">
+        PDS Form Questions
+    </div>
+    <div class="card-body">
+        @Html.Partial("~/Views/Shared/_PDSQuestions.cshtml", Model)
+    </div>
+</div>
+
+@section FormActions {
+    <div class="details" modal-width="modal-xl" modal-load-callback="load">
+        <a href="#" class="btn btn-sm btn-default btn-edit" data-url="@Url.Action("EditPDSQuestions", new { employeeId = Model.EmployeeId, id = Model.InfoId, area = "HRModule" })">Edit</a>
+    </div>
+}

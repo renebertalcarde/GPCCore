@@ -1,0 +1,142 @@
+﻿@model coreApp.Models.EmployeeSearchUIModel
+@{ 
+    UserAccess access = coreApp.Cache.Get().userAccess;
+
+    OfficeStructureParameters osData = new OfficeStructureParameters
+    {
+        Mode = coreApp.Enums.OfficeStructureMode.InlineTrigger,
+        InlineTrigger_Event_Selection = "deptselected",
+        Classes = "form-control xparams"
+    };
+
+    if (Model.InitialParam_DepartmentIds.Any())
+    {
+        osData.SelectedIds = Model.InitialParam_DepartmentIds;
+    }
+    else
+    {
+        osData.SelectAll(access);
+    }
+}
+<style>
+    .search.minimal-view .hidden-xs {
+        display: none;
+    }
+
+    .search.minimal-view .form-inline > * {
+        width: 100%;
+    }
+
+    .search-section .form-inline > * {
+        margin: 0 5px 5px 0;
+    }
+
+    .result-section {
+        min-height: 200px;
+    }
+</style>
+
+<script>
+    function deptselected(ids, paths) {
+        var searchBtn = $('.form-actions-cont .side-panel-trigger');
+        if (searchBtn.length > 0) {
+            searchBtn.click();
+        }
+    }
+</script>
+
+<div class="search employee-search-cont @(Model.NoInitialSearch ? "noinitialsearch" : "") @(Model.MinimalView ? "minimal-view" : "") @(Model.MultiSelect ? "multi-select" : "") @(Model.LessParameters ? "" : "more-params") @(Model.InitialParam_DepartmentIds.Any() ? "skip-state-departmentids" : "")" data-url="@Model.DataUrl" data-exclude-nocareer="@Model.ExcludeNoCareer" data-include-locations="@Model.IncludeLocations"
+     data-allow-single-selection="@Model.AllowSingleSelection" data-disable-showpaneltrigger="@Model.DisableShowPanelTrigger" data-exclude-nooffice="@Model.ExcludeNoOffice" data-nopaging="@Model.NoPaging" data-forscheduling="@Model.ForScheduling" data-show-result="@Model.ShowResult" data-show-searchbtn="@Model.ShowSearchBtn" state-key="employee-search" state-manager-for="@(Model.NoState ? "" : "employee-search")" event-search-callback="@Model.SearchCallback" event-sort-callback="@Model.SortCallback">
+    
+    <div class="search-toggle-trigger @(Model.DisableShowPanelTrigger ? "hidden" : "")">
+        <button class="search-toggle" type="button" data-toggle="collapse" data-target=".search-toggle-contents">
+            <span class="search-toggle-open">
+                <i class="fa fa-angle-double-down"></i>&nbsp; Show Search Panel
+            </span>
+            <span class="search-toggle-close">
+                <i class="fa fa-angle-double-up"></i>&nbsp; Hide Search Panel
+            </span>
+        </button>
+    </div>
+    
+    <div class="collapse search-toggle-contents show">
+
+        <div class="search-section">
+            <div class="header">
+                @(string.IsNullOrEmpty(Model.Title) ? "" : Model.Title + " ")
+                <div class="params-trigger">
+                    <a href="#" class="more-params-trigger">[more parameters...]</a>
+                    <a href="#" class="less-params-trigger">[less parameters...]</a>
+                </div>
+            </div>
+
+            <div class="form-inline">
+                <input type="text" class="form-control search-lastname" placeholder="Last Name" />
+                <input type="text" class="form-control search-firstname" placeholder="First Name" />
+
+                @if (FixedSettings.UseMFO)
+                {
+                    <div class="search-mfoid-cont xparams">
+                        @Html.DropDownList("searchMFO", SelectItems.getMFOs("All Office Groups"), new { @class = "form-control search-mfoid select2" })
+                    </div>
+                }
+                
+                <div class="search-departmentid-cont xparams">
+                    @Html.Partial("_OfficeStructure", osData)                 
+                </div>
+                
+                <div class="search-positionid-cont xparams">
+                    @Html.DropDownList("searchPosition", SelectItems.getPositions("All Positions"), new { @class = "form-control search-positionid xparams select2" })
+                </div>
+                <div class="search-groupid-cont xparams">
+                    @Html.DropDownList("searchGroup", SelectItems.getGroups("All Groups"), new { @class = "form-control search-groupid xparams select2" })
+                </div>
+               
+                <div class="search-employmenttype-cont xparams">
+                    @Html.DropDownList("searchEmploymentType", SelectItems.getEmploymentType("All Employment Types"), new { @class = "form-control search-employmenttype xparams select2" })
+                </div>
+               
+                <div class="search-active-cont xparams">
+                    @Html.DropDownList("searchActive", SelectItems.getActive("Active/Inactive"), new { @class = "form-control search-active xparams select2" })
+                </div>
+
+                @if (Model.ExcludeNoOffice)
+                {
+                    <span>
+                        @Html.Hidden("searchNoDepartment", "exclude-no-dept", new { @class = "search-nodepartment" })
+                    </span>
+                }
+                else
+                {
+                    <div class="search-active-cont xparams">
+                        @Html.DropDownList("searchNoDepartment", SelectItems.getNoDepartment(), new { @class = "form-control search-nodepartment xparams select2" })
+                    </div>
+                }
+
+                @if (Model.IncludeLocations)
+                {
+                    <div class="search-locations-cont">
+                        @Html.Partial("_Helper_Address_Search")
+                    </div>
+                }
+
+                <input type="button" class="btn btn-sm btn-default btn-search @(Model.ShowSearchBtn ? "" : "hidden")" value="Search" style="width: 100px;" />
+
+            </div>
+
+        </div>
+        <div style="clear:both"></div>
+
+    </div>
+
+
+
+    <div class="result-section @(Model.ShowResult ? "" : "hidden")"></div>
+
+    <input type="hidden" class="altSource" value="@(Model.AltSource == null ? "" : string.Join(",", Model.AltSource))" />
+    <input type="hidden" class="selectedItems" value="@Model.strSelectedItems" />
+</div>
+
+<template id="OSMultiSelectTemplate">
+    @Html.Partial("_OfficeStructure", new OfficeStructureParameters { Mode = coreApp.Enums.OfficeStructureMode.MultiSelect })
+</template>

@@ -1,0 +1,82 @@
+﻿@model coreApp.DAL.tblEmployee_Children
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+    
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Name)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ChildId)
+                        <div>
+                            @Html.DisplayFor(model => model.ChildId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateOfBirth)
+                        <div>
+                            @Html.DisplayFor(model => model.DateOfBirth)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Gender)
+                        <div>
+                            @Html.DisplayFor(model => model.Gender_Desc)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.ChildId)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.ChildId)
+                        <div>
+                            @Html.DisplayFor(model => model.ChildId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Name)
+                    <div>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Name]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateOfBirth)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateOfBirth, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Gender)
+                    <div>
+                        @Html.DropDownListFor(model => model.Gender, coreApp.SelectItems.getGender(), new { @class = "form-control" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

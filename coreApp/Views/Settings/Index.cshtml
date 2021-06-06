@@ -1,0 +1,61 @@
+﻿@model List<Module.DB.tblSetting>
+
+@{
+    ViewBag.Title = "HRLogix Settings";
+    
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<coreApp.Breadcrumb>() { new coreApp.Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Styles {
+     <style>
+         .settings-cont .list-category{
+             margin-top: 30px;
+         }
+
+         .list-group-cont {
+             max-height: 400px;
+             overflow: auto;
+         }
+
+         .list-group-item:not(.dimmed) {
+             cursor: pointer;
+         }
+
+         .list-group-item small {
+             display: block;
+         }
+     </style>
+}
+
+
+<div class="settings-cont row" style="font-size:smaller">
+    <div class="col-sm-4">
+        @Html.Partial("_Setting", Model, new ViewDataDictionary { { "Category", "General" } })
+    </div>
+    <div class="col-sm-4">
+        @Html.Partial("_Setting", Model, new ViewDataDictionary { { "Category", "Reports" } })
+    </div>
+    <div class="col-sm-4">
+        @Html.Partial("_Setting", Model, new ViewDataDictionary { { "Category", "Google_Maps" } })
+    </div>
+
+
+    @*<div class="col-sm-3">
+        @Html.Partial("_Setting", Model, new ViewDataDictionary { { "Category", "Mail" } })
+    </div>*@
+
+</div>
+
+
+
+@using (Html.BeginForm("RefreshCachedTables", "Settings", new { area = "" }, FormMethod.Post, new { @class = "form-refresh" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-refresh" submit-for-selector=".form-refresh">Refresh Cached Tables</button>
+}

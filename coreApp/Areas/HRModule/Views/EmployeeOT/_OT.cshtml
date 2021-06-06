@@ -1,0 +1,263 @@
+﻿@model Module.DB.tblEmployee_OT
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    Module.DB.tblOTApplication application = Model.GetApplication();
+}
+
+@Html.Hidden("FromApplication", application != null)
+
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Description)
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Overtime
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Remarks)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.Remarks)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Rules
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.MustTimeIn)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.MustTimeIn)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.MustTimeOut)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.MustTimeOut)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.SkipLastLog)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.SkipLastLog)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.OTRateOnly)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.OTRateOnly)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Period, Days & Time
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.InclusiveDays)
+                        <div>
+                            @Html.DisplayFor(model => model.InclusiveDays)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Days)
+                        <div>
+                            @Html.DisplayFor(model => model.Days)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TimeIn)
+                        <div>
+                            @Html.Partial("_Helper_SegmentTime", Model, new ViewDataDictionary { { "IsTimeIn", true } })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TimeOut)
+                        <div>
+                            @Html.Partial("_Helper_SegmentTime", Model, new ViewDataDictionary { { "IsTimeIn", false } })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.WorkDayEq)
+                        <div>
+                            @Html.DisplayFor(model => model.WorkDayEq)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Breaks)
+                        <div>
+                            @Html.DisplayFor(model => model.Breaks)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Action
+                    </li>
+                    @if (application == null)
+                    {
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.CreateDate)
+                            <div>
+                                @Html.DisplayFor(model => model.CreateDate)
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => application.ApprovedBy)
+                            <div>
+                                @Html.DisplayFor(model => application.ApprovedBy)
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => application.ApproveDate)
+                            <div>
+                                @Html.DisplayFor(model => application.ApproveDate)
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.Hidden("DateFrom")
+        @Html.Hidden("DateTo")
+
+        <div class="modal-edit-ui pattern-bg">
+            <div class="row">
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Overtime
+                        </li>
+
+                        @if (includeId)
+                        {
+                            <li class="list-group-item dimmed">
+                                @Html.LabelFor(model => model.Id)
+                                <div>
+                                    @Html.DisplayFor(model => model.Id)
+                                </div>
+                            </li>
+                        }
+
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Description)
+                            <div>
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control", placeholder = "[Enter Description]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Remarks)
+                            <div>
+                                @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", placeholder = "[Enter Remarks]" })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-6 not-for-workspan">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Rules
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.MustTimeIn)
+                            <div>
+                                @Html.Partial("_Helper_CheckBox", "MustTimeIn", new ViewDataDictionary { { "value", Model.MustTimeIn } })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.MustTimeOut)
+                            <div>
+                                @Html.Partial("_Helper_CheckBox", "MustTimeOut", new ViewDataDictionary { { "value", Model.MustTimeOut } })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.SkipLastLog)
+                            <div>
+                                @Html.Partial("_Helper_CheckBox", "SkipLastLog", new ViewDataDictionary { { "value", Model.SkipLastLog } })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.OTRateOnly)
+                            <div>
+                                @Html.Partial("_Helper_CheckBox", "OTRateOnly", new ViewDataDictionary { { "value", Model.OTRateOnly } })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Period & Days
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.InclusiveDays)
+                            <div>
+                                @Html.Partial("_Helper_Period", new coreLib.Objects.PeriodModel(Model.StartDate, Model.EndDate), new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <label>Days</label>
+                            <div>
+                                <div class="pull-right">
+                                    @Html.Partial("_Helper_Days", Model)
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    @Html.Partial("_Helper_SegmentTimeEdit")
+
+                    <br />
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Breaks)
+                            <div>
+                                @Html.TextBoxFor(model => model.Breaks, new { @class = "form-control", placeholder = "[Enter Breaks]" })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    }
+}

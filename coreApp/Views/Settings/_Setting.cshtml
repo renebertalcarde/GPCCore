@@ -1,0 +1,33 @@
+﻿@model List<Module.DB.tblSetting>
+@{ 
+    string Category = ViewData["Category"].ToString();
+}
+
+<h3 class="list-category">@Category</h3>
+
+<div class="list-group-cont details" modal-title="Update Settings">
+    <ul class="list-group">
+        @foreach (Module.DB.tblSetting s in Model.Where(x => x.Category == Category).OrderBy(x => x.SettingName))
+        {
+            <li record-id="@s.Id" class="list-group-item list-group-item-action btn-open" data-url="@Url.Action("Edit", "Settings", new { area = "", id = s.Id })" data-redirect-url="{page-reload}">
+                <label>
+                    @s.SettingName
+                    <small class="text-muted">
+                        @s.Description
+                    </small>
+                </label>
+                <div>
+                    @if (s.ValueType == "bool")
+                    {
+                        @(s.SettingValue == "True" ? "Yes" : "No")
+                    }
+                    else
+                    {
+                        @s.SettingValue
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+

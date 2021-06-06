@@ -1,0 +1,147 @@
+﻿@model Module.DB.tblBulletinBoard
+
+@{
+    ViewBag.Title = "Announcement";
+
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Announcement List", Link = Url.Action("Index", "BulletinBoard", new { area = "HRModule" }) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script type='text/javascript' src='~/Assets/canvas/html/js/components/tinymce/tinymce.min.js'></script>
+    <script>
+        var url_index = '@Url.Action("Index", "BulletinBoard", new { area = "HRModule" })';
+        var url_details = '@Url.Action("Details", "BulletinBoard", new { area = "HRModule", id = Model.Id })';
+        var url_delete = '@Url.Action("Delete", "BulletinBoard", new { area = "HRModule", id = Model.Id })';
+
+        function deleteDoc() {
+            modalConfirm('Are you sure you want to delete this record?', function (ret) {
+                if (ret) {
+                    var proc = modalProcessing();
+
+                    $.post(vdUrl(url_delete), function (res) {
+                        if (res.IsSuccessful) {
+                            sessionStorage.clientMessage = res.Remarks;
+                            window.location = url_index;
+                        } else {
+                            proc.addClass('confirm-close-event').modal('hide');
+                            modalMessage(res.Err.split('\n'), 'Delete Record', true);
+                        }
+                    }, 'json');
+                }
+            });
+        };
+
+        function check() {
+            var err = [];
+            var cont = $('.bb-cont');
+            var form = cont.find('form');
+
+            var title = form.find('#Title');
+            var dop = form.find('#DateOfPosting');
+            var eop = form.find('#EndOfPosting');
+
+            if (title.val() == '') {
+                err.push('The \'Title\' field is required');
+            }
+
+            if (dop.val() == '') {
+                err.push('The \'Date Of Posting\' field is required');
+            } else if (!SITE.Utility.isDate(dop.val())) {
+                err.push('Invalid \'Date Of Posting\' field value');
+            }
+
+            if (eop.val() == '') {
+                err.push('The \'End Of Posting\' field is required');
+            } else if (!SITE.Utility.isDate(eop.val())) {
+                err.push('Invalid \'End Of Posting\' field value');
+            }
+
+            if (err.length > 0) {
+                modalMessage(err, 'Save Record', true);
+                return false;
+            }
+
+            return true;
+        }
+
+        function saveDoc() {
+            var cont = $('.bb-cont');
+
+            try {
+                cont.find('textarea.tmce').val(
+                    tinymce.get('Contents').getContent()
+                );
+            } catch (err) { }
+
+            if (!check()) return;
+
+            var proc = modalProcessing();
+            var form = cont.find('form');
+
+            form.ajaxForm(function (res) {
+                if (res.IsSuccessful) {
+                    sessionStorage.clientMessage = res.Remarks;
+                    window.location = url_details;
+                } else {
+                    proc.addClass('confirm-close-event').modal('hide');
+                    modalMessage(res.Err.split('\n'), 'Save Record', true);
+                }
+            });
+
+            form.submit();
+        }
+
+        $(document).ready(function () {
+            if ($("textarea.tmce").length > 0) {
+                tinymce.init({
+                    selector: "textarea.tmce",
+                    height: 400
+                });
+            }
+            if ($("textarea.stmce").length > 0) {
+                tinymce.init({
+                    selector: "textarea.stmce",
+                    toolbar: "bold italic | alignleft aligncenter alignright alignjustify | undo redo",
+                    menu: [],
+                    height: 200
+                });
+            }
+        });
+    </script>
+}
+
+<div class="bb-cont">
+    @Html.Partial("_BulletinBoard")
+</div>
+
+
+@section FormActions {
+    @if (isReadOnly)
+    {
+        <a href="@Url.Action("Create", "BulletinBoard", new { area = "HRModule" })" class="btn btn-sm btn-default btn-create">New</a>
+        <a href="@Url.Action("Edit", "BulletinBoard", new { area = "HRModule", id = Model.Id })" class="btn btn-sm btn-default btn-edit">Edit</a>
+        <button class="btn btn-sm btn-default btn-danger btn-delete" onclick="deleteDoc()">Delete</button>
+    }
+    else
+    {
+        if (includeId)
+        {
+            <a href="@Url.Action("Details", "BulletinBoard", new { area = "HRModule", id = Model.Id })" class="btn btn-sm btn-default btn-cancel">Cancel</a>
+        }
+        else
+        {
+            <a href="@Url.Action("Index", "BulletinBoard", new { area = "HRModule" })" class="btn btn-sm btn-default btn-cancel">Cancel</a>
+        }
+
+        <button class="btn btn-sm btn-default btn-save" onclick="saveDoc()">Save</button>
+    }
+}

@@ -1,0 +1,66 @@
+.date-collection {
+
+    .command-cont {
+        text-align: right;
+    }
+
+    .values {
+        min-height: 70px;
+        max-height: 90px;
+        overflow: auto;
+        background-color: initial;
+        border-color: transparent;
+
+        .value {
+            background-color: rgba(0,0,0,0.07);
+            padding: 2px;
+            display: inline-block;
+            border-radius: 4px;
+            position: relative;
+            margin: 0 4px 4px 0;
+
+            > * {
+                display: inline-block;
+            }
+
+            .item-command {
+                margin-left: 4px;
+                text-align: center;
+            }
+
+            .remove-item {
+                float: right;
+                margin-left: 5px;
+                padding: 0px 2px;
+                background-color: #e0e0e0;
+                font-size: 8px;
+                color: #808080;
+                cursor: pointer;
+            }
+
+            .remove-item:hover {
+                background-color: #1ABC9C;
+                color: white;
+            }
+        }
+    }
+}
+
+.date-collection-display {
+    .ellipsis-btn {
+        color: #41b6e2;
+        display: none;
+    }
+}
+
+.date-collection-display .orig-text,
+.date-collection-display.truncated.truncate .trunc-text,
+.date-collection-display.truncated .ellipsis-btn {
+    display: block;
+}
+
+.date-collection-display .trunc-text,
+.date-collection-display.truncated.truncate .orig-text,
+.date-collection-display.no-switch .ellipsis-btn {
+    display: none;
+}

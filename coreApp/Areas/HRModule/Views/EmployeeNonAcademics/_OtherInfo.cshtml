@@ -1,0 +1,46 @@
+﻿@model coreApp.DAL.tblEmployee_OtherInfo_NonAcademic
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Description)
+                        <div>
+                            @Html.DisplayFor(model => model.Description)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Description)
+                    <div>
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control", placeholder = "[Enter Distinction/Recognition]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

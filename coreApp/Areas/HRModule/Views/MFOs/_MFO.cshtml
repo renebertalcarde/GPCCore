@@ -1,0 +1,56 @@
+﻿@model Module.DB.tblMFO
+
+@{
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Description)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Description)
+                    <div>
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Description]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

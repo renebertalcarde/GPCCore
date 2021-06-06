@@ -1,0 +1,60 @@
+﻿@model AttendanceModel
+@using Module.Time
+@{
+    Layout = "~/Areas/TimeModule/Views/Shared/_Schedules_Layout.cshtml";
+
+    ViewBag.Title = "Attendance";
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    string etPeriodFilter_Param = Model.period.filter.GetParam();
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+<script>
+    function applyPeriod(start, end) {
+        window.location = vdUrl('/HR/Query/Employee/Attendance/Index/@employee.EmployeeId/' + start + '/' + end + '/@etPeriodFilter_Param');
+    }
+
+    function applyFilters(param) {
+        window.location = vdUrl('/HR/Query/Employee/Attendance/Index/@employee.EmployeeId/@Model.periodModel.StartDate.ToString("MM-dd-yyyy")/@Model.periodModel.EndDate.ToString("MM-dd-yyyy")/' + param);
+    }
+
+    function print() {
+        var printlink = '@Url.Action("Print", new { employeeId = employee.EmployeeId, startDate = Model.periodModel.StartDate.ToString("MM-dd-yyyy"), endDate = Model.periodModel.EndDate.ToString("MM-dd-yyyy"), filters = etPeriodFilter_Param })';
+        window.open(vdUrl(printlink), '_blank');
+    }
+</script>
+}
+
+@section PreWrapper {
+    <div class="body-overlay"></div>
+    <div id="side-panel">
+        <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+        <div class="side-panel-wrap">
+            @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { ForScheduling = true, DisableShowPanelTrigger = true, DataUrl = "/HR/Query/Employee/Attendance/Index/{0}/" + Model.periodModel.StartDate.ToString("MM-dd-yyyy") + "/" + Model.periodModel.EndDate.ToString("MM-dd-yyyy") + "/" + etPeriodFilter_Param, MinimalView = true, LessParameters = true } })
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", employee)
+    </div>
+</div>
+
+@Html.Partial("~/Areas/TimeModule/Views/Shared/_AttendanceByPeriod.cshtml", Model, new ViewDataDictionary { { "clientCallback", "applyPeriod" }, { "filterClientCallback", "applyFilters" } })
+
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-print" onclick="print()">
+        Print DTR
+    </button>
+}

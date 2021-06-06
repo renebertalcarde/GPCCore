@@ -1,0 +1,77 @@
+﻿@model List<coreApp.DAL.tblEmployee_Children>
+
+@{
+    Layout = "~/Areas/EmployeeModule/Views/Shared/_PDS.cshtml";
+
+    ViewBag.Title = "My Children";
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    bool readOnly = !coreApp.Cache.Get().userAccess.HasPermission("EmployeeChildren");
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "My Profile", Link = Url.Action("Details", "MyProfile", new { area = "EmployeeModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view"
+           modal-view-url="/HR/Manage/Employee/Children/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/Children/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/Children/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/Children/Create/@employee.EmployeeId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Date of Birth
+                </th>
+                <th>
+                    Gender
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (coreApp.DAL.tblEmployee_Children item in Model)
+            {
+                <tr record-id="@item.ChildId" @(readOnly ? "locked" : "")>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ChildId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gender_Desc)
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+
+
+    </table>
+</div>
+
+
+
+
+
+@section FormActions {
+    @if (!readOnly)
+    {
+        <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+    }
+}

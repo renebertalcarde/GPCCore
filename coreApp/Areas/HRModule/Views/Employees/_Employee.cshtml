@@ -1,0 +1,160 @@
+﻿@model Module.DB.tblEmployee
+
+@{
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    UserAccess access = new UserAccess(Model);
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Main Record
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.EmployeeId)
+                        <div>
+                            @Html.DisplayFor(model => model.EmployeeId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.FullName)
+                        <div>
+                            @Html.DisplayFor(model => model.FullName_FN)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.IdNo)
+                        <div>
+                            @Html.DisplayFor(model => model.IdNo)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Email)
+                        <div>
+                            @Html.DisplayFor(model => model.Email)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <ul class="list-group">
+                                
+
+
+                    @if (FixedSettings.AllowGeoLocation)
+                    {
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.GeoAuth_Areas)
+                            <div>
+                                @string.Join(", ", coreApp.DBProcs.get_geoAuthAreas(Model.GeoAuth_Areas).Select(x => x.AreaName))
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.GeoAuth_DeviceRef)
+                            <div>
+                                @Html.DisplayFor(model => model.GeoAuth_DeviceRef)
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Main Record
+                        </li>
+                        @if (includeId)
+                        {
+                            <li class="list-group-item dimmed">
+                                @Html.LabelFor(model => model.EmployeeId)
+                                <div>
+                                    @Html.DisplayFor(model => model.EmployeeId)
+                                </div>
+                            </li>
+                        }
+
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.LastName)
+                            <div>
+                                @Html.TextBoxFor(model => model.LastName, new { @class = "form-control", placeholder = "[Enter Last Name]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.FirstName)
+                            <div>
+                                @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control", placeholder = "[Enter First Name]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.MiddleName)
+                            <div>
+                                @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control", placeholder = "[Enter Middle Name]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.NameExt)
+                            <div>
+                                @Html.TextBoxFor(model => model.NameExt, new { @class = "form-control", placeholder = "[Enter Name Ext. (i.e. Jr., Sr., II, III, etc.)]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.IdNo)
+                            <div>
+                                @Html.TextBoxFor(model => model.IdNo, new { @class = "form-control", placeholder = "[Enter Id No.]" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.Email)
+                            <div>
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "[Enter Email]" })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header">
+                            Miscellaneous Settings
+                        </li>
+                       
+
+                        @if (FixedSettings.AllowGeoLocation)
+                        {
+                            <li class="list-group-item">
+                                @Html.LabelFor(model => model.GeoAuth_DeviceRef)
+                                <div>
+                                    @Html.Partial("_Helper_CheckBox", "GeoAuth_DeviceRef_Reset", new ViewDataDictionary { { "value", false }, { "text", "Reset" } })
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    }
+}

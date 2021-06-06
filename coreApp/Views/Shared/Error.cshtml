@@ -1,0 +1,85 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    Layout = "~/Views/Shared/_Canvas_Error.cshtml";
+    ViewBag.Title = ViewBag.Title ?? "Internal Server Error";
+
+    string msg = "";
+    int errorNo = 500;
+
+    if (Model != null)
+    {
+        msg = coreProcs.ShowErrors(Model.Exception);
+
+        try
+        {
+            errorNo = (Model.Exception as HttpException).GetHttpCode();
+        }
+        catch
+        { }
+
+    }
+
+    string backUrl = "";
+    bool hasBackUrl = Session["error_backurl"] != null;
+
+    if (hasBackUrl)
+    {
+        backUrl = Session["error_backurl"].ToString();
+        Session["error_backurl"] = null;
+    }
+}
+
+<style>
+    body, h4, pre {
+        color: white !important;
+    }
+</style>
+
+<div class="heading-block nobottomborder">
+    <h4>@ViewBag.Title</h4>
+
+</div>
+
+@if (errorNo != 500)
+{
+    <div class="error404">@errorNo</div>
+}
+
+<div class="heading-block nobottomborder">
+    <h4>An unexpected error has occurred. Please contact the system administrator.</h4>
+</div>
+
+@if (Model != null && HttpContext.Current.IsDebuggingEnabled)
+{
+    <div>
+        <p>
+            <b>Exception:</b> @Html.DisplayMultiLine(msg)<hr />
+            <b>Controller:</b> @Model.ControllerName<br />
+            <b>Action:</b> @Model.ActionName
+        </p>
+        <div style="overflow:auto;max-height:300px;">
+            <pre>
+                    @Model.Exception.StackTrace
+                </pre>
+        </div>
+    </div>
+}
+else
+{
+    @Html.DisplayMultiLine(msg)
+}
+
+@if (hasBackUrl)
+{
+
+    <div class="block this-animate" data-animate="fadeInLeft">
+        <a href="@backUrl">
+            <img src="~/Assets/images/back.png" class="img-responsive-mobile" /> Go back to page
+        </a>
+    </div>
+}
+
+<center>
+    <a href="~/">Back to Home</a>
+</center>

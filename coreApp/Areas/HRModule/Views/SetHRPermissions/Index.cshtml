@@ -1,0 +1,88 @@
+﻿@using Module.DB
+@{
+    ViewBag.Title = "Update Permissions";
+    ViewBag.Subtitle = "Set employee permissions by batch";
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            var btnApply = $('.btn-apply');
+
+            btnApply.click(function () {
+
+                if (modalConfirm('Are you sure you want to apply these settings?', function (res) {
+                    if (res) {
+                        var employeeIds = $('.search').employeeSearch('getSelectedItems');
+
+                        if (employeeIds == '') {
+                            modalMessage('No employee selected', 'Update Permissions', true);
+                            return;
+                        }
+
+                        var permissions = [];
+                        $('[name="Permissions"]:checked').each(function () {
+                            var cb = $(this);
+                            permissions.push(cb.val());
+                        });
+
+                        var url = '@Url.Action("SaveSelection")';
+                        var data = {
+                            employeeIds: employeeIds,
+                            permissions: permissions.join(',')
+                        };
+
+                        var proc = modalProcessing();
+
+                        $.post(vdUrl(url), data, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientModalMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                proc.addClass('confirm-close-event').modal('hide');
+                                modalMessage(res.Err.split('\n'), 'Update Permissions', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+        });
+
+        function onSearch(params, table) {
+            $('.btn-apply').removeClass('hidden');
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-sm-8">
+        <fieldset>
+            <legend>Select Employees</legend>
+
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { DataUrl = "", MultiSelect = true, ExcludeNoCareer = true, ExcludeNoOffice = true, LessParameters = false, AllowSingleSelection = false, SearchCallback = "onSearch" } })
+        </fieldset>
+    </div>
+    <div class="col-sm-4">
+        <fieldset>
+            <legend>Select Permissions</legend>
+
+            @Html.Partial("~/Areas/HRModule/Views/HRPermissions/_PermissionList.cshtml", new _HRPermission(), new ViewDataDictionary { { "ReadOnly", false } })
+        </fieldset>
+    </div>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-apply hidden">
+        Apply
+    </button>
+}

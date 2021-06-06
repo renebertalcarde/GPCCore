@@ -1,0 +1,96 @@
+﻿@model List<coreApp.DAL.tblPayrollSummary>
+
+@{
+    ViewBag.Title = "Employee Accounts";
+    ViewBag.Subtitle = "Create employee accounts by batch";
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            var btnApply = $('.btn-apply');
+
+            btnApply.click(function () {
+
+                if (modalConfirm('Are you sure you want to create these accounts?', function (res) {
+                    if (res) {
+                        var employeeIds = $('.search').employeeSearch('getSelectedItems');
+
+                        if (employeeIds == '') {
+                            modalMessage('No employee selected', 'Create Accounts', true);
+                            return;
+                        }
+                        
+                        var format = $('.ui-format').val();
+                        var field = $('.ui-field').val();
+                        var deleteExisting = $('[name="UIDeleteExisting"]').prop('checked');
+
+                        var url = '/HRModule/SetUserAccounts/SaveSelection';
+                        var data = {
+                            employees: employeeIds,
+                            format: format,
+                            field: field,
+                            deleteExisting: deleteExisting
+                        };
+
+                        var proc = modalProcessing();
+
+                        $.post(vdUrl(url), data, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientModalMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                proc.addClass('confirm-close-event').modal('hide');
+                                modalMessage(res.Err.split('\n'), 'Create Accounts', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+        });
+
+        function onSearch(params, table) {
+            $('.btn-apply').removeClass('hidden');
+        }
+        
+    </script>
+}
+
+<div class="row">
+    <div class="col-sm-8">
+        <fieldset>
+            <legend>Select Employees</legend>
+
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { DataUrl = "", MultiSelect = true, ExcludeNoCareer = true, ExcludeNoOffice = true, LessParameters = false, AllowSingleSelection = false, SearchCallback = "onSearch" } })
+        </fieldset>
+    </div>
+    <div class="col-sm-4">
+        <fieldset>
+            <legend>Set Username Format</legend>
+
+            <label>Format</label>
+            @Html.TextBox("UIFormat", "{0}", new { @class = "form-control ui-format", placeholder = "i.e. user-{0}" })
+            <small>Always include "{0}"</small>
+
+            <br />
+            <label>Field</label>
+            @Html.DropDownList("UIField", coreApp.SelectItems.getAccountFields(), new { @class = "form-control ui-field" })
+
+            <br />
+            @Html.Partial("_Helper_CheckBox", "UIDeleteExisting", new ViewDataDictionary { { "value", false }, { "text", "Delete existing account" } })
+        </fieldset>
+    </div>
+</div>
+
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-apply hidden">
+        Apply
+    </button>
+}

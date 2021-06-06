@@ -1,0 +1,201 @@
+﻿@model HRLogixMobileLib.GeoAuth_Employee
+@using coreLib.Extensions
+@{ 
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    int updateInterval = 5000;
+
+    string mapData = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Auth.Areas.Select(x => new
+    {
+        Latitude = x.Area.Center.Latitude,
+        Longitude = x.Area.Center.Longitude,
+        Distance = x.DistToCenter.MetersKilometers(false),
+        AreaId = x.Area.AreaId,
+        AreaRadius = x.Area.Radius,
+        AreaName = x.Area.AreaName,
+        Description = x.Area.Description
+    })
+    .ToArray());
+
+    GeoAuth_Location.GeoAuth_Location myLocation = Model.Auth.Location;
+
+    string sessionKey = (string)ViewBag.SessionKey;
+}
+
+<style>
+    .server-time-cont {
+        background-color: lightgray;
+        margin-bottom: 10px;
+        padding: 20px;
+    }
+
+    .current-time {
+        text-align: center;
+        margin-bottom: 0;
+    }
+
+    .log-ui-cont {
+        background-color: lightgray;
+        margin-bottom: 30px;
+        padding: 20px;
+    }
+
+    .log-ui {
+        text-align: center;
+    }
+
+    ul {
+        padding: 0 20px;
+    }
+
+    .map {
+        height: 600px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script>
+    var url_home = '@Url.Action("Index", "HLHome", new { area = "" })';
+
+    /*Server Time*/
+    var updateInterval = @updateInterval;
+
+    function getServerTime() {
+        var url = '@Url.Action("GetServerTime")';
+        $.get(vdUrl(url), null, function (res) {
+            if (res.IsSuccessful) {
+                $('.current-time').html(res.Data);
+            }
+        })
+    }
+
+    getServerTime();
+    setInterval(getServerTime, updateInterval);
+
+    /*Log Timer*/
+    var canLog = @(Model.CanLog ? "true" : "false");
+    var loglimit = 180;
+
+    function showTime() {
+        var t = new Date();
+        t.setHours(0);
+        t.setMinutes(0);
+        t.setSeconds(loglimit);
+
+        $('.loglimit').html(moment(t).format('mm:ss'));
+    }
+
+    if (canLog) {
+        var i = setInterval(function () {
+            loglimit -= 1;
+            showTime();
+
+            if (loglimit <= 0) {
+                clearInterval(i);
+                window.location = url_home;
+            }
+        }, 1000);
+    }
+
+    /*map*/
+    var rawMapData = '@Html.Raw(mapData)';
+    var myLocation = new google.maps.LatLng(@myLocation.Latitude, @myLocation.Longitude);
+    
+</script>
+
+<div class="server-time-cont">
+    <label>
+        Server Time <span class="small">Updates every @(updateInterval / 1000) seconds</span>
+    </label>
+    <h2 class="current-time"></h2>
+</div>
+
+<div class="log-ui-cont">
+    <div>
+        @if (Model.RegisteredDevice)
+        {
+            <span class="text-success">Device is registered</span>
+        }
+        else
+        {
+            <a href="@Url.Action("RegisterIndex", "MyGeoAuth", new { area = "EmployeeModule" })" class="text-danger">Device is not registered</a>
+        }
+        <span>&nbsp;|&nbsp;</span>
+
+        @if (Model.Auth.Areas.Any())
+        {
+            if (Model.Auth.InRange)
+            {
+                <span class="text-success">You are in range</span>
+            }
+            else
+            {
+                <span class="text-danger">You are not in range</span>
+            }
+        }
+        else
+        {
+            <span>[No geo-location area defined or assigned to you]</span>
+        }
+    </div>
+
+    @if (Model.CanLog)
+            {
+        <span>Log Validity Timer:&nbsp;</span>
+                <span class="loglimit"></span>
+
+                <div class="log-ui">
+                    <button class="btn btn-sm btn-default btn-login">Log In</button>&nbsp;&nbsp;
+                    <button class="btn btn-sm btn-default btn-danger btn-logout">Log Out</button>
+                </div>
+
+        using (Html.BeginForm("DoLog", "MyGeoAuth", FormMethod.Post, new { @class = "form-log" }))
+        {
+            @Html.Hidden("SessionKey", sessionKey)
+            @Html.Hidden("Op")
+            @Html.Hidden("DeviceId", Model.LocalDeviceId)
+        }
+    }
+</div>
+
+<div class="map"></div>
+
+<fieldset>
+    <legend>Location</legend>
+
+    <p class="text-info">
+        <i class="fa fa-info-circle"></i> Location accuracy depends on the device that you are using. Devices with built-in GPS or enabled "Location" feature (i.e. most smart phones, tablets) gives accurate readings;
+        while devices with no built-in GPS (i.e. desktop computers, laptops) uses the provider's server location.
+    </p>
+
+    [@HRLogixMobileLib.Procs.GetLocationString(Model.Auth.Location.Latitude, Model.Auth.Location.Longitude)]
+</fieldset>
+<fieldset>
+    <legend>Valid Areas</legend>
+
+    @if (Model.Auth.Areas.Any())
+            {
+        <ul>
+            @foreach (GeoAuth_Location.GeoAuth_CircularAreaStatus area in Model.Auth.Areas)
+            {
+                <li>
+                    @area.Area.AreaName (@area.Area.Description) [@HRLogixMobileLib.Procs.GetLocationString(area.Area.Center.Latitude, area.Area.Center.Longitude)]:&nbsp;
+                    @if (area.InRange)
+                    {
+                        <span class="text-success">In Range</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Not In Range (Distance to enter valid range: @((area.DistToRadius / 1000).ToString("#,##0.#")) km.)</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <span>[No record found]</span>
+    }
+
+</fieldset>
+

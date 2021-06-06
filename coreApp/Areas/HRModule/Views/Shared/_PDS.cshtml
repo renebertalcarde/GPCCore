@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Areas/HRModule/Views/Shared/_EmployeeDetailsLayout.cshtml";
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @RenderSection("Breadcrumbs", false)
+}
+
+@section SearchSection {
+    @RenderSection("SearchSection", false)
+}
+
+@section Styles {
+    @RenderSection("Styles", false)
+}
+
+@section Scripts {
+    <script>
+        function printPDS(dlWord) {
+            window.open(vdUrl('@Url.Action("Print", "EmployeeInfo", new { area = "HRModule", employeeId = employee.EmployeeId })?dlWord=' + dlWord), '_blank');
+        }
+    </script>
+    @RenderSection("Scripts", false)
+}
+
+@RenderBody()
+
+@section FormActions {
+
+    @RenderSection("FormActions", false)
+
+    <div class="btn-group dropup">
+        <button type="button" class="btn btn-sm btn-default btn-print" onclick="printPDS()">
+            Print Personal Data Sheet
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" onclick="printPDS(true)">Download Word Document</a>
+        </div>
+    </div>
+}

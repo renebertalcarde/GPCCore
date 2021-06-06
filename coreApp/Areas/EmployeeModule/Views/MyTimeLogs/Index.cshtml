@@ -1,0 +1,134 @@
+﻿@model List<Module.DB.tblEmployee_TimeLog>
+
+@{
+    ViewBag.Title = "My Time Logs";
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+    Module.DB.tblLeaveType leaveType = (Module.DB.tblLeaveType)ViewBag.LeaveType;
+
+    bool modifyTL = coreApp.Cache.Get().userAccess.HasAccess("hr_emp_timelogs_modify");
+
+    coreLib.Objects.PeriodModel pm = (coreLib.Objects.PeriodModel)ViewBag.Period;
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+
+@section Scripts {
+    <script>
+         function preload(e) {
+            var modifyTL = @(modifyTL ? "true" : "false");
+
+            if (!modifyTL) {
+                e.modal.find('.btn-delete').hide();
+                $('.tbl-1 .list-commands-cont .lstcmd lstcmd-delete').remove();
+            }
+
+            return e;
+        }
+
+        function applyPeriod(start, end) {
+            window.location = vdUrl('/My/TimeLogs/Index/' + start + '/' + end);
+        }
+
+        function printTimelogs(dlWord) {
+            var printlink = '@Url.Action("Print", new { startDate = pm.StartDate.ToString("MM-dd-yyyy"), endDate = pm.EndDate.ToString("MM-dd-yyyy") })';
+
+            window.open(vdUrl(printlink + (printlink.indexOf('?') > 0 ? '&' : '?') + 'dlWord=' + dlWord), '_blank');
+        }
+
+        function tablebind(tbl, table) {
+            var nodes = table.rows().nodes();
+            for (var i = 0; i < nodes.length; i++) {
+                var tr = $(nodes[i]);
+                var cont = tr.find('.list-commands-cont');
+                cont.find('.lstcmd-delete').remove();
+            }
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Partial("~/Views/Shared/_Helper_Period.cshtml", pm, new ViewDataDictionary { { "clientCallback", "applyPeriod" }, { "label", "Period" } })
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+        modal-target="#modalView" modal-start="view" modal-preload-callback="preload" event-tablebind="tablebind" 
+        modal-view-url="/My/TimeLogs/Details?id={0}" modal-edit-url="/My/TimeLogs/Edit?id={0}" modal-delete-url="/My/TimeLogs/Delete" modal-create-url="/My/TimeLogs/Create">
+
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Day
+                </th>
+                <th>
+                    Date/Time
+                </th>
+                <th>
+                    Mode
+                </th>
+                <th>
+                    Entry Type
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblEmployee_TimeLog item in Model)
+            {
+                <tr record-id="@item.LogId">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LogId)
+                    </td>
+                    <td>
+                        @item.TimeLog.ToString("dddd")
+                    </td>
+                    <td data-order="@item.TimeLog.Ticks">
+                        @item.TimeLog.ToString("MM/dd/yyyy h:mm tt")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mode_Desc)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EntryType_Desc)
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+
+
+@section FormActions {
+    @if (coreApp.Cache.Get().userAccess.HasAccess("hr_emp_timelogs_modify"))
+    {
+        <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+    }
+
+    <div class="btn-group dropup">
+        <button type="button" class="btn btn-sm btn-default btn-print" onclick="printTimelogs()">
+            Print Time Logs
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" onclick="printTimelogs(true)">Download Word Document</a>
+        </div>
+    </div>
+}

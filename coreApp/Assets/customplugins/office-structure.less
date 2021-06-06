@@ -1,0 +1,125 @@
+﻿@import "../theme/colors.less";
+
+.office-structure {
+    .office-structure-commands {
+        margin: 5px 0;
+        border-top: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    ul {
+        padding-left: 20px;
+        list-style: none;
+    }
+}
+
+.office-structure[data-mode="inlinetrigger"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+.modal-edit-ui {
+    .office-structure[data-mode="inlinetrigger"] {
+        border: none;
+        background-color: transparent;
+        border: 1px solid transparent;
+    }
+
+    .office-structure[data-mode="inlinetrigger"]:hover {
+        border: 1px solid #f3b04e;
+    }
+}
+
+.office-structure[data-mode="pathsdisplay"] {
+    color: #495057;
+
+    ul {
+        padding-left: 20px;
+    }
+}
+
+.office-structure[data-mode="singleselect"] {
+    .radiobox-cont .radio-style + .radio-style-3-label {        
+        color: #aaa;
+    }
+    
+    .radiobox-cont .radio-style:checked + .radio-style-3-label:before {
+        background-color: @color_highlight_1;
+        color: white;
+    }
+
+    .radiobox-cont .radio-style:checked + .radio-style-3-label {
+        font-weight: bold;
+        color: #000;
+    }
+}
+
+.office-structure[data-mode="edit"] {
+
+    .office-structure-commands {
+        .cmd:not(.cmd-newbr) {
+            display: none;
+        }
+    }
+
+    .office-structure-commands.branch .cmd-newoffice,
+    .office-structure-commands.office .cmd-newdepartment,
+    .office-structure-commands.hasselection .cmd-edititem,
+    .office-structure-commands.hasselection .cmd-deleteitem {
+        display: inline;
+    }
+
+    .office-structure-item {
+        > span {
+            cursor: pointer;
+            border: 1px solid transparent;
+            padding: 2px;
+            display: inline-block;
+        }
+
+        > span:hover {
+            border-color: #e0e0e0;
+        }
+
+        .item-name {
+            min-width: 80px;
+        }
+
+        .active-stakeholders-icon {
+            color: lightseagreen;
+        }
+
+        .inactive-stakeholders-icon {
+            color: lightgray;
+        }
+    }
+
+    .office-structure-item.expanded > .item-handle .fa-plus,
+    .office-structure-item > .item-handle .fa-minus,
+    .office-structure-item > ul {
+        display: none;
+    }
+
+    .office-structure-item > .item-handle .fa-plus,
+    .office-structure-item.expanded > .item-handle .fa-minus {
+        display: inline-block;
+    }
+
+    .office-structure-item.expanded > ul {
+        display: block;
+    }
+
+    .office-structure-item.expanded {
+    }
+
+    .office-structure-item.active > .item-name {
+        background-color: dimgray;
+        border: 1px dotted #e0e0e0;
+        color: white;
+    }
+
+    .item-handle.dummy {
+        visibility: hidden;
+        width: 17px;
+    }
+}

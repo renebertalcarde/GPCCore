@@ -1,0 +1,152 @@
+﻿@using Microsoft.AspNet.Identity
+
+@{
+    Layout = "~/Views/Shared/_Canvas.cshtml";
+
+    string area = "";
+    string controller = "";
+    string action = "";
+
+    RouteData rd = HttpContext.Current.Request.RequestContext.RouteData;
+
+    if (rd.DataTokens["area"] != null)
+    {
+        area = rd.DataTokens["area"].ToString().ToLower();
+    }
+
+    if (rd.Values["controller"] != null)
+    {
+        controller = rd.Values["controller"].ToString().ToLower();
+    }
+
+    if (rd.Values["action"] != null)
+    {
+        action = rd.Values["action"].ToString().ToLower();
+    }
+
+    UserAccess access = coreApp.Cache.Get().userAccess;
+
+    bool OnHR = !(new string[] { "procurement", "sam" }).Contains(area);
+    bool OnEM_Index = area == "stakeholdermodule" && controller == "mygeoauth" && action == "index";
+    bool Stakeholder_GeoAuth_Areas_Ok = false;
+    bool err = false;
+
+    try
+    {
+        Stakeholder_GeoAuth_Areas_Ok = !string.IsNullOrEmpty(access.stakeholder.GeoAuth_Areas);
+    }
+    catch
+    {
+        err = true;
+    }
+}
+
+@section Styles {
+    @RenderSection("Styles")
+}
+
+@section Footer {
+    @Html.Partial("_Footer_Minimal")
+}
+
+@section Scripts {
+    @RenderSection("Scripts")
+}
+
+@section Header {    
+    @RenderSection("Header", false)
+}
+
+@section PreWrapper {
+    @RenderSection("PreWrapper", false)
+}
+
+@section BodyScripts {
+    @RenderSection("BodyScripts", false)
+
+    <script>
+        var autoLogoutInMins = @FixedSettings.AutoLogout;
+    </script>
+    <script src="~/Assets/js/autoLogout.js"></script>
+
+    <script>
+        window.onload = function () {
+            adjustFormActions();
+        }
+
+        window.onscroll = function () {
+            resetautoLogoutTimer();
+            adjustFormActions();
+        }
+
+        window.onmousemove = function () {
+            resetautoLogoutTimer();
+        }
+
+        window.onmousedown = function () {
+            resetautoLogoutTimer();
+        }
+
+        window.onclick = function () {
+            resetautoLogoutTimer();
+        }
+
+        window.onkeypress = function () {
+            resetautoLogoutTimer();
+        }
+    </script>
+}
+
+<!-- Page Title
+                    ============================================= -->
+<section id="page-title" class="page-title-pattern page-title-center">
+
+    <div class="container-fullwidth clearfix">
+        <h1>@ViewBag.Title</h1>
+        <span>@ViewBag.Subtitle</span>
+        
+        @RenderSection("Breadcrumbs")
+    </div>
+
+    @if (err)
+    {
+        <span class="my-geolocationattendance-button">
+            <i class="fa fa-warning"></i> &nbsp; Oops, something went wrong. Please close your browser and re-open this application again. If the problem persists, please contact your system administrator.
+        </span>
+    }
+    else
+    {
+        if (FixedSettings.AllowGeoLocation && OnHR && !OnEM_Index && Stakeholder_GeoAuth_Areas_Ok)
+        {
+            <a href="@Url.Action("Index", "MyGeoAuth", new { area = "StakeholderModule" })" class="my-geolocationattendance-button">
+                Geo-Location Attendance <i class="fa fa-clock-o"></i>
+            </a>
+        }
+    }    
+
+</section><!-- #page-title end -->
+
+@RenderSection("SubMenu", false)
+
+@Html.Partial("~/Views/Shared/_Messages.cshtml")
+
+<section id="content">
+    <div class="content-wrap">
+        <div class="container-fullwidth clearfix">
+            @RenderBody()
+        </div>
+    </div>
+</section>
+
+<div class="clearfix form-actions-section">
+    <nav class="form-actions-nav navbar navbar-fixed-bottom">
+        <div class="form-actions-cont">
+            <div class="form-actions-handle" title="action buttons">
+                <i class="fa fa-angle-double-down"></i>
+                <i class="fa fa-angle-double-up"></i>
+            </div>
+            <div class="form-actions text-center">@RenderSection("FormActions", required: false)</div>
+        </div>
+    </nav>
+    <div>&nbsp;</div>
+</div>

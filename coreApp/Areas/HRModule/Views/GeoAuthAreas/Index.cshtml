@@ -1,0 +1,161 @@
+﻿@model List<Module.DB.tblGeoAuth_Area>
+
+@{
+    ViewBag.Title = "Geo-Location Attendance Areas";
+    
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Styles {
+    <style>
+        .view-map-location {
+            height: 600px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Html.Raw(GeoAuth_Location.GMaps.Load_API_Library(FixedSettings.GMaps_APIKey, FixedSettings.GMaps_APIUrl, "application_initGeolocation"))
+    <script src="~/Assets/customplugins/gmaps-geolocation.js"></script>
+
+    <script>
+        function load(e) {
+            if (e.viewType == 'create' || e.viewType == 'edit') {
+                applications_setlocation(e.modal);
+            } else {
+                var cont = e.modal.find('.view-map-location');
+                var gmaps_latlng = e.modal.find('#GMaps_LatLng').val();
+                var radius = e.modal.find('#Radius').val();
+
+                if (cont.length > 0 && gmaps_latlng != '') {
+                    load_setlocation_map(cont, gmaps_latlng, 13, false, false, parseFloat(radius) * 1000);
+                } else {
+                    cont.html('[Not set]');
+                }
+            }
+        }
+
+        function application_initGeolocation() {
+            initGeolocation('@FixedSettings.GMaps_DefaultLatLng');
+        }
+
+        function applications_setlocation(modal) {
+            var mapLocationValue = modal.find('.map-location-value');
+            var _gmaps_latlng = $('#GMaps_LatLng').val();
+            mapLocationValue.text(_gmaps_latlng);
+
+            $('.use-mylocation').click(function () {
+                var str = myLocation.toString();                
+                gmaps_latlng = str.substring(1, str.length - 2);
+
+                $('#GMaps_LatLng').val(gmaps_latlng);
+                mapLocationValue.text(gmaps_latlng);
+            });
+
+            $('.set-map-location').click(function () {                
+
+                modalEmpty('Set Map Location', function (modal, recallback) {
+
+                    var div = $('<div />');
+                    div.addClass('map-cont');
+
+                    div.css('height', '600px');
+                    div.css('width', '100%');
+
+                    modal.find('.modal-content').css('width', '800px');
+
+                    modal.find('.modal-body').empty().append(div);
+
+                    var gmaps_latlng = $('#GMaps_LatLng').val();
+
+                    load_setlocation_map(div, gmaps_latlng, 13, true, true);
+
+                    modal.find('.btn-ok').unbind().bind('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        gmaps_latlng = div.attr('data-location');
+
+                        $('#GMaps_LatLng').val(gmaps_latlng);
+                        mapLocationValue.text(gmaps_latlng);
+
+                        modal.addClass('confirm-close-event').modal('hide');
+                    });
+
+                    if (recallback) recallback();
+
+                }, function (ret, modal) {
+
+                });
+
+            });
+        }
+
+    </script>
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-load-callback="load" modal-view-width="modal-xl"
+           modal-view-url="/HR/Config/GeoLocationAreas/Details/{0}" modal-edit-url="/HR/Config/GeoLocationAreas/Edit/{0}" modal-delete-url="/HR/Config/GeoLocationAreas/Delete" modal-create-url="/HR/Config/GeoLocationAreas/Create">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Area Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Latitude
+                </th>
+                <th>
+                    Longitude
+                </th>
+                <th>
+                    Radius (km)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblGeoAuth_Area item in Model)
+            {
+                <tr record-id="@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AreaName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Latitude)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Longitude)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Radius)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

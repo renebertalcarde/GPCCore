@@ -1,0 +1,180 @@
+@height: 33.6px;
+
+.table-actions {
+    position: absolute;
+    right: 10px;
+
+    button {
+        margin-left: 5px;
+    }
+}
+
+.table {
+
+    .list-commands-col {
+        position: relative;
+
+        .list-commands-cont {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 5px;
+            padding: 0;
+            border: 1px solid transparent;
+            background-color: transparent;
+
+            .lstcmd {
+                display: inline-block;
+                color: #4299cf !important;
+                opacity: 0.5;
+
+                i {
+                    padding: 2px 5px;
+                }
+            }
+
+            .lstcmd:not(:first-child) {
+                i {
+                    padding-left: 0px;
+                }
+            }
+
+            .lstcmd:hover {
+                opacity: 1;
+            }
+
+            .lstcmd.lstcmd-delete:hover {
+                color: red !important;
+            }
+        }
+    }
+
+    tbody tr:hover {
+        .list-commands-cont {
+            display: block;
+        }
+    }
+
+    .list-commands-cont:hover {
+        border-color: #4299cf;
+        background-color: white;
+    }
+}
+
+.table-list {
+    .fa {
+        margin-right: 5px;
+    }
+
+
+    thead {
+
+        th {
+            .fa-sort {
+                display: none;
+            }
+        }
+    }
+
+
+    tbody {
+        tr {
+            cursor: pointer;
+
+            td:last-child {
+                position: relative;
+            }
+        }
+
+        tr.selected {
+            background-color: #999;
+        }
+
+        tr[locked] {
+            cursor: default;
+        }
+
+        tr:hover {
+            .row-commands {
+                visibility: visible;
+            }
+        }
+    }
+
+    .row-commands {
+        visibility: hidden;
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        .row-cmd {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            border: 1px solid transparent;
+            padding: 1px;
+
+            i {
+                margin-right: initial;
+            }
+        }
+
+        .row-cmd:hover {
+            border-color: #0094ff;
+        }
+    }
+
+    .spl-cont {
+        white-space: nowrap;
+        text-align: center;
+
+        .fa {
+            margin: 0 !important;
+        }
+    }
+}
+
+.modal-view {
+    .modal-footer > .btn, 
+    .modal-footer > .btn-group {
+        display: none;
+    }
+}
+
+.modal-view.show-view {
+    .modal-footer .for-view {
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .modal-footer .btn-group.for-view {
+        display: inline-flex;
+    }
+}
+
+.modal-view.show-edit {
+    .modal-footer .for-edit {
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+}
+
+.modal-view.show-create {
+    .modal-footer .for-create {
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+}
+
+.modal-view.show-custom {
+    .modal-footer .for-custom {
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+}
+
+.modal-view.modal-noview {
+    .modal-footer .btn-cancel {
+        display: none;
+    }
+}

@@ -1,0 +1,144 @@
+﻿@model coreApp.DAL.tblEmployee_WorkExp
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Position)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.WEId)
+                        <div>
+                            @Html.DisplayFor(model => model.WEId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateFrom)
+                        <div>
+                            @Html.DisplayFor(model => model.DateFrom)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateTo)
+                        <div>
+                            @Html.DisplayFor(model => model.DateTo_Desc)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Company)
+                        <div>
+                            @Html.DisplayFor(model => model.Company)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Salary)
+                        <div>
+                            @Html.DisplayFor(model => model.Salary)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.SalaryGrade)
+                        <div>
+                            @Html.DisplayFor(model => model.SalaryGrade)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.StatusOfAppointment)
+                        <div>
+                            @Html.DisplayFor(model => model.StatusOfAppointment_Desc)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.IsGovService)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.IsGovService)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.WEId)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.WEId)
+                        <div>
+                            @Html.DisplayFor(model => model.WEId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateFrom)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateFrom, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateTo)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateTo, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                        @Html.Partial("_Helper_CheckBox", "DateTo_Present", new ViewDataDictionary { { "value", Model.DateTo_Present == true }, { "text", "Present" } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Position)
+                    <div>
+                        @Html.TextBoxFor(model => model.Position, new { @class = "form-control", placeholder = "[Enter Position]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Company)
+                    <div>
+                        @Html.TextBoxFor(m => m.Company, new { @class = "form-control", maxlength = "100", placeholder = "[Enter Company]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Salary)
+                    <div>
+                        @Html.TextBoxFor(model => model.Salary, new { @class = "form-control", placeholder = "[Enter Salary]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.SalaryGrade)
+                    <div>
+                        @Html.TextBoxFor(model => model.SalaryGrade, new { @class = "form-control", placeholder = "[Enter Salary Grade]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.StatusOfAppointment)
+                    <div>
+                        @Html.DropDownListFor(m => m.StatusOfAppointment, coreApp.SelectItems.getStatusOfAppointment(), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.IsGovService)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "IsGovService", new ViewDataDictionary { { "value", Model.IsGovService } })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

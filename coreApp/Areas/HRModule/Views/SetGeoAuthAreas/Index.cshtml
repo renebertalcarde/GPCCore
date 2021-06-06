@@ -1,0 +1,104 @@
+﻿@using Module.DB
+@{
+    ViewBag.Title = "Geo-Location Attendance Areas";
+    ViewBag.Subtitle = "Set employee geo-location attendance areas by batch";
+
+    List<tblGeoAuth_Area> areas = (List<tblGeoAuth_Area>)ViewBag.Areas;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            var btnApply = $('.btn-apply');
+
+            btnApply.click(function () {
+
+                if (modalConfirm('Are you sure you want to apply these settings?', function (res) {
+                    if (res) {
+                        var employeeIds = $('.search').employeeSearch('getSelectedItems');
+
+                        if (employeeIds == '') {
+                            modalMessage('No employee selected', 'Geo-Location Areas', true);
+                            return;
+                        }
+
+                        var areas = [];
+                        $('[name="Areas"]:checked').each(function () {
+                            var cb = $(this);
+                            areas.push(cb.val());
+                        });
+
+                        var url = '@Url.Action("SaveSelection")';
+                        var data = {
+                            employeeIds: employeeIds,
+                            areas: areas.join(',')
+                        };
+
+                        var proc = modalProcessing();
+
+                        $.post(vdUrl(url), data, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientModalMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                proc.addClass('confirm-close-event').modal('hide');
+                                modalMessage(res.Err.split('\n'), 'Geo-Location Areas', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+        });
+
+        function onSearch(params, table) {
+            $('.btn-apply').removeClass('hidden');
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-sm-8">
+        <fieldset>
+            <legend>Select Employees</legend>
+
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { DataUrl = "", MultiSelect = true, ExcludeNoCareer = true, ExcludeNoOffice = true, LessParameters = false, AllowSingleSelection = false, SearchCallback = "onSearch" } })
+        </fieldset>
+    </div>
+    <div class="col-sm-4">
+        <fieldset>
+            <legend>Select Areas</legend>
+            
+            <div class="entry-ui select-all select-all-parent-inverse">
+                <ul>
+                    <li>
+                        @Html.Partial("_Helper_CheckBox", "SelectAllTrigger", new ViewDataDictionary { { "text", "Select All" } })
+
+                        <ul>
+                            @foreach (tblGeoAuth_Area area in areas)
+                            {
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "id", "a-" + area.Id }, { "name", "Areas" }, { "text", area.AreaName }, { "input-value", area.Id } })
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+
+
+
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-apply hidden">
+        Apply
+    </button>
+}

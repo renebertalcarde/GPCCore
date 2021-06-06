@@ -1,0 +1,49 @@
+﻿@model List<Module.DB.tblBulletinBoardDocType>
+
+@{
+    ViewBag.Title = "Announcement Document Types";
+    
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+<table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+       modal-target modal-start="view"
+       modal-view-url="/HR/Manage/AnnouncementDocTypes/Details/{0}" modal-edit-url="/HR/Manage/AnnouncementDocTypes/Edit/{0}" modal-delete-url="/HR/Manage/AnnouncementDocTypes/Delete" modal-create-url="/HR/Manage/AnnouncementDocTypes/Create">
+    <thead>
+        <tr>
+            <th class="idcol">
+                Id
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                No. of Documents
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Module.DB.tblBulletinBoardDocType item in Model)
+        {
+            <tr record-id="@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @item.GetAnnouncements().Count
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

@@ -1,0 +1,30 @@
+﻿@model Module.DB.tblBulletinBoard
+
+@{
+    ViewBag.Title = "Announcement";
+    ViewBag.Subtitle = "Contents";
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Announcement List", Link = Url.Action("Index", "BulletinBoardView", new { area = "HRModule" }) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+<center>
+    <h3>@Model.Title</h3>
+</center>
+
+<div style="background-color:#fff;color:#000">
+    Date Posted: @Model.DateOfPosting.ToString("dd MMM yyyy h:mm tt")
+    <hr />
+    @Html.Raw(Model.Contents)
+</div>
+
+
+<small>
+    -Doc Type: @Model.DocType_Desc
+</small>

@@ -1,0 +1,115 @@
+﻿@model List<tblEmployee>
+@using Module.DB
+@{ 
+    bool noPaging = (bool)ViewBag.NoPaging;
+    bool includeLocations = (bool)ViewBag.IncludeLocations;
+}
+
+<div class="table-responsive">
+    <table class="display table table-bordered table-striped table-list" cellspacing="0" width="100%" data-url="" data-paging="@(noPaging ? "false" : "true")">
+        <thead>
+            <tr>
+                <th class="selectcol" data-sorting-type="title-numeric">
+                    @Html.Partial("_Helper_CheckBox", "SearchResult_SelectAll", new ViewDataDictionary { { "class", "table-select-all" }, { "title", "select/unselect all" } })
+                </th>
+                <th class="idcol hidden-xs">
+                    Record Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th class="hidden-xs">
+                    Position
+                </th>
+                <th class="hidden-xs">
+                    Employment Type
+                </th>
+                <th class="hidden-xs">
+                    Department
+                </th>
+                @if (includeLocations)
+                {
+                    <th>
+                        Home Address
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblEmployee item in Model)
+            {
+                Module.DB.Procs.procs_tblEmployee emp = new Module.DB.Procs.procs_tblEmployee(item);
+                tblEmployee_Career career = emp.LatestCareer();
+                bool noCareer = career == null;
+
+                <tr record-id="@item.EmployeeId" class="id-column">
+                    <td class="selectcol" data-sort="0">
+                        @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "class", "table-select-item" }, { "id", "SearchResult_" + item.EmployeeId }, { "name", "SearchResult_Selection" }, { "input-value", item.EmployeeId }, { "title", "select/unselect item" } })                        
+                    </td>
+                    <td class="hidden-xs">
+                        @Html.DisplayFor(modelItem => item.EmployeeId)
+                    </td>
+                    @if (noCareer)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                            <small class="text-warning">[no career]</small>
+                        </td>
+                        <td class="hidden-xs"></td>
+                        <td class="hidden-xs"></td>
+                        <td class="hidden-xs"></td>
+                    }
+                    else if (career._Department == null)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                            <small class="text-warning">[no department]</small>
+                        </td>
+                        <td class="hidden-xs">
+                            @Html.DisplayFor(modelItem => career.Position.Position)
+                        </td>
+                        <td class="hidden-xs">
+                            @Html.DisplayFor(modelItem => career.EmploymentType_Desc)
+                        </td>
+                        <td class="hidden-xs"></td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                                        @if (!item.IsActive())
+                                        {
+                                <small class="text-danger">[inactive]</small>
+                            }
+                        </td>
+                        <td class="hidden-xs">
+                            @Html.DisplayFor(modelItem => career.Position.Position)
+                        </td>
+                        <td class="hidden-xs">
+                            @Html.DisplayFor(modelItem => career.EmploymentType_Desc)
+                        </td>
+                        <td class="hidden-xs">
+                            @career.DepartmentPath()
+                        </td>                        
+                    }
+                    @if (includeLocations)
+                    {
+                        tblEmployee_Info info = emp.Info();
+                        if (info == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td>
+                            @info.Home
+                        </td>
+                        }                        
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="clear:both"></div>

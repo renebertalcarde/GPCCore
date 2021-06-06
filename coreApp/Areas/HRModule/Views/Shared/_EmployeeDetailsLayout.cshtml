@@ -1,0 +1,104 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_ModuleLayout.cshtml";
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Styles {
+    <style>
+        .btn-group a {
+            border-radius: initial;
+        }
+
+        
+    </style>
+    @RenderSection("Styles", false)
+}
+
+@section Breadcrumbs {
+    @RenderSection("Breadcrumbs", required: false)
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#side-panel .search').click(function (e) {
+                e.stopPropagation();
+            });
+            
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+}
+
+@section SubMenu {
+    <!-- Page Sub Menu
+        ============================================= -->
+    <div id="page-menu">
+
+        <div id="page-menu-wrap">
+
+            <div class="container-fullwidth clearfix">
+
+                <div class="menu-title">
+                    
+                </div>
+
+                <nav>
+                    @Html.Partial("_EmployeeDetails_Menu")
+                </nav>
+
+                <div id="page-submenu-trigger"><i class="icon-reorder"></i></div>
+
+            </div>
+
+        </div>
+
+    </div><!-- #page-menu end -->
+}
+
+@section PreWrapper {
+    <div class="body-overlay"></div>
+    <div id="side-panel">
+        <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+        <div class="side-panel-wrap">
+            @RenderSection("SearchSection", false)
+        </div>
+
+    </div>
+}
+
+
+<div class="row">
+   <div class="col-sm-12">
+       @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", employee)
+       @RenderBody()
+   </div>
+</div>
+
+
+@section RightNavigation {
+
+<div id="right-navigation" class="sidebar sticky-sidebar-wrap nobottommargin col_one_sixth col_last clearfix hidden-xs">
+    <div class="sidebar-widgets-wrap">
+
+        <div class="widget widget_group_links clearfix">
+            <ul class="widget_group_links_list list-group">
+                <li class="list-group-item list-group-header widget_group_links_title"></li>
+            </ul>
+        </div>
+
+        <div class="widget clearfix"></div>
+
+    </div>
+</div>
+
+}
+
+@section FormActions {
+    <button class="btn btn-sm btn-default side-panel-trigger">Search</button>
+    <div class="details" modal-title="New Employee" modal-width="modal-xl">        
+        <a href="#" class="btn btn-sm btn-default btn-create" data-url="@Url.Action("Create", "Employees", new { area = "HRModule" })" data-redirect-url="/HR/Manage/Employee/Details/{0}">New Employee</a>        
+    </div>
+    @RenderSection("FormActions", false)
+}

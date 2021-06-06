@@ -1,0 +1,65 @@
+﻿@model Module.DB.tblStakeholder
+@{
+    string codeData = (string)ViewData["codeData"];
+
+    Module.DB.tblStakeholder_Career career = new Module.DB.Procs.procs_tblStakeholder(Model).LatestCareer();
+
+
+    string name = Model.FullName_FN.ToUpper();
+
+    coreApp.Areas.ReportsModule.Models.LoyaltyModel loyalty = new coreApp.Areas.ReportsModule.Models.LoyaltyModel(Model);
+    int yrs = (int)Model.YearsInGovService;
+}
+
+<div class="card card-info stakeholder-info pattern-background-dark">
+    <div class="card-body @(Model.IsActive() ? "" : "inactive")">
+        <div class="section-photo">
+            <img src="@Url.Action("GetStakeholderPhotoByCodeData", "Home", new { area = "", type = "profile-photo", codeData = codeData })" class="img-thumbnail">
+        </div>
+        <div class="section-main">
+            <div class="data-description">@name</div>
+
+            @if (!string.IsNullOrEmpty(Model.IdNo))
+            {
+                <div class="data-subtitle">@Html.DisplayNameFor(x => x.IdNo) @Model.IdNo</div>
+            }
+
+            @if (career != null)
+            {
+                <div class="data-contents">
+                    @(career.Position == null ? "" : career.Position.Position) | @career.EmploymentType_Desc<br />
+                    @if (career._Department != null)
+                    {
+                        <div>
+                            @career.DepartmentPath()
+                        </div>
+                        <small>
+                            @career.Branch.BranchAddress
+                        </small>
+                    }
+                    else
+                    {
+                        <br />
+                        <div class="text-warning">
+                            <i class="fa fa-warning"></i> No Department Specified
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        @if (FixedSettings.UseStartInGovService && loyalty.loyalties.Any())
+        {
+            <div class="loyalty-seal">
+                <i class="fa fa-star"></i>&nbsp;&nbsp;<strong class="bold">@(yrs)</strong> years in government service
+            </div>
+
+        }
+
+        <div class="inactive-msg-cont">
+            <div class="inactive-msg">
+                I N - A C T I V E
+            </div>
+        </div>
+    </div>
+</div>
+

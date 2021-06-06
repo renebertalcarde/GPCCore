@@ -1,0 +1,29 @@
+﻿@model HRLogixMobileLib.GeoAuth_Employee
+@{ 
+    ViewBag.Title = "My Geo-Location Device Registration";
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+       
+    </style>
+}
+
+@section Scripts {
+    <script>
+        
+    </script>
+}
+
+
+

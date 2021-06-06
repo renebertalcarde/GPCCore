@@ -1,0 +1,137 @@
+﻿@model Module.DB.tblEmployee_Info
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_PDS.cshtml";
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    ViewBag.Title = "Basic Information";
+
+    ViewBag.uiIsReadOnly = true;
+    ViewBag.uiIncludeId = true;
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = "Employee Profile", Link = Url.Action("Details", "Employees", new { id = employee.EmployeeId, area = "HRModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+        .view-map-location {
+            height: 600px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @Html.Raw(GeoAuth_Location.GMaps.Load_API_Library(FixedSettings.GMaps_APIKey, FixedSettings.GMaps_APIUrl, "application_initGeolocation"))
+    <script src="~/Assets/customplugins/gmaps-geolocation.js"></script>
+
+    <script>
+
+        function viewMapLocation(a) {
+            var btn = $(a);
+            modalEmpty('View Map Location', function (modal, recallback) {
+
+                var cont = $('<div class="view-map-location" />');
+                var gmaps_latlng = btn.attr('data-value');
+
+                modal.find('.modal-dialog').addClass('modal-xl');
+                modal.find('.modal-body').append(cont);
+
+                if (cont.length > 0 && gmaps_latlng != '') {
+                    load_setlocation_map(cont, gmaps_latlng, 13, false, false);
+                } else {
+                    cont.html('[Not set]');
+                }
+
+                modal.find('.modal-footer .btn-ok').hide();
+                modal.find('.modal-footer .btn-cancel').html('Close');
+
+                if (recallback) recallback();
+
+            }, function (ret, modal) {
+
+            });
+        }
+
+        function load(e) {
+            if (e.viewType == 'create' || e.viewType == 'edit') {
+                applications_setlocation(e.modal);
+            }
+        }
+
+        function application_initGeolocation() {
+            initGeolocation('@FixedSettings.GMaps_DefaultLatLng');
+        }
+
+        function applications_setlocation(modal) {
+            var mapLocationValue = modal.find('.map-location-value');
+            var _gmaps_latlng = $('#GMaps_LatLng').val();
+            mapLocationValue.text(_gmaps_latlng);
+
+            $('.remove-map-location').click(function () {
+                $('#GMaps_LatLng').val('');
+                mapLocationValue.empty();
+            });
+
+            $('.set-map-location').click(function () {
+
+                modalEmpty('Set Map Location', function (modal, recallback) {
+
+                    var div = $('<div />');
+                    div.addClass('map-cont');
+
+                    div.css('height', '600px');
+                    div.css('width', '100%');
+
+                    modal.find('.modal-content').css('width', '800px');
+
+                    modal.find('.modal-body').empty().append(div);
+
+                    var gmaps_latlng = $('#GMaps_LatLng').val();
+
+                    load_setlocation_map(div, gmaps_latlng, 13, true, true);
+
+                    modal.find('.btn-ok').unbind().bind('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        gmaps_latlng = div.attr('data-location');
+
+                        $('#GMaps_LatLng').val(gmaps_latlng);
+                        mapLocationValue.text(gmaps_latlng);
+
+                        modal.addClass('confirm-close-event').modal('hide');
+                    });
+
+                    if (recallback) recallback();
+
+                }, function (ret, modal) {
+
+                });
+
+            });
+        }
+
+        
+    </script>
+}
+
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/BasicInformation/Details/{0}/-1", MinimalView = true, LessParameters = true } })
+}
+
+@Html.Partial("_Info", Model)
+
+@section FormActions {
+    <div class="details" modal-title="Edit Basic Information" modal-width="modal-xl" modal-load-callback="load">
+        <a href="#" class="btn btn-sm btn-default btn-edit" data-url="@Url.Action("Edit", new { employeeId = Model.EmployeeId, id = Model.InfoId, area = "HRModule" })">Edit</a>
+    </div>
+
+}

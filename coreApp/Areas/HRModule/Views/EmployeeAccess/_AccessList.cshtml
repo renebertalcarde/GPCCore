@@ -1,0 +1,251 @@
+﻿@model Module.DB.tblEmployee_Access
+@{
+    bool readOnly = Convert.ToBoolean(ViewData["ReadOnly"]);
+
+}
+
+<style>
+        .access-list-cont .entry-ui ul {
+            list-style: none;
+        }
+</style>
+
+<div class="access-list-cont">
+
+    @if (readOnly)
+    {
+        <div class="view-ui">
+            <ul>
+                @if (Model.system_admin)
+                {
+                    <li>@Html.DisplayNameFor(m => m.system_admin)</li>
+                }
+                @if (Model.hr_config)
+                {
+                    <li>@Html.DisplayNameFor(m => m.hr_config)</li>
+                }
+                @if (Model.hr_devices)
+                {
+                    <li>@Html.DisplayNameFor(m => m.hr_devices)</li>
+                }
+                @if (Model.hr_bulletinboard)
+                {
+                    <li>@Html.DisplayNameFor(m => m.hr_bulletinboard)</li>
+                }
+                @if (Model.hr_holidays)
+                {
+                    <li>@Html.DisplayNameFor(m => m.hr_holidays)</li>
+                }
+                @if (Model.hr_ps)
+                {
+                    <li>@Html.DisplayNameFor(m => m.hr_ps)</li>
+                }
+                @if (Model.hr_emp_sched)
+                {
+                    <li>@Html.DisplayNameFor(m => m.hr_emp_sched)</li>
+                }
+                @if (Model.hr_module)
+                {
+                    <li>
+                        @Html.DisplayNameFor(m => m.hr_module)
+
+                        <ul>
+                            @if (Model.hr_emp_info)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_info)</li>
+                            }
+                            @if (Model.hr_emp_career)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_career)</li>
+                            }
+                            @if (Model.hr_emp_login_account)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_login_account)</li>
+                            }
+                            @if (Model.hr_emp_confidential)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_confidential)</li>
+                            }
+                            @if (Model.hr_emp_access)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_access)</li>
+                            }
+                            @if (Model.hr_emp_timelogs_modify)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_timelogs_modify)</li>
+                            }
+                            @if (Model.hr_permissions)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_permissions)</li>
+                            }
+                            @if (Model.hr_emp_leave)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_leave)</li>
+                            }
+                            @if (Model.hr_emp_travel_app)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_travel_app)</li>
+                            }
+                            @if (Model.hr_emp_ot_app)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_ot_app)</li>
+                            }
+                        </ul>
+                    </li>
+                }
+                @if (Model.leave_module)
+                {
+                    <li>
+                        @Html.DisplayNameFor(m => m.leave_module)
+
+                        <ul>
+                            @if (Model.leave_module_settings)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.leave_module_settings)</li>
+                            }
+                            @if (Model.hr_emp_leave_app)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_leave_app)</li>
+                            }
+                            @if (Model.hr_emp_leave_app_approve)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.hr_emp_leave_app_approve)</li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+                @if (Model.finance_module)
+                {
+                    <li>
+                        @Html.DisplayNameFor(m => m.finance_module)
+
+                        <ul>
+                            @if (Model.finance_definitions)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.finance_definitions)</li>
+                            }
+                            @if (Model.finance_employee_loans)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.finance_employee_loans)</li>
+                            }
+                            @if (Model.finance_ps)
+                            {
+                                <li>@Html.DisplayNameFor(m => m.finance_ps)</li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+        </div>
+
+    }
+    else
+    {
+        <div class="entry-ui select-all">
+            <ul>
+                @if (coreApp.Cache.Get().userAccess.IsAdmin)
+                {
+                    <li>
+                        @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.system_admin }, { "text", Html.DisplayNameFor(m => m.system_admin) }, { "input-value", "system_admin" }, { "id", "access-system_admin" }, { "name", "Access" } })
+                    </li>
+                }
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_config }, { "text", Html.DisplayNameFor(m => m.hr_config) }, { "input-value", "hr_config" }, { "id", "access-hr_config" }, { "name", "Access" } })
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_devices }, { "text", Html.DisplayNameFor(m => m.hr_devices) }, { "input-value", "hr_devices" }, { "id", "access-hr_devices" }, { "name", "Access" } })
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_bulletinboard }, { "text", Html.DisplayNameFor(m => m.hr_bulletinboard) }, { "input-value", "hr_bulletinboard" }, { "id", "access-hr_bulletinboard" }, { "name", "Access" } })
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_holidays }, { "text", Html.DisplayNameFor(m => m.hr_holidays) }, { "input-value", "hr_holidays" }, { "id", "access-hr_holidays" }, { "name", "Access" } })
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_ps }, { "text", Html.DisplayNameFor(m => m.hr_ps) }, { "input-value", "hr_ps" }, { "id", "access-hr_ps" }, { "name", "Access" } })
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_sched }, { "text", Html.DisplayNameFor(m => m.hr_emp_sched) }, { "input-value", "hr_emp_sched" }, { "id", "access-hr_emp_sched" }, { "name", "Access" } })
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_module }, { "text", Html.DisplayNameFor(m => m.hr_module) }, { "input-value", "hr_module" }, { "id", "access-hr_module" }, { "name", "Access" } })
+
+                    <ul>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_info }, { "text", Html.DisplayNameFor(m => m.hr_emp_info) }, { "input-value", "hr_emp_info" }, { "id", "access-hr_emp_info" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_career }, { "text", Html.DisplayNameFor(m => m.hr_emp_career) }, { "input-value", "hr_emp_career" }, { "id", "access-hr_emp_career" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_login_account }, { "text", Html.DisplayNameFor(m => m.hr_emp_login_account) }, { "input-value", "hr_emp_login_account" }, { "id", "access-hr_emp_login_account" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_access }, { "text", Html.DisplayNameFor(m => m.hr_emp_access) }, { "input-value", "hr_emp_access" }, { "id", "access-hr_emp_access" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_confidential }, { "text", Html.DisplayNameFor(m => m.hr_emp_confidential) }, { "input-value", "hr_emp_confidential" }, { "id", "access-hr_emp_confidential" }, { "name", "Access" } })
+                        </li>
+                        @if (coreApp.Cache.Get().userAccess.IsAdmin)
+                        {
+                            <li>
+                                @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_timelogs_modify }, { "text", Html.DisplayNameFor(m => m.hr_emp_timelogs_modify) }, { "input-value", "hr_emp_timelogs_modify" }, { "id", "access-hr_emp_timelogs_modify" }, { "name", "Access" } })
+                            </li>
+                        }
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_permissions }, { "text", Html.DisplayNameFor(m => m.hr_permissions) }, { "input-value", "hr_permissions" }, { "id", "access-hr_permissions" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_leave }, { "text", Html.DisplayNameFor(m => m.hr_emp_leave) }, { "input-value", "hr_emp_leave" }, { "id", "access-hr_emp_leave" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_travel_app }, { "text", Html.DisplayNameFor(m => m.hr_emp_travel_app) }, { "input-value", "hr_emp_travel_app" }, { "id", "access-hr_emp_travel_app" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_ot_app }, { "text", Html.DisplayNameFor(m => m.hr_emp_ot_app) }, { "input-value", "hr_emp_ot_app" }, { "id", "access-hr_emp_ot_app" }, { "name", "Access" } })
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.leave_module }, { "text", Html.DisplayNameFor(m => m.leave_module) }, { "input-value", "leave_module" }, { "id", "access-leave_module" }, { "name", "Access" } })
+
+                    <ul>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.leave_module_settings }, { "text", Html.DisplayNameFor(m => m.leave_module_settings) }, { "input-value", "leave_module_settings" }, { "id", "access-leave_module_settings" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_leave_app }, { "text", Html.DisplayNameFor(m => m.hr_emp_leave_app) }, { "input-value", "hr_emp_leave_app" }, { "id", "access-hr_emp_leave_app" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.hr_emp_leave_app_approve }, { "text", Html.DisplayNameFor(m => m.hr_emp_leave_app_approve) }, { "input-value", "hr_emp_leave_app_approve" }, { "id", "access-hr_emp_leave_app_approve" }, { "name", "Access" } })
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.finance_module }, { "text", Html.DisplayNameFor(m => m.finance_module) }, { "input-value", "finance_module" }, { "id", "access-finance_module" }, { "name", "Access" } })
+
+                    <ul>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.finance_definitions }, { "text", Html.DisplayNameFor(m => m.finance_definitions) }, { "input-value", "finance_definitions" }, { "id", "access-finance_definitions" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.finance_employee_loans }, { "text", Html.DisplayNameFor(m => m.finance_employee_loans) }, { "input-value", "finance_employee_loans" }, { "id", "access-finance_employee_loans" }, { "name", "Access" } })
+                        </li>
+                        <li>
+                            @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.finance_ps }, { "text", Html.DisplayNameFor(m => m.finance_ps) }, { "input-value", "finance_ps" }, { "id", "access-finance_ps" }, { "name", "Access" } })
+                        </li>
+                    </ul>
+                </li>
+
+
+            </ul>
+
+        </div>
+
+    }
+
+
+</div>

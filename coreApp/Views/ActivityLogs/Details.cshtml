@@ -1,0 +1,48 @@
+﻿@model Module.DB.tblAccountability
+
+@Html.HiddenFor(model => model.Data)
+
+<div class="modal-view-ui pattern-bg">
+    <div class="view-title">
+        Activity Log Details
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.LogDate)
+                    <div>
+                        @Html.DisplayFor(model => model.LogDate)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Stakeholder)
+                    <div>
+                        @Html.DisplayFor(model => model.Stakeholder)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Page)
+                    <div>
+                        @Html.DisplayFor(model => model.Page)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Action)
+                    <div>
+                        @Html.DisplayFor(model => model.Action)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Details)
+                    <div>
+                        @Html.DisplayFor(model => model.Details)
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <div id="json"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+﻿@model coreApp.Models.EmployeeSearchUIModel
+
+@Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = Model })
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("employeeIds", "")
+}

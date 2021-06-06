@@ -1,0 +1,46 @@
+﻿@model Module.DB.tblSetting
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+        
+            
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.ValueType)
+            @Html.HiddenFor(model => model.Category)
+            @Html.HiddenFor(model => model.Setting)
+    
+
+            <div class="modal-edit-ui pattern-bg">
+                <ul class="list-group">
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Category)
+                        <div>
+                            @Html.DisplayFor(model => model.Category)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @if (Model.ValueType == "bool")
+                        {
+                            <label for="SettingValue">
+                                @Model.SettingName
+                            </label>
+                            <div>
+                                @Html.Partial("_Helper_CheckBox", "SettingValue", new ViewDataDictionary { { "value", Model.SettingValue } })
+                            </div>
+                        }
+                        else
+                        {
+                            <label>
+                                @Html.DisplayFor(model => model.SettingName)
+                            </label>
+                            <div>
+                                @Html.TextBoxFor(model => model.SettingValue, new { @class = "form-control", maxlength = "", placeholder = "[Enter value]" })
+                            </div>
+                        }
+                    </li>
+                </ul>
+            </div>
+}
+

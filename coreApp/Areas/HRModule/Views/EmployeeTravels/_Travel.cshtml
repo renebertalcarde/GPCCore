@@ -1,0 +1,111 @@
+﻿@model Module.DB.tblEmployee_Travel
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    Module.DB.tblTravelApplication application = Model.GetApplication();
+}
+
+@Html.Hidden("FromApplication", application != null)
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Destination)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.InclusiveDays)
+                        <div>
+                            @Html.DisplayFor(model => model.InclusiveDays)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Purpose)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.Purpose)
+                        </div>
+                    </li>
+                    @if (application == null)
+                    {
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.CreateDate)
+                            <div>
+                                @Html.DisplayFor(model => model.CreateDate)
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => application.ApprovedBy)
+                            <div>
+                                @Html.DisplayFor(model => application.ApprovedBy)
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => application.ApproveDate)
+                            <div>
+                               @Html.DisplayFor(model => application.ApproveDate)
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.Hidden("StartDate")
+        @Html.Hidden("EndDate")
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.InclusiveDays)
+                    <div>
+                        @Html.Partial("_Helper_Period", new coreLib.Objects.PeriodModel(Model.StartDate, Model.EndDate), new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Purpose)
+                    <div>
+                        @Html.TextAreaFor(model => model.Purpose, new { @class = "form-control", placeholder = "[Enter Purpose]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Destination)
+                    <div>
+                        @Html.TextBoxFor(model => model.Destination, new { @class = "form-control", placeholder = "[Enter Destination]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

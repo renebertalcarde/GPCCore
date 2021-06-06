@@ -1,0 +1,96 @@
+﻿@model Module.DB.tblRate
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.RateId)
+                        <div>
+                            @Html.DisplayFor(model => model.RateId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateEffective)
+                        <div>
+                            @Html.DisplayFor(model => model.DateEffective)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.PositionLevel)
+                        <div>
+                            @Html.DisplayFor(model => model.PositionLevel)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Rate)
+                        <div>
+                            @Html.DisplayFor(model => model.Rate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.IsDailyRate)
+                        <div>
+                            @Html.DisplayBooleanFor(model => model.IsDailyRate)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.PositionId)
+        @Html.HiddenFor(model => model.RateId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.RateId)
+                        <div>
+                            @Html.DisplayFor(model => model.RateId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateEffective)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateEffective, "{0:MM/dd/yyyy}", new { @class = "datepicker form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.PositionLevel)
+                    <div>
+                        @Html.DropDownListFor(m => m.PositionLevel, coreApp.SelectItems.getMaxLevel(), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Rate)
+                    <div>
+                        @Html.TextBoxFor(model => model.Rate, new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.IsDailyRate)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "IsDailyRate", new ViewDataDictionary { { "value", Model.IsDailyRate } })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

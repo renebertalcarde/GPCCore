@@ -1,0 +1,167 @@
+﻿@model Module.DB.tblLeaveApplication
+
+@{
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    string area = "";
+
+    RouteData rd = HttpContext.Current.Request.RequestContext.RouteData;
+
+    if (rd.DataTokens["area"] != null)
+    {
+        area = rd.DataTokens["area"].ToString().ToLower();
+    }
+
+    bool isMy = area == "employeemodule";
+
+    Module.Leave.LeaveRuleModel ruleModel = new Module.Leave.LeaveRuleModel(Model.LeaveType.Rules());
+
+    bool isNew = !includeId;
+
+    bool isVL = false, isSL = false;
+
+    if (Model.LeaveType != null)
+    {
+        isVL = Model.LeaveType.Category == (int)Module.DB.Enums.LeaveTypeCategory.VL;
+        isSL = Model.LeaveType.Category == (int)Module.DB.Enums.LeaveTypeCategory.SL;
+    }
+}
+
+
+@Html.Hidden("HasBeenSubmitted", Model.HasBeenSubmitted)
+@Html.Hidden("HasBeenServed", Model.HasBeenServed)
+@Html.Hidden("IsRecommended", Model.IsRecommended)
+
+<style>
+
+    .vl-others,
+    .vl-abroad {
+        display: none;
+    }
+
+    .show-vl-others .vl-others,
+    .show-vl-abroad .vl-abroad {
+        display: block;
+    }
+</style>
+@if (isReadOnly)
+{
+    @Html.Partial("~/Areas/EmployeeModule/Views/MyLeaveApplications/_LeaveApplicationView.cshtml")
+}
+else
+{
+
+    using (Html.BeginForm(isNew ? "Create" : "Edit", "MyLeaveApplications", new { area = "EmployeeModule", employeeId = Model.EmployeeId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.LeaveTypeId)
+        @Html.Hidden("AutoSubmit", false)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+
+                @if (!isMy)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.employee.FullName_FN)
+                        <div>
+                            @Html.DisplayFor(model => model.employee.FullName_FN)
+                        </div>
+                    </li>
+                }
+
+                <li class="list-group-item dimmed">
+                    @Html.LabelFor(model => model.LeaveType)
+                    <div>
+                        @Html.DisplayFor(model => model.LeaveType.Description)
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <label>Period</label>
+                    <div>
+                        @Html.Partial("_LeavePeriod", new coreApp.DAL.leaveEntryModel(Model))
+                    </div>
+                </li>
+
+                @if (isVL)
+                {
+                    <li class="list-group-item">
+                        <label>Reason</label>
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "VL_Reason-1" }, { "name", "VL_Reason" }, { "value", Model.VL_SeekEmployment == true }, { "text", Html.DisplayNameFor(x => x.VL_SeekEmployment) }, { "style", "display:inline-block" }, { "input-value", "VL_SeekEmployment" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "VL_Reason-2" }, { "name", "VL_Reason" }, { "value", Model.VL_SeekEmployment != true }, { "text", Html.DisplayNameFor(x => x.VL_Others) }, { "style", "display:inline-block" }, { "input-value", "VL_Others" } })
+                        </div>
+                    </li>
+                    <li class="list-group-item vl-others">
+                        <div>
+                            @Html.TextAreaFor(model => model.VL_Others, new { @class = "form-control", placeholder = "[Please specify other reason for VL]" })
+                        </div>
+                    </li>
+                    <li class="list-group-item for-vl">
+                        <label>Where will leave be spent</label>
+                        <div>
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "VL_Location-1" }, { "name", "VL_Location" }, { "value", Model.VL_WithinPH == true }, { "text", Html.DisplayNameFor(x => x.VL_WithinPH) }, { "style", "display:inline-block" }, { "input-value", "VL_WithinPH" } })
+                            @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "VL_Location-2" }, { "name", "VL_Location" }, { "value", Model.VL_WithinPH != true }, { "text", Html.DisplayNameFor(x => x.VL_Abroad) }, { "style", "display:inline-block" }, { "input-value", "VL_Abroad" } })
+                        </div>
+                    </li>
+                    <li class="list-group-item vl-abroad">
+                        <div>
+                            @Html.TextAreaFor(model => model.VL_Abroad, new { @class = "form-control", placeholder = "[Please specify country and/or details]" })
+                        </div>
+                    </li>
+                }
+
+                @if (isSL)
+                {
+                    <li class="list-group-item for-sl">
+                        <label>Reason</label>
+                        <div>
+                            @Html.Partial("_Helper_CheckBox", "SL_InHospital", new ViewDataDictionary { { "value", Model.SL_InHospital }, { "Text", "In Hospital" } })
+                            @Html.TextAreaFor(model => model.SL, new { @class = "form-control", placeholder = "[Please specify details]" })
+                        </div>
+                    </li>
+                }
+
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Commutation_Requested)
+                    <div>
+                        @Html.Partial("_Helper_CheckBox", "Commutation_Requested", new ViewDataDictionary { { "value", Model.Commutation_Requested } })
+                    </div>
+                </li>
+
+                @if (ruleModel.ApplicationRequiresSupport)
+                {
+                    <li class="list-group-item support">
+                        <label>Support File</label>
+                        <div>
+                            @Html.Partial("_Helper_Photo", new ViewDataDictionary {
+                            { "url", Url.Action("GetLeaveSupportFile", "HLHome", new { area = "", id = Model.Id }) },
+                            { "control-name", "SupportFilex" },
+                            { "readonly", false },
+                            { "no-remove", isNew }
+                        })
+                        </div>
+                    </li>
+                }
+
+
+            </ul>
+        </div>
+
+    }
+}

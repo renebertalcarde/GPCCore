@@ -1,0 +1,79 @@
+﻿
+@model Module.DB.Interfaces.ISegment 
+@{
+    Module.DB.TimeSettingsModel settings = new Module.DB.TimeSettingsModel(DateTime.Today, coreApp.Cache.Get().userAccess.career.Office.OfficeId);
+    double whpd = settings.WorkHoursPerDay;
+}
+
+<div class="clearfix"></div>
+<div class="segment-time st-basic">
+    @Html.Hidden("WorkHoursPerDay", whpd)
+
+    <ul class="list-group">
+        <li class="list-group-item list-group-header">
+            Time
+            <div class="segment-toggle pull-right">
+                <a href="#">Advanced&nbsp;&raquo;</a>
+            </div>
+        </li>
+        <li class="list-group-item">
+            @Html.LabelFor(model => model.TimeIn)
+            <div>
+                @Html.TextBoxFor(model => model.TimeIn, "{0:h:mm tt}", new { @class = "form-control timepicker" })
+            </div>
+        </li>
+        <li class="list-group-item for-advanced">
+            <div class="full-width">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Start</label>
+                        <div>
+                            @Html.TextBoxFor(model => model.TimeInFrom, "{0:h:mm tt}", new { @class = "form-control timepicker" })
+                            @Html.Partial("_Helper_CheckBox", "TimeInFrom_IsPrev", new ViewDataDictionary { { "value", Model.TimeInFrom_IsPrev }, { "text", "Prev Day" }, { "small-checkbox", true } })
+                        </div>                        
+                    </div>
+                    <div class="col-sm-6">
+                        <label>End</label>
+                        <div>
+                            @Html.TextBoxFor(model => model.TimeInTo, "{0:h:mm tt}", new { @class = "form-control timepicker" })
+                            @Html.Partial("_Helper_CheckBox", "TimeInTo_IsNext", new ViewDataDictionary { { "value", Model.TimeInTo_IsNext }, { "text", "Next Day" }, { "small-checkbox", true } })
+                        </div>                        
+                    </div>
+                </div>                
+            </div>
+        </li>
+        <li class="list-group-item">
+            @Html.LabelFor(model => model.TimeOut)
+            <div>
+                @Html.TextBoxFor(model => model.TimeOut, "{0:h:mm tt}", new { @class = "form-control timepicker" })
+                @Html.Partial("_Helper_CheckBox", "TimeOut_IsNext", new ViewDataDictionary { { "value", Model.TimeOut_IsNext }, { "text", "Next Day" }, { "small-checkbox", true } })
+            </div>
+        </li>
+        <li class="list-group-item for-advanced">
+            <div class="full-width">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label>Start</label>
+                        <div>
+                            @Html.TextBoxFor(model => model.TimeOutFrom, "{0:h:mm tt}", new { @class = "form-control timepicker" })
+                            @Html.Partial("_Helper_CheckBox", "TimeOutFrom_IsNext", new ViewDataDictionary { { "value", Model.TimeOutFrom_IsNext }, { "text", "Next Day" }, { "small-checkbox", true } })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label>End</label>
+                        <div>
+                            @Html.TextBoxFor(model => model.TimeOutTo, "{0:h:mm tt}", new { @class = "form-control timepicker" })
+                            @Html.Partial("_Helper_CheckBox", "TimeOutTo_IsNext", new ViewDataDictionary { { "value", Model.TimeOutTo_IsNext }, { "text", "Next Day" }, { "small-checkbox", true } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            @Html.LabelFor(model => model.WorkDayEq)
+            <div>
+                @Html.TextBoxFor(model => model.WorkDayEq, new { @class = "form-control" })
+            </div>
+        </li>
+    </ul>
+</div>

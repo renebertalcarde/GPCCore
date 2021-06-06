@@ -1,0 +1,61 @@
+.form-actions-nav {
+    display: none;
+}
+
+.form-actions-cont {
+    background-color: rgba(200, 200, 200, .3);
+    padding: 20px 0;
+    position: relative;
+
+    .form-actions-handle {
+        background-color: rgba(0, 160, 160, .5);
+        border: 1px solid #e0e0e0;
+        color: #e0e0e0;
+        width: 30px;
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        cursor: pointer;
+        text-align: center;
+
+        .fa {
+            font-size: 18px;
+        }
+
+        .fa-angle-double-up {
+            display: none;
+        }
+    }
+
+    .form-actions-handle:hover {
+        border: 1px solid #aaa;
+    }
+
+    .form-actions {
+        a {
+            //margin-right: 3px;
+        }
+    }
+}
+
+.form-actions-nav.minimized {
+    
+    .form-actions-handle {
+        .fa-angle-double-down {
+            display: none;
+        }
+
+        .fa-angle-double-up {
+            display: block;
+        }
+    }
+
+    .form-actions-cont {
+        bottom: -20px;
+    }
+
+    .form-actions {
+        display: none !important;
+    }
+
+}

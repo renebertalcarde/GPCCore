@@ -1,0 +1,64 @@
+﻿@model coreApp.Models.LineChartModel
+@{
+    string labels = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Labels.ToArray());
+    string dsWorkHours = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Data[0].ToArray());
+    string dsHoursWorked = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Data[1].ToArray());
+
+    bool singleDay = Model.Period.Days.Where(x => x.PeriodAttendance_WorkHours > 0).Count() == 1;
+
+    string contSelector = "";
+    if (ViewData["contSelector"] != null)
+    {
+        contSelector = (string)ViewData["contSelector"];
+    }
+
+    bool showData = false;
+    if (ViewData["showData"] != null)
+    {
+        showData = (bool)ViewData["showData"];
+    }
+}
+<div class="card period-attendance @(showData ? "showData" : "")" data-contselector="@contSelector" >
+    @if (!showData)
+    {
+        <div class="card-header">
+            <span class="card-title">Period Attendance</span>
+        </div>
+    }
+
+    <div class="card-body">
+        @if (TempData["PA_GlobalError"] != null)
+        {
+            <div class="head-panel" style="margin-top:0">
+                <div class="alert alert-danger">
+                    @Html.Raw(TempData["PA_GlobalError"].ToString())
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.Partial("_Helper_Period", Model.PM, new ViewDataDictionary { { "clientCallback", "PA_applyPeriod" } })
+        </div>
+
+        <input type="hidden" id="pa-labels" value="@labels" />
+        <input type="hidden" id="pa-dswh" value="@dsWorkHours" />
+        <input type="hidden" id="pa-dshw" value="@dsHoursWorked" />
+
+        <div style="padding:4px;">
+            <canvas id="chart-0" style="height:140px"></canvas>
+        </div>
+    </div>
+    <div class="card-footer">
+        @{
+            bool hasLateUT = Model.Period.LateUT.TotalMinsLate > 0 || Model.Period.LateUT.TotalMinsUT > 0;
+        }
+
+        @if (hasLateUT)
+        {
+            <div class="lateut-info-cont">
+                <i class="fa fa-clock-o"></i>&nbsp;
+                @Html.Partial("_LateUTInfo", Model.Period.LateUT, new ViewDataDictionary { { "forday", singleDay } })
+            </div>
+        }
+    </div>
+</div>

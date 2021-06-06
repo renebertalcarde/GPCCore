@@ -1,0 +1,74 @@
+﻿@model Module.DB.tblTravelApplication
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    bool isNew = !includeId;
+    
+}
+
+@Html.Hidden("HasBeenSubmitted", Model.HasBeenSubmitted)
+@Html.Hidden("HasBeenServed", Model.HasBeenServed)
+
+@if (isReadOnly)
+{
+    @Html.Partial("~/Areas/EmployeeModule/Views/MyTravelApplications/_TravelApplicationView.cshtml")
+}
+else
+{
+    using (Html.BeginForm(isNew ? "Create" : "Edit", "MyTravelApplications", new { area = "EmployeeModule", employeeId = Model.EmployeeId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.StartDate)
+        @Html.HiddenFor(model => model.EndDate)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Destination)
+                    <div>
+                        @Html.TextBoxFor(model => model.Destination, new { @class = "form-control", placeholder = "[Enter destination]" })
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Purpose)
+                    <div>
+                        @Html.TextAreaFor(model => model.Purpose, new { @class = "form-control", placeholder = "[Enter purpose of travel]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <label>Period</label>
+                    <div>
+                        @Html.Partial("~/Views/Shared/_Helper_Period.cshtml", new coreLib.Objects.PeriodModel(Model.StartDate, Model.EndDate), new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <label>Support File</label>
+                    <div>
+                        @Html.Partial("_Helper_Photo", new ViewDataDictionary {
+                            { "url", Url.Action("GetTravelSupportFile", "HLHome", new { area = "", id = Model.Id }) },
+                            { "control-name", "SupportFilex" },
+                            { "readonly", false },
+                            { "no-remove", isNew }
+                        })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Office Structure";
+    ViewBag.Subtitle = "Edit Mode";
+}
+
+@section Scripts {
+
+    <script>
+        var url_os = '@Url.Action("EditOfficeStructure")';
+        var url_viewitem = '@Url.Action("ViewItem")';
+        var url_createitem = '@Url.Action("CreateItem")';
+        var url_edititem = '@Url.Action("EditItem")';
+        var url_createbranch = '@Url.Action("CreateBranch")';
+        var url_createoffice = '@Url.Action("CreateOffice")';
+        var url_createdepartment = '@Url.Action("CreateDepartment")';
+        var url_editbranch = '@Url.Action("EditBranch")';
+        var url_editoffice = '@Url.Action("EditOffice")';
+        var url_editdepartment = '@Url.Action("EditDepartment")';
+        var url_deletebranch = '@Url.Action("DeleteBranch")';
+        var url_deleteoffice = '@Url.Action("DeleteOffice")';
+        var url_deletedepartment = '@Url.Action("DeleteDepartment")';
+
+        function office_structure_loaditemdetails(type, id) {
+            var cont = $('.office-structure-item-details');
+
+            loadingUI(cont, true);
+
+            var data = {
+                type: type,
+                id: id
+            };
+
+            cont.load(url_viewitem, data, function () {
+                loadingUI(cont, false);
+            });
+        }
+
+        function office_structure_clearitemdetails() {
+            $('.office-structure-item-details').empty();
+        }
+
+        function office_structure_refresh() {
+            var cont = $('.office-structure-cont');
+
+            loadingUI(cont, true);
+            cont.load(url_os, function () {
+                cont.find('.office-structure').officeStructure({
+                    edit_event_listdisplayed: adjustFormActions,
+                    edit_event_itemselected: office_structure_loaditemdetails,
+                    edit_event_selectioncleared: office_structure_clearitemdetails
+                });
+                loadingUI(cont, false);
+                adjustFormActions();
+            });
+
+            office_structure_clearitemdetails();
+        }
+
+        function office_structure_createitem_loadcallback(e) {
+            var form = e.modal.find('form');
+            var type = e.modal.find('#ItemType').val();
+            if (type == 'branch') {
+                form.attr('action', url_createbranch);
+            } else if (type == 'office') {
+                form.attr('action', url_createoffice);
+            } else {
+                form.attr('action', url_createdepartment);
+            }
+        }
+
+        function office_structure_createitem(type, parentId, postSubmitEvent) {
+            var url;
+
+            if (type == 'branch') {
+                url = url_createitem + '?type=' + type + '&parentId=-1';
+            } else {
+                url = url_createitem + '?type=' + type + '&parentId=' + parentId;
+            }
+
+            var opts = {
+                loadCallback: 'office_structure_createitem_loadcallback',
+                postSubmitEvent: postSubmitEvent
+            };
+
+            $.fn.list('modalOp', null, 'create', url, opts);
+        }
+
+        function office_structure_edititem_loadcallback(e) {
+            var form = e.modal.find('form');
+            var type = e.modal.find('#ItemType').val();
+            if (type == 'branch') {
+                form.attr('action', url_editbranch);
+            } else if (type == 'office') {
+                form.attr('action', url_editoffice);
+            } else {
+                form.attr('action', url_editdepartment);
+            }
+        }
+
+        function office_structure_edititem(type, id, postSubmitEvent) {
+            var url = url_edititem + '?type=' + type + '&id=' + id;
+
+            var opts = {
+                modalNoCancel: true,
+                loadCallback: 'office_structure_edititem_loadcallback',
+                postSubmitEvent: postSubmitEvent
+            };
+
+            $.fn.list('modalOp', null, 'edit', url, opts);
+        }
+
+        function office_structure_deleteitem(type, id, postSubmitEvent) {
+            var url;
+
+            if (type == 'branch') {
+                url = url_deletebranch;
+            } else if (type == 'office') {
+                url = url_deleteoffice;
+            } else {
+                url = url_deletedepartment;
+            }
+
+            var proc = modalProcessing();
+            var data = {
+                id: id
+            };
+
+            $.post(url, data, function (res) {
+                postSubmitEvent(res, proc);
+            });
+        }
+
+        $(document).ready(function () {
+            office_structure_refresh();
+        });
+    </script>
+}
+
+@section Styles {
+
+    <style>
+        /*.os-ui {
+            max-height: 300px;
+            overflow: auto;
+        }*/
+    </style>
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+<div class="row">
+    <div class="col-sm-6">
+        <div class="office-structure-cont"></div>
+    </div>
+    <div class="col-sm-6">
+        <div class="office-structure-item-details"></div>
+    </div>
+</div>
+
+
+@section FormActions {
+    <a href="@Url.Action("Index")" class="btn btn-sm btn-default btn-cancel">Back to View Mode</a>
+}

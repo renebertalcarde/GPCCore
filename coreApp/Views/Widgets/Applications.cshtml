@@ -1,0 +1,25 @@
+﻿@model HRLogixMobileLib.OnlineApplicationsModel
+@{ 
+    coreApp.UserAccess access = coreApp.Cache.Get().userAccess;
+}
+<div class="dashboard-item applications">
+    <h4>
+        @Model.Greetings
+    </h4>
+    @if (Model.Total > 0)
+    {
+        <ul class="online-application-items">
+            @foreach(var item in Model.Greetings_Details)
+            {
+                <li>
+                    <i class="fa fa-circle"></i>
+                    <a href="@item.Value">
+                        @item.Key
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+

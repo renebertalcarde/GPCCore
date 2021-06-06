@@ -1,0 +1,186 @@
+﻿@model List<Module.DB.tblAccountability>
+
+@{
+
+    ViewBag.Title = "Activity Logs";
+
+    string module = (string)ViewBag.Module;
+    coreLib.Objects.PeriodModel pm = (coreLib.Objects.PeriodModel)ViewBag.Period;
+
+    Dictionary<string, string> modules = new Dictionary<string, string>();
+
+    modules.Add("HRLogix", "Sys");
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<coreApp.Breadcrumb>() { new coreApp.Breadcrumb { Description = ViewBag.Title } })
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Assets/plugins/json-viewer-master/src/json-viewer.css" />
+
+    <style>
+        .period-cont {
+            margin-bottom: 0 !important;
+        }
+
+        hr {
+            margin-top: 0;
+        }
+
+        #json {
+            max-height: 400px;
+            overflow: auto;
+        }
+    </style>
+}
+
+@section Scripts {
+<script src="~/Assets/plugins/json-viewer-master/src/json-viewer.js"></script>
+
+    <script>
+        var url = '/ActivityLogs';
+        var module = '@module';
+
+        function load(e) {
+            e.modal.find('.btn-edit, .btn-delete').remove();
+
+
+            var raw = e.modal.find('#Data').val();
+            if (raw == '') {
+                $('#json').html('[no data]');
+            } else {
+                var data = JSON.parse(raw);
+
+                var jsonViewer = new JSONViewer();
+                document.querySelector("#json").appendChild(jsonViewer.getContainer());
+                jsonViewer.showJSON(data, -1, -1);
+            }
+        }
+
+        function applyPeriod(start, end) {
+        }
+
+        function search() {
+            var module = $('.module').val();
+            var start = $('.period-cont ').attr('data-start-date').replace(/\//g, '-');
+            var end = $('.period-cont ').attr('data-end-date').replace(/\//g, '-');
+
+            window.location = vdUrl('/ActivityLogs/' + module + '/' + start + '/' + end);
+        }
+    </script>
+}
+
+@section PreWrapper {
+    <div class="body-overlay"></div>
+    <div id="side-panel">
+        <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+        <div class="side-panel-wrap">
+            @Html.Action("Search", "StakeholderSearch", new { area = "HRModule", model = new coreApp.Models.StakeholderSearchUIModel { ForScheduling = true, DisableShowPanelTrigger = true, DataUrl = "/HR/Query/Stakeholder/TimeLogs/Index/{0}/-1/" + pm.StartDate.ToString("MM-dd-yyyy") + "/" + pm.EndDate.ToString("MM-dd-yyyy"), MinimalView = true, LessParameters = true } })
+        </div>
+    </div>
+}
+
+<fieldset>
+    <legend>Filters</legend>
+    <i>"Select parameters and click 'Search' button below"</i>
+    <div class="row">&nbsp;</div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <label>Module</label>
+            <div class="module-cont">
+                <select class="module form-control">
+                    @foreach (var item in modules)
+                    {
+                        <option value="@item.Value" @(item.Value == module ? "selected" : "")>@item.Key</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <label>Period</label>
+            @Html.Partial("~/Views/Shared/_Helper_Period.cshtml", pm, new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+        </div>
+    </div>
+</fieldset>
+<hr />
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%" data-paging="false" data-statesave="false"
+           modal-target modal-start="view" modal-load-callback="load" 
+           modal-view-width="modal-xl"
+           modal-view-url="/ActivityLog/Details/{0}">
+        <thead>
+            <tr>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Stakeholder
+                </th>
+                <th>
+                    Page
+                </th>
+                <th>
+                    Action
+                </th>
+                <th>
+                    Details
+                </th>
+                <th>
+                    Has Data
+                </th>
+            </tr>
+            <tr class="tr-filters">
+                <th data-orderable="false"></th>
+                <th class="dropdown" data-orderable="false"></th>
+                <th class="dropdown" data-orderable="false"></th>
+                <th class="dropdown" data-orderable="false"></th>
+                <th data-orderable="false"></th>
+                <th class="dropdown" data-orderable="false"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblAccountability item in Model)
+            {
+                <tr record-id="@item.Id">
+                    <td data-order="@item.LogDate.Ticks">
+                        @Html.DisplayFor(modelItem => item.LogDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Stakeholder)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Page)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Action)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Details)
+                    </td>
+                    <td>
+                        @(string.IsNullOrEmpty(item.Data) ? "No" : "Yes")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-search" onclick="search()">Search</button>
+}

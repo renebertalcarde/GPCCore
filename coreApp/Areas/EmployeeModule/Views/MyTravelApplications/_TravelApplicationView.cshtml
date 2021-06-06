@@ -1,0 +1,113 @@
+﻿@model Module.DB.tblTravelApplication
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="modal-view-ui pattern-bg">
+    <div class="view-title">
+        @Html.DisplayFor(model => model.Destination)
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <label>Application Id</label>
+                    <div>
+                        @Html.DisplayFor(model => model.Id)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Purpose)
+                    <div>
+                        @Html.DisplayMultiLineFor(model => model.Purpose)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <label>Period</label>
+                    <div>
+                        @Procs.friendlyPeriod(Model.StartDate, Model.EndDate, true)
+                    </div>
+                </li>
+            @if (Model.HasSupportFile)
+            {
+                <li class="list-group-item">
+                    <label>Support File</label>
+                    <div>
+                        @Html.Partial("_Helper_Photo", new ViewDataDictionary {
+                                { "url", Url.Action("GetTravelSupportFile", "HLHome", new { area = "", id = Model.Id }) },
+                                { "control-name", "SupportFile" },
+                                { "readonly", true }
+                            })
+                    </div>
+                </li>
+            }
+            </ul>
+        </div>
+   
+        <div class="col-sm-6">
+            <ul class="list-group">
+
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Application_Status_Desc)
+                    <div class="@(Model.IsApproved ? "text-success" : Model.IsDenied ? "text-danger" : Model.IsReturned ? "text-warning" : "")">
+                        @Html.DisplayFor(model => model.Application_Status_Desc)
+                    </div>
+                </li>
+
+                @if (Model.HasBeenSubmitted)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateSubmitted)
+                        <div>
+                            @Html.DisplayFor(model => model.DateSubmitted)
+                        </div>
+                    </li>
+                }
+
+                @if (Model.IsApproved)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ApprovedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ApprovedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.ApproveDate)
+                        </div>
+                    </li>
+                }
+                else if (Model.IsDenied)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DeniedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.DeniedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.DenyDate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DenyMessage)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.DenyMessage)
+                        </div>
+                    </li>
+                }
+                else if (Model.IsReturned)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ReturnedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ReturnedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.ReturnDate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ReturnMessage)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.ReturnMessage)
+                        </div>
+                    </li>
+                }
+            </ul>
+
+        </div>
+
+    </div>
+</div>

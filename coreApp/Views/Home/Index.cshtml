@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "~/Views/Shared/_Canvas_Anonymous.cshtml";
+
+    ViewBag.Title = "Logix Systems Portal";
+
+    System.Reflection.AssemblyName n = typeof(MvcApplication).Assembly.GetName();
+    Licenses.License lic = MvcApplication.ApplicationLicense;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/portal.less" />
+
+
+}
+
+<div class="portal">
+    <div class="header-section">
+
+        <div class="logo-section">
+            <div class="logo applogo-section">
+                <img src="~/Assets/images/logixsystems.png" alt="">
+            </div>
+            <div class="logo clientlogo-section">
+                <div>For <b>@FixedSettings.AgencyName</b></div><br />
+                <img src="~/Assets/images/company-logo.png" alt="">
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="separator"></div>
+
+    <div class="apps-section">
+        @if (lic.HasModule)
+        {
+            <div class="message-section">
+                Please select your application:
+            </div>
+            <div class="links-section">
+                @if (lic.Info.Modules_HL)
+                {
+                    <a href="@Url.Action("Index", "HLHome", new { area = "" })">
+                        <img class="applink applink-hl" src="~/Assets/images/hrlogix-nolabel.png" alt="">
+                    </a>
+                }
+
+                @if (lic.Info.Modules_PL)
+                {
+                    <a href="@Url.Action("Index", "PLHome", new { area = "Procurement" })">
+                        <img class="applink applink-pl" src="~/Assets/images/purchaselogix-nolabel.png" alt="">
+                    </a>
+                }
+
+                @if (lic.Info.Modules_IL)
+                {
+                    <a href="@Url.Action("Index", "ILHome", new { area = "SAM" })">
+                        <img class="applink applink-il" src="~/Assets/images/inventorylogix-nolabel.png" alt="">
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="unlicensed">
+                This application is unlicensed
+                <br /><br />
+
+                <p>
+                    Please click go to the <a href="@Url.Action("Index", "License")"><u>License Information Page</u></a> to view license information which you can send to us to get a license file.<br />
+                    You may contact us at <a>@FixedSettings.ContactUs_Mobile</a> or email us at <a href="mailto:@(FixedSettings.ContactUs_Email)">@FixedSettings.ContactUs_Email</a>
+                </p>
+                <p>
+                    If you already have a license file, go to the license information page or click the link above and upload the license file.
+                </p>
+            </div>
+        }
+    </div>
+
+    @if (lic.IsValid)
+    {
+        <div class="license-info-link">
+            @FixedSettings.Copyright
+            <br />
+            <a href="@Url.Action("Index", "License")">View License Information</a>
+        </div>
+    }
+    
+    
+</div>

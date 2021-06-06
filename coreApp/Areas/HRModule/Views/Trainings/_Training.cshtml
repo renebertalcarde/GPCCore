@@ -1,0 +1,135 @@
+﻿@model coreApp.DAL.tblTraining
+
+@{
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Title)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Venue)
+                        <div>
+                            @Html.DisplayFor(model => model.Venue)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label>Period</label>
+                        <div>
+                            @coreLib.Procs.friendlyPeriod(Model.DateFrom, Model.DateTo)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.NoOfHours)
+                        <div>
+                            @Html.DisplayFor(model => model.NoOfHours)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Type_Desc)
+                        <div>
+                            @Html.DisplayFor(model => model.Type_Desc)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ConductedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ConductedBy)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label>No. of Participants</label>
+                        <div>
+                            @Model.GetParticipants_Raw().Count
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.LastUpdatedBy_UserId)
+                        <div>
+                            @Html.DisplayFor(model => model.LastUpdatedBy)
+                            <div class="small">
+                                @Html.DisplayFor(model => model.LastUpdated)
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.DateFrom)
+        @Html.HiddenFor(model => model.DateTo)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Title)
+                    <div>
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Title]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Venue)
+                    <div>
+                        @Html.TextBoxFor(m => m.Venue, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Venue]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <label>Period</label>
+                    <div>
+                        @Html.Partial("~/Views/Shared/_Helper_Period.cshtml", Model.Period, new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.NoOfHours)
+                    <div>
+                        @Html.TextBoxFor(model => model.NoOfHours, new { @class = "form-control", placeholder = "[Enter No. of Hours]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Type)
+                    <div>
+                        @Html.DropDownListFor(m => m.Type, coreApp.SelectItems.getLDTypes(), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.ConductedBy)
+                    <div>
+                        @Html.TextBoxFor(m => m.ConductedBy, new { @class = "form-control", maxlength = "1000", placeholder = "[Enter Host]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}
+

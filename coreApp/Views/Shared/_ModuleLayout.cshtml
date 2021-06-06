@@ -1,0 +1,42 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_Canvas_Standard.cshtml";
+
+    var _area = HttpContext.Current.Request.RequestContext.RouteData.DataTokens["area"];
+    string area = _area == null ? "" : _area.ToString().ToLower();
+}
+@section Styles {
+    @RenderSection("Styles", false)
+}
+
+@section Breadcrumbs {
+    @RenderSection("Breadcrumbs", false)
+}
+
+@section SubMenu {
+    @RenderSection("SubMenu", false)
+}
+
+@section PreWrapper {
+    @RenderSection("PreWrapper", false)
+}
+
+@section Header {
+    @Html.Partial("_Header", new ViewDataDictionary { { "homePath", Url.Action("Index", "HLHome", new { area = "" }) }, { "logoPath", Procs.vdUrl("/Assets/images/hrlogix-nolabel.png") }, { "menuPath", "_MainMenu" }, { "settingsPath", Url.Action("Index", "Settings", new { area = "" }) } })
+}
+
+@RenderSection("RightNavigation", false)
+
+
+@RenderBody()
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}
+
+@section BodyScripts {
+    @RenderSection("BodyScripts", false)
+}
+
+@section FormActions {
+    @RenderSection("FormActions", required: false)
+}

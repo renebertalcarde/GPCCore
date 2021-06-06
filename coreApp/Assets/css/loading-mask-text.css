@@ -1,0 +1,34 @@
+﻿.loading-mask-text {
+  position: relative;
+}
+
+/*
+Because we set .loading-mask relative, we can span our ::before  
+element over the whole parent element  
+*/
+.loading-mask-text::before {
+  content: '';
+  position: absolute;
+  z-index: 99999;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(200, 200, 200, 0.7);
+}
+
+    .loading-mask-text::after {
+        content: 'Loading...';
+        position: absolute;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e0e0e0 !important;
+        background-color: white;
+        text-align: center;
+        padding: 4px;
+        width: 258px;
+        height: 28px;
+        top: calc(50% - 14px);
+        left: calc(50% - 129px);
+        z-index: 9999999;
+    }

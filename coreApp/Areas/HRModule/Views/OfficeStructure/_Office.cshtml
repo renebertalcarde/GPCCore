@@ -1,0 +1,93 @@
+﻿@model tblOffice
+@using Module.DB
+@{
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+}
+
+@if (isReadOnly)
+{
+    List<vwEmployeeCareer> employees = Model.GetEmployees();
+    int EmployeeCount_Active = employees.Where(x => x.Active).Count();
+    int EmployeeCount_Inactive = employees.Count - EmployeeCount_Active;
+
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.Office)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.OfficeId)
+                        <div>
+                            @Html.DisplayFor(model => model.OfficeId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TelephoneNo)
+                        <div>
+                            @Html.DisplayFor(model => model.TelephoneNo)
+                        </div>
+                    </li>
+                </ul>
+                <br />
+                <ul class="list-group">
+                    <li class="list-group-item list-group-header">
+                        Employee Count
+                    </li>
+                    <li class="list-group-item">
+                        <label>Active</label>
+                        <div>
+                            @EmployeeCount_Active
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <label>Inactive</label>
+                        <div>
+                            @EmployeeCount_Inactive
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("ItemType", "office")
+
+
+        @Html.HiddenFor(model => model.OfficeId)
+        @Html.HiddenFor(model => model.BranchId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.OfficeId)
+                        <div>
+                            @Html.DisplayFor(model => model.OfficeId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Office)
+                    <div>
+                        @Html.TextBoxFor(m => m.Office, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Office Name]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.TelephoneNo)
+                    <div>
+                        @Html.TextBoxFor(model => model.TelephoneNo, new { @class = "form-control" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

@@ -1,0 +1,88 @@
+﻿@{ 
+    Module.DB.tblStakeholder stakeholder = (Module.DB.tblStakeholder)ViewBag.Stakeholder;
+    LayoutUtility layoutUtility = new LayoutUtility { Request = Request, className = "current" };
+}
+
+<ul>
+    <li class="@layoutUtility.MenuSelector(
+              "[StakeholderModule{MyProfile|Details}]"
+              )">
+
+        <a href="@Url.Action("Details", "MyProfile", new { area = "StakeholderModule" })">
+            <div>Main Record</div>
+        </a>
+    </li>
+    <li class="@layoutUtility.MenuSelector(
+                "[StakeholderModule{MyInfo}{MyChildren}{MyEduc}{MyWorkExps}{MyTrainings}{MyCivilServices}{MyReferences}{MyVoluntary}{MySkills}{MyNonAcademics}{MyMemberships}]"
+                )">
+
+        <a href="#"><div>Personal Data</div></a>
+        <ul>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyInfo|Details}]")">
+                <a href="@Url.Action("Details", "MyInfo", new { area = "StakeholderModule" })">
+                    <div>Basic Information</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyChildren}]")">
+                <a href="@Url.Action("Index", "MyChildren", new { area = "StakeholderModule" })">
+                    <div>Children</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyEduc}]")">
+                <a href="@Url.Action("Index", "MyEduc", new { area = "StakeholderModule" })">
+                    <div>Education</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyWorkExps}]")">
+                <a href="@Url.Action("Index", "MyWorkExps", new { area = "StakeholderModule" })">
+                    <div>Work Experiences</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyTrainings}]")">
+                <a href="@Url.Action("Index", "MyTrainings", new { area = "StakeholderModule" })">
+                    <div>Trainings</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyCivilServices}]")">
+                <a href="@Url.Action("Index", "MyCivilServices", new { area = "StakeholderModule" })">
+                    <div>Civil Services</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyVoluntary}]")">
+                <a href="@Url.Action("Index", "MyVoluntary", new { area = "StakeholderModule" })">
+                    <div>Voluntary Works</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MySkills}]")">
+                <a href="@Url.Action("Index", "MySkills", new { area = "StakeholderModule" })">
+                    <div>Special Skills and Hobbies</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyNonAcademics}]")">
+                <a href="@Url.Action("Index", "MyNonAcademics", new { area = "StakeholderModule" })">
+                    <div>Non-Academic Distinctions/Recognitions</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyMemberships}]")">
+                <a href="@Url.Action("Index", "MyMemberships", new { area = "StakeholderModule" })">
+                    <div>Membership in Association/Organizations</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyInfo|PDSQuestions}]")">
+                <a href="@Url.Action("PDSQuestions", "MyInfo", new { area = "StakeholderModule" })">
+                    <div>PDS Form Questions</div>
+                </a>
+            </li>
+            <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyReferences}]")">
+                <a href="@Url.Action("Index", "MyReferences", new { area = "StakeholderModule" })">
+                    <div>References</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="@layoutUtility.MenuSelector("[StakeholderModule{MyPhotos}]")">
+        <a href="@Url.Action("Details", "MyPhotos", new { area = "StakeholderModule" })">
+            <div>Photos</div>
+        </a>
+    </li>
+</ul>

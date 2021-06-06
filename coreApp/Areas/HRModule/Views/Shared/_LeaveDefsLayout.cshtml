@@ -1,0 +1,72 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModuleLayout.cshtml";
+
+    UserAccess access = coreApp.Cache.Get().userAccess;
+
+    LayoutUtility layoutUtility = new LayoutUtility { Request = Request, className = "selected-item" };
+}
+
+@section Breadcrumbs {
+    @RenderSection("Breadcrumbs", false)
+}
+
+@section Scripts {
+    @RenderSection("Scripts", false)
+}
+
+@section Styles {
+    <style>
+        .links a {
+            display: inline-block;
+            width: 100%;
+            background-image: url(/Assets/canvas/html/images/icons/widget-link.png);
+            background-repeat: no-repeat;
+            padding-left: 1.3em;
+            color: black;
+        }
+
+        .links li.selected-item {
+            background-color: #e0e0e0;
+        }
+    </style>
+
+    @RenderSection("Styles", false)
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @RenderBody()
+    </div>
+</div>
+
+
+@section RightNavigation {
+
+    @if (access.IsHRStaff)
+    {
+        <div id="right-navigation" class="sidebar sticky-sidebar-wrap nobottommargin col_one_sixth col_last clearfix hidden-xs">
+            <div class="sidebar-widgets-wrap">
+
+                <div class="widget widget_group_links clearfix">
+                    <ul class="widget_group_links_list list-group">
+
+                        <li class="list-group-item list-group-header widget_group_links_title">
+                            Leave Type Definitions
+                        </li>
+                        <li class="list-group-item list-group-item-action @layoutUtility.MenuSelector("[LeaveModule{LeaveRules}]")">
+                            @Html.ActionLink("Leave Rules", "Index", "LeaveRules", new { area = "LeaveModule" }, null)
+                        </li>
+                        <li class="list-group-item list-group-item-action @layoutUtility.MenuSelector("[LeaveModule{LeaveTypes}]")">
+                            @Html.ActionLink("Leave Types", "Index", "LeaveTypes", new { area = "LeaveModule" }, null)
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    }
+}
+
+@section FormActions {
+    @RenderSection("FormActions", false)
+}

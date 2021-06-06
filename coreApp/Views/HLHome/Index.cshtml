@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "";
+    int stakeholderId = coreApp.Cache.Get().userAccess.stakeholder.StakeholderId;
+}
+
+@section Scripts {
+    <script src="~/Assets/canvas/html/js/chart.js"></script>
+    <script src="~/Assets/canvas/html/js/chart-utils.js"></script>
+
+    <script type='text/javascript' src='~/Assets/js/widgets/pa.js'></script>
+    <script type='text/javascript' src='~/Assets/js/widgets/dam.js'></script>
+
+    <script>
+        var url_pa = '@Url.Action("PeriodAttendance", "Widgets", new { area = "", stakeholderId = stakeholderId })';
+        var url_dam = '@Url.Action("DailyAttendanceMonitor", "Widgets", new { area = "", stakeholderId = stakeholderId })';
+    </script>
+}
+
+
+
+@if (coreApp.Cache.Get().userAccess.IsStakeholder)
+{
+    @Html.Partial("_Dashboard")
+}

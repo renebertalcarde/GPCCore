@@ -1,0 +1,89 @@
+﻿@color_default: #e0e0e0;
+@color_clear: #ffffff;
+@color_clear_complement: #000;
+@color_danger: #c82333;
+@color_primary: #2a2a2a;
+@color_primary_complement: #ededed;
+@color_primary_transparent: rgba(0,0,0,0.7);
+@color_secondary: #5d5d5d;
+@color_secondary_complement: #ffffff;
+@color_tertiary: #333;
+@color_highlight_1: #f3b04e;
+@color_highlight_1_shade: #ba8b00;
+@color_highlight_1_transparent: rgba(243,176,78,0.3);
+@color_highlight_2: #4299CF;
+@color_highlight_2_shade: #3882B0;
+@color_highlight_2_transparent: rgba(66,153,207,0.3);
+@color_section_bg_transparent: rgba(0,0,0,0.2);
+
+.comb-light {
+    background-color: @color_clear;
+    color: @color_clear_complement;
+}
+
+.comb-semi-dark {
+    background-color: @color_secondary;
+    color: @color_secondary_complement;
+}
+
+.comb-dark {
+    background-color: @color_primary;
+    color: @color_primary_complement;
+}
+
+.theme-light {
+    .comb-light;
+
+    a, a:visited {
+        color: @color_secondary;
+    }
+
+    a:hover, a:visited:hover {
+        color: @color_highlight_1;
+    }
+}
+
+.theme-semi-dark {
+    .comb-semi-dark;
+
+    a, a:visited {
+        color: @color_secondary_complement;
+    }
+
+    a:hover, a:visited:hover {
+        color: @color_highlight_1;
+    }
+
+    ul:not(.mega-menu-column) {
+        background-color: @color_secondary;
+
+        ul {
+            li:hover > a {
+                background-color: @color_primary;
+            }
+        }
+    }
+}
+
+.theme-dark {
+    .comb-dark;
+
+
+    a, a:visited {
+        color: @color_primary_complement;
+    }
+
+    a:hover, a:visited:hover {
+        color: @color_highlight_1;
+    }
+
+    ul:not(.mega-menu-column) {
+        background-color: @color_primary;
+
+        ul {
+            li:hover > a {
+                background-color: @color_secondary;
+            }
+        }
+    }
+}

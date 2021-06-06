@@ -1,0 +1,16 @@
+﻿<pre class="fxguide">
+    Scope Rule:
+    An logical expression used by the system to determine if a leave type is applicable to an stakeholder.
+
+    Example:
+    1) To apply leave type to "Permanent" and "Casual" stakeholders:
+	    {stakeholder.employmenttype} == 0 || {stakeholder.employmenttype} == 4
+
+    2) To apply leave type to "Permanent", "Married" and "Female" stakeholders:
+	    {stakeholder.employmenttype} == 0 && {stakeholder.civilstatus} == 1 && {stakeholder.gender} == 1
+
+    =========================================
+    @Html.Partial("_FxOperators")
+    =========================================
+    @Html.Partial("_FxVariables")
+</pre>

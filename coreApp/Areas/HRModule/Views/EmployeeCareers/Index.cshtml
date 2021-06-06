@@ -1,0 +1,256 @@
+﻿@model List<Module.DB.tblEmployee_Career>
+
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_EmployeeDetailsLayout.cshtml";
+
+    ViewBag.Title = "Career";
+    
+
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = "Employee Profile", Link = Url.Action("Details", "Employees", new { id = employee.EmployeeId, area = "HRModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/Career/Index/{0}", MinimalView = true, LessParameters = true } })
+}
+
+@section Scripts {
+    <script>
+        function presubmit(op, e) {
+            if (e.viewType == 'create' || e.viewType == 'edit') {
+
+                var events = e.modal.find('[name="Events"]');
+                var eventSelect = e.modal.find('.event-list').eq(1);
+
+                var vv = eventSelect.val().join();
+
+                events.val(vv);
+                
+                var deptId = -1;
+                var v = e.modal.find('.office-structure').attr('data-selection');
+                if (v != '') {
+                    var a = v.split(',');
+                    if (a.length == 1) {
+                        deptId = a[0];
+                    }
+                }
+                e.modal.find('#DepartmentId').val(deptId);
+            }
+            return true;
+        }
+
+        function print(dlWord) {
+            window.open(vdUrl('/HR/Manage/Employee/Career/Print/@employee.EmployeeId/?dlWord=' + dlWord), '_blank');
+        }
+
+        $(document).ready(function () {
+            $("a.dp").click(function () {
+                modalSetDate('Started in Government Service', null, function (dt) {
+                    var link = '@Url.Action("UpdateStartedInGovService", new { employeeId = employee.EmployeeId })';
+                    var data = {
+                        dt: dt
+                    };
+
+                    $.post(vdUrl(link), data, function (res) {
+                        if (res.IsSuccessful) {
+                            sessionStorage.clientMessage = res.Remarks;
+                            window.location.reload(true);
+                        } else {
+                            modalMessage(res.Err.split('\n'), 'Set date', true);
+                        }
+                    }, 'json');
+                });
+            });
+        });
+    </script>
+}
+
+@if (FixedSettings.UseStartInGovService)
+{
+    <div>
+        Started in Government Service:
+        @if (employee.StartedInGovService == null)
+                {
+            <span>Unknown</span>
+        }
+        else
+        {
+            @Html.DisplayFor(model => employee.StartedInGovService)
+        }
+        &nbsp;
+        <a href="#" style="color:#2F84B1" class="dp">[update...]</a>
+    </div>
+    <br />
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-presubmit-callback="presubmit"
+           modal-view-url="/HR/Manage/Employee/Career/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/Career/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/Career/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/Career/Create/@employee.EmployeeId"
+           modal-view-width="modal-xl" modal-edit-width="modal-xl" modal-create-width="modal-xl">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Date Effective
+                </th>
+                <th>
+                    Event/
+                    Remarks
+                </th>
+                @if (FixedSettings.UseMFO)
+                {
+                    <th>
+                        MFO
+                    </th>
+                }
+                <th>
+                    Department
+                </th>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Salary Grade
+                </th>
+                <th>
+                    Step
+                </th>
+                <th>
+                    Rate
+                </th>
+                <th>
+                    Fund
+                </th>
+                <th>
+                    Employment Type
+                </th>
+                <th>
+                    Faculty
+                </th>
+                <th>
+                    End Event Date
+                </th>
+                <th>
+                    End Event/
+                    Remarks
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblEmployee_Career item in Model)
+            {
+                bool isDailyRate = false;
+                double rate = item.GetRate(out isDailyRate);
+
+                <tr record-id="@item.CareerId">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CareerId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateEffective)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Events_Desc)
+                        @if (!string.IsNullOrEmpty(item.EventRemarks))
+                        {
+                            <hr style="margin:0" />
+                                @Html.DisplayMultiLineFor(model => item.EventRemarks)
+                        }
+                    </td>
+                    @if (FixedSettings.UseMFO)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MFO_Desc)
+                        </td>
+                    }
+                    <td>
+                        @item.DepartmentPath()
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Position.Position)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SalaryGrade)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PositionLevel)
+                    </td>
+                    <td>
+                        @rate.ToString("#,##0.00")
+                        <div>
+                            @if (item.IsCustomRate)
+                            {
+                                <span class="small">[Custom Rate]</span>
+                            }
+                            @if (isDailyRate)
+                            {
+                                <span class="small">[Daily Rate]</span>
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fund)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmploymentType_Desc)
+                    </td>
+                    <td>
+                        @(item.IsFaculty ? "Yes" : "No")
+                        @if (item.IsDesignated)
+                        {
+                            <br />
+                                <small>(with Designation)</small>
+                        }
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndEventDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndEvent_Desc)
+                        @if (!string.IsNullOrEmpty(item.EndEventRemarks))
+                        {
+                            <hr style="margin:0" />
+                                @Html.DisplayMultiLineFor(model => item.EndEventRemarks)
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<template id="OSSingleSelectTemplate">
+    @Html.Partial("_OfficeStructure", new OfficeStructureParameters { Mode = coreApp.Enums.OfficeStructureMode.SingleSelect })
+</template>
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+    
+    <div class="btn-group dropup">
+        <button type="button" class="btn btn-sm btn-default btn-print" onclick="print()">
+            Print Service Record
+        </button>
+        <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#" onclick="print(true)">Download Word Document</a>
+        </div>
+    </div>
+}

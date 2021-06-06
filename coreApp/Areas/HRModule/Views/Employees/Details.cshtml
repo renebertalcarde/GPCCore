@@ -1,0 +1,339 @@
+﻿@model Module.DB.tblEmployee
+
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_EmployeeDetailsLayout.cshtml";
+
+    ViewBag.Title = "Employee Profile";
+    
+
+    ViewBag.uiIsReadOnly = true;
+    ViewBag.uiIncludeId = true;
+
+    
+
+    Module.DB.AspNetUser u = Module.DB.Procs.Account.GetUser(Model.UserId);
+
+    UserAccess userAccess = coreApp.Cache.Get().userAccess;
+    bool loginAccount = userAccess.HasAccess("hr_emp_login_account");
+    bool employeeAccess = userAccess.HasAccess("hr_emp_access");
+    bool permissions = userAccess.HasAccess("hr_permissions");
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+        #page-menu .btn-create {
+            display: none;
+        }
+
+        .account-commands {
+            max-width: 100% !important;
+        }
+
+            .account-commands a {
+                display: inline-block;
+                margin: 0 0 10px 10px;
+                border: 1px solid #e0e0e0;
+                padding: 5px;
+                color: black;
+                background-color: rgba(0,0,0,0.1);
+                border-radius: 4px;
+            }
+
+        .btn-open:not(.btn-createemployee) {
+            color: white !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        var url_departmentscope = '@Url.Action("EditDepartments", "EmployeeAccess", new { area = "HRModule", employeeId = Model.EmployeeId })';
+        
+        $(document).ready(function () {
+            var ea = $('.employee-account');
+            var ea_enable = ea.find('.btn-enable-employee-account');
+            var ea_disable = ea.find('.btn-disable-employee-account');
+            var ea_resetpw = ea.find('.btn-reset-password');
+            var ea_delete = ea.find('.btn-delete-account');
+
+            ea_enable.click(function (e) {
+                e.preventDefault();
+
+                var url = '/HR/Manage/Employee/Account/EnableAccount/@Model.EmployeeId';
+
+                if (modalConfirm('Are you sure you want to enable this employee\'s login account?', function (res) {
+                    if (res) {
+                        $.post(vdUrl(url), { userId: '@Model.UserId' }, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                modalMessage(res.Err.split('\n'), 'Enable employee login account', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+
+            ea_disable.click(function (e) {
+                e.preventDefault();
+
+                var url = '/HR/Manage/Employee/Account/DisableAccount/@Model.EmployeeId';
+
+                if (modalConfirm('Are you sure you want to disable this employee\'s login account?', function (res) {
+                    if (res) {
+                        $.post(vdUrl(url), { userId: '@Model.UserId' }, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                modalMessage(res.Err.split('\n'), 'Disable employee login account', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+
+            ea_resetpw.click(function (e) {
+                e.preventDefault();
+
+                var url = '/HR/Manage/Employee/Account/ResetPassword/@Model.EmployeeId';
+
+                if (modalConfirm('Are you sure you want to reset this employee\'s login password to \'@(FixedSettings.DefaultPassword)\'?', function (res) {
+                    if (res) {
+                        $.post(vdUrl(url), { userId: '@Model.UserId' }, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                modalMessage(res.Err.split('\n'), 'Reset login password', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+
+            ea_delete.click(function (e) {
+                e.preventDefault();
+
+                var url = '/HR/Manage/Employee/Account/DeleteAccount/@Model.EmployeeId';
+
+                if (modalConfirm('Are you sure you want to delete this employee\'s login account?', function (res) {
+                    if (res) {
+                        $.post(vdUrl(url), { userId: '@Model.UserId' }, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                modalMessage(res.Err.split('\n'), 'Delete login account', true);
+                            }
+                        }, 'json');
+                    }
+                }));
+            });
+
+            var deptScope = $('.btn-departmentscope');
+            deptScope.click(function () {
+                var ids = deptScope.parent().attr('data-selection').split(',');
+
+                $.fn.officeStructure('openMultiselect', {
+                    multiselect_data: ids,
+                    multiselect_opencallback: function (ids, paths) {
+                        var proc = modalProcessing();
+                        var data = {
+                            DepartmentScopeSelection: ids
+                        };
+                        
+                        $.post(url_departmentscope, data, function (res) {
+                            if (res.IsSuccessful) {
+                                sessionStorage.clientMessage = res.Remarks;
+                                window.location.reload(true);
+                            } else {
+                                proc.addClass('confirm-close-event').modal('hide');
+                                modalMessage(res.Err.split('\n'), 'Office Scope', true);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/Details/{0}", MinimalView = true, LessParameters = true } })    
+}
+
+<div class="pattern-background modal-padding">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("_Employee", Model)
+        </div>
+    </div>
+
+    <div class="modal-edit-ui pattern-bg">
+        @if (loginAccount)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="employee-account">
+                        <ul class="list-group">
+                            <li class="list-group-item list-group-header bg-info">
+                                Login Account
+                            </li>
+
+                            @if (u == null)
+                            {
+                                <li class="list-group-item">
+                                    <div class="text-danger details" modal-target="#modalViewDetails_CreateAccount" modal-title="Create Account">
+                                        <i class="fa fa-warning"></i>
+                                        Employee has no login account. Click <b><a href="#" data-url="@Url.Action("CreateAccount", "EmployeeAccount", new { area = "HRModule", employeeId = Model.EmployeeId })" class="btn-open btn-createemployee">here</a></b> to create account.
+                                    </div>
+                                </li>
+
+                            }
+                            else
+                            {
+                                <li class="list-group-item">
+                                    <label>
+                                        Username
+                                    </label>
+                                    <div>
+                                        @u.UserName
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <label>
+                                        Account Status
+                                    </label>
+                                    <div>
+                                        @if (u.Disabled == true)
+                                        {
+                                            <span class="text-danger">Disabled</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-success">Enabled</span>
+                                        }
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="account-commands">
+                                        <a href="#" class="btn-reset-password"><i class="fa fa-key text-info"></i>&nbsp;Reset Password</a>
+
+                                        @if (u.Disabled == true)
+                                        {
+                                            <a href="#" class="btn-enable-employee-account"><i class="fa fa-unlock text-success"></i>&nbsp;Enable Account</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="btn-disable-employee-account"><i class="fa fa-lock text-warning"></i>&nbsp;Disable Account</a>
+                                        }
+
+                                        <a href="#" class="btn-delete-account"><i class="fa fa-times text-danger"></i>&nbsp;Delete Account</a>
+                                    </div>
+
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (u != null)
+        {
+            <div class="row">
+                @if (employeeAccess)
+                {
+                    Module.DB.tblEmployee_Access _access = new Module.DB.Procs.procs_tblEmployee(Model).Access();
+                    UserAccess access = new UserAccess(Model);
+
+                    OfficeStructureParameters officeScopeModel = new OfficeStructureParameters
+                    {
+                        Mode = coreApp.Enums.OfficeStructureMode.ListView_Value,
+                        SelectedIds = access.departments.Select(x => x.DepartmentId).ToArray()
+                    };
+
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-header">
+                                Access List
+
+                                <div class="pull-right details" modal-target="#modalViewDetails_AccessList" modal-title="Access List" style="margin-left:10px">
+                                    <a href="#" data-url="/HR/Manage/Employee/Access/Edit/@Model.EmployeeId/0" class="btn-open" title="Edit"><i class="fa fa-pencil"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                @Html.Partial("~/Areas/HRModule/Views/EmployeeAccess/_AccessList.cshtml", _access, new ViewDataDictionary { { "ReadOnly", true } })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-header">
+                                Office Scope
+
+                                <div class="pull-right" data-selection="@(string.Join(",", officeScopeModel.SelectedIds))">
+                                    <a href="#" class="btn-open btn-departmentscope" title="Edit"><i class="fa fa-pencil"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                @Html.Partial("_OfficeStructure", officeScopeModel)
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+                @if (permissions)
+                {
+                    Module.DB._HRPermission _permissions = new Module.DB.Procs.procs_tblEmployee(Model).Permissions();
+
+                    <div class="col-sm-4">
+                        <div class="card">
+                            <div class="card-header">
+                                Update Permissions
+
+                                <div class="pull-right details" modal-target="#modalViewDetails_Permissions" modal-title="Update Permissions" style="margin-left:10px">
+                                    <a href="#" data-url="/HR/Manage/Employee/Permissions/Edit/@Model.EmployeeId" class="btn-open" title="Edit"><i class="fa fa-pencil"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                @Html.Partial("~/Areas/HRModule/Views/HRPermissions/_PermissionList.cshtml", _permissions, new ViewDataDictionary { { "ReadOnly", true } })
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        }        
+    </div>
+      
+</div>
+
+<template id="OSMultiSelectTemplate">
+    @Html.Partial("_OfficeStructure", new OfficeStructureParameters { Mode = coreApp.Enums.OfficeStructureMode.MultiSelect })
+</template>
+
+@section FormActions {    
+    <div class="details" modal-title="Edit Employee Record" modal-width="modal-xl">
+        <a href="#" class="btn btn-sm btn-default btn-edit" data-url="@Url.Action("Edit", new { id = Model.EmployeeId })">Edit</a>
+    </div>
+    <div class="details" modal-title="Delete Employee Record">
+        <a href="#" class="btn btn-sm btn-default btn-danger btn-delete" data-url="@Url.Action("Delete")" data-redirect-url="@Url.Action("Index")" data-record-id="@Model.EmployeeId">Delete</a>  
+    </div>
+    
+}

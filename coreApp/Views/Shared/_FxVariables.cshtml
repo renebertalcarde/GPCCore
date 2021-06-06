@@ -1,0 +1,50 @@
+﻿@using Module.DB
+@{ 
+    UserAccess access = coreApp.Cache.Get().userAccess;
+    tblStakeholder_Career career = access.career;
+    tblStakeholder_Info info = new Module.DB.Procs.procs_tblStakeholder(access.stakeholder).Info();
+    TimeSettingsModel settings = new TimeSettingsModel(DateTime.Today, career.Office.OfficeId);
+
+    formulaParam parameters = new formulaParam(career, info, settings);
+    objVariables variables = new objVariables(parameters);
+
+}
+<pre class="fxguide">
+    Fixed Variables:
+
+    {stakeholder.civilstatus}
+	    Single = 0,
+        Married = 1,
+        Widow = 2,
+        Separated = 3,
+        Divorsed = 4,
+        Widower = 5
+
+    {stakeholder.employmenttype}
+	    Permanent = 0,
+        Contractual = 1,
+        JobOrder = 2,
+        Seasonal = 3,
+        Casual = 4,
+        Temporary = 5,
+        ContractOfService = 6
+
+    {stakeholder.gender}
+	    Male = 0,
+        Female = 1
+
+    {stakeholder.isfaculty} 
+    {stakeholder.withdesignation}
+ 
+    @foreach(objVariable item in variables.Variables.Where(x => x.category != "stakeholder"))
+    {
+<span>{@(item.category).@(item.field)}</span>
+    if (item.category == "settings_functions")
+    {
+<span>- @item.Val()</span>    
+    }
+<span>@(string.IsNullOrEmpty(item.description) ? "" : "- " + item.description)</span>
+        
+    }
+ 
+</pre>

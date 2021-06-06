@@ -1,0 +1,23 @@
+﻿@{ 
+    Layout = "~/Views/Shared/_Canvas.cshtml";
+}
+
+@section Styles {
+    @RenderSection("Styles", false)
+}
+
+@section Scripts {
+    @RenderSection("Scripts", false)
+}
+
+<section id="slider" class="slider-element slider-parallax full-screen dark error404-wrap" style="background: url('@Procs.vdUrl("/Assets/canvas/html/images/landing/landing1.jpg")') center;">
+    <div class="slider-parallax-inner">
+
+        <div class="container-fluid vertical-middle center clearfix">
+
+            @RenderBody()
+            <br /><br />
+        </div>
+
+    </div>
+</section>

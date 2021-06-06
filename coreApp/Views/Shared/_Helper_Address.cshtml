@@ -1,0 +1,44 @@
+﻿@model AddressModel
+@using Module.DB
+@{
+    int countryId = 446; //Philippines
+    int provinceId = 50; //Misamis Oriental
+    int cityId = -1;
+    int brgyId = -1;
+
+    if (Model.vwCity != null)
+    {
+        countryId = Model.vwCity.CountryId;
+        provinceId = Model.vwCity.ProvinceId;
+        cityId = Model.vwCity.Id;
+    }
+
+    if (Model.Brgy != null)
+    {
+        brgyId = Model.BrgyId;
+    }
+}
+
+    <div class="stat-address-cont">
+        <select class="select-country noselect2 form-control" data-value="@countryId" id="@(Model.Prefix + "CountryId")" name="@(Model.Prefix + "CountryId")">
+            <option value="-1">[Select Country]</option>
+            @foreach (_country c in coreApp.Cache.Get_Tables().ADDR.Countries)
+            {
+                <option value="@c.Id">
+                    @c.Country
+                </option>
+            }
+        </select>
+        <select class="select-province form-control" data-value="@provinceId" id="@(Model.Prefix + "ProvinceId")" name="@(Model.Prefix + "ProvinceId")">
+            <option value="-1">[Select Province]</option>
+        </select>
+        <select class="select-city form-control" data-value="@cityId" id="@(Model.Prefix + "CityId")" name="@(Model.Prefix + "CityId")">
+            <option value="-1">[Select City/Municipality]</option>
+        </select>
+        <select class="select-brgy form-control" data-value="@brgyId" id="@(Model.Prefix + "BrgyId")" name="@(Model.Prefix + "BrgyId")">
+            <option value="-1">[Select Barangay]</option>
+        </select>
+
+        <input class="tb-address form-control" type="text" placeholder="[Enter House No., Street, Village/Subdv.]" name="@(Model.Prefix + "Address")" value="@Model.Address" />
+        <input class="tb-postalcode form-control" type="text" placeholder="[Enter Postal Code]" name="@(Model.Prefix + "PostalCode")" value="@Model.PostalCode" />
+    </div>

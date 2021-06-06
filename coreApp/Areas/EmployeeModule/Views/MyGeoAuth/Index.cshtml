@@ -1,0 +1,201 @@
+﻿@using Module.DB
+@using coreLib.Extensions
+
+@{ 
+    ViewBag.Title = "My Geo-Location Attendance";
+
+    ViewBag.NoProfile = true;
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+       #logs {
+           min-height: 200px;
+       }
+    </style>
+}
+
+@section BodyScripts {
+    
+
+    @Html.Raw(GeoAuth_Location.GMaps.Load_API_Library(FixedSettings.GMaps_APIKey, FixedSettings.GMaps_APIUrl, "application_initGeolocation"))
+    <script src="~/Assets/customplugins/gmaps-geolocation.js"></script>
+
+    <script>
+        var deviceId = '';
+
+        function application_initGeolocation() {
+            if (getDeviceId()) {
+                initGeolocation('@FixedSettings.GMaps_DefaultLatLng', process);
+            }
+        }
+
+        function getDeviceId() {
+            if (typeof (Storage) === "undefined") {
+                alert("Your browser does not support Web Storage...");
+                return false;
+            } else {
+                deviceId = localStorage.getItem('geoauth-deviceid');
+                return true;
+            }
+        }
+
+        function process() {
+
+            var data = encodeURIComponent(myLocation.lat() + ',' + myLocation.lng());
+
+            //var form = $('.form-data');
+            //form.find('[name="Data"]').val(data);
+            //form.find('[name="DeviceId"]').val(deviceId);
+            //form.submit();
+
+            var init = $('#init');
+            var logs = $('#logs');
+
+
+            var data = {
+                Data: data,
+                DeviceId: deviceId
+            };
+
+            loadingUI(logs, true);
+
+            logs.load(vdUrl('@Url.Action("Logs")'), data, function () {
+                initPlugins();
+
+                setui(logs);
+
+                init.hide();
+                loadingUI(logs, false);
+            });
+        }
+
+        function setui(cont) {
+            var form = cont.find('.form-log');
+            var op = form.find('[name="Op"]');
+
+            var btnLogin = cont.find('.btn-login');
+            var btnLogout = cont.find('.btn-logout');
+
+            btnLogin.click(function () {
+                 modalConfirm('Are you sure you want to Log In?', function (ret) {
+                    if (ret) {
+                        modalProcessing();
+                        op.val('in');
+                        form.submit();
+                    }
+                });
+            });
+
+            btnLogout.click(function () {
+                modalConfirm('Are you sure you want to Log Out?', function (ret) {
+                    if (ret) {
+                        modalProcessing();
+                        op.val('out');
+                        form.submit();
+                    }
+                });
+            });
+
+            showMap();
+        }
+
+        /*map*/
+
+        function showMap() {
+            var cont = $('.map');
+            var mapData = JSON.parse(rawMapData);
+
+            var map = new google.maps.Map(cont[0], {
+                zoom: 13,
+                center: myLocation
+            });
+
+            //***************************************************************
+            //show my location
+            //***************************************************************
+
+            var myLocation_Marker = new google.maps.Marker({
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    strokeColor: '#ff0000',
+                    fillColor: '#ff0000',
+                    scale: 5
+                },
+                position: myLocation,
+                map: map
+            });
+            //***************************************************************
+
+            myLocation_Marker.addListener('mouseover', function (e) {
+                info.setContent('My Location');
+                info.open(map, this);
+            });
+
+            myLocation_Marker.addListener('mouseout', function (e) {
+                info.close();
+            });
+
+            var content = '<div>{0}<br />{1}<br />{2}<br />({3})</div>';
+
+            var info = new google.maps.InfoWindow({
+                content: ''
+            });
+
+            mapData.forEach(function (v) {
+                var loc = new google.maps.LatLng(v.Latitude, v.Longitude);
+
+                radiusCircle(map, v.AreaRadius, loc);
+
+                var m = new google.maps.Marker({
+                    position: loc,
+                    map: map
+                });
+
+                m.addListener('mouseover', function (e) {
+                    var c = content
+                        .replace('{0}', v.AreaName)
+                        .replace('{1}', v.Description)
+                        .replace('{2}', (v.AreaRadius / 1000) + ' km. log radius')
+                        .replace('{3}', v.Distance + ' from my location');
+
+                    info.setContent(c);
+                    info.open(map, this);
+                });
+
+                m.addListener('mouseout', function (e) {
+                    info.close();
+                });
+
+            });
+        }
+
+
+    </script>
+}
+
+
+<div id="init" class="row">
+    <div class="col-sm-12">
+        
+        <p>
+            Please wait while Geolocation is initializing...
+        </p>
+
+    </div>
+</div>
+
+<div id="logs"></div>
+
+

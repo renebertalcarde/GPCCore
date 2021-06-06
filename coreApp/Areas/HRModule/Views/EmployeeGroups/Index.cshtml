@@ -1,0 +1,49 @@
+﻿@model List<Module.DB.tblGroup>
+
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_EmployeeDetailsLayout.cshtml";
+
+    ViewBag.Title = "Groups";
+    
+
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+}
+
+@section Breadcrumbs {
+@Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = "Employee Profile", Link = Url.Action("Details", "Employees", new { id = employee.EmployeeId, area = "HRModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+ 
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/Groups/Index/{0}", MinimalView = true, LessParameters = true } })
+}
+
+@section Styles {
+    <style>
+        
+    </style>    
+}
+
+<div class="card">
+    <div class="card-header">
+        Employee Groups
+    </div>
+    <div class="card-body">
+        @Html.Partial("~/Areas/HRModule/Views/EmployeeGroups/_GroupList.cshtml", Model, new ViewDataDictionary { { "ReadOnly", true } })
+    </div>
+</div>
+
+
+
+@section FormActions {
+    <div class="details" modal-title="Group List">
+        <a href="#" class="btn btn-sm btn-default btn-open" data-url="@Url.Action("Edit", new { employeeId = employee.EmployeeId, area = "HRModule" })">Edit</a>
+    </div>    
+}

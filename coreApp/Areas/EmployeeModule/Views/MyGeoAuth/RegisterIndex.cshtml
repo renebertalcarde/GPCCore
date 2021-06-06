@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "My Geo-Location Attendance Device Registration";
+
+    ViewBag.NoProfile = true;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Styles {
+    <style>
+        #register {
+            min-height: 200px;
+        }
+    </style>
+}
+
+@section BodyScripts {
+    <script>
+        var deviceId = '';
+
+        function getDeviceId() {
+            if (typeof (Storage) === "undefined") {
+                alert("Your browser does not support Web Storage...");
+                return false;
+            } else {
+                deviceId = localStorage.getItem('geoauth-deviceid');
+                return true;
+            }
+        }
+
+        function setui(cont) {
+            cont.find('.btn-register').click(function () {
+                modalConfirm('Are you sure you want to register this device?', function (ret) {
+                    if (ret) {
+                        var proc = modalProcessing();
+
+                        $.post(vdUrl('@Url.Action("PostRegisterIndex")'), null, function (res) {
+                            if (res.IsSuccessful) {
+
+                                localStorage.setItem('geoauth-deviceid', res.Data);
+
+                                sessionStorage.clientMessage = res.Remarks;
+                                window.location = '@Url.Action("Index")';
+                            } else {
+                                proc.addClass('confirm-close-event').modal('hide');
+                                modalMessage(res.Err.split('\n'), 'Register Device', true);
+                            }
+                        }, 'json');
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function () {
+            if (getDeviceId()) {
+                var init = $('#init');
+                var register = $('#register');
+
+                if (cookiesEnabled()) {
+                    var data = {
+                        DeviceId: deviceId
+                    };
+
+                    loadingUI(register, true);
+
+                    register.load(vdUrl('@Url.Action("Register")'), data, function () {
+                        initPlugins(register);
+
+                        setui(register);
+
+                        init.hide();
+                        loadingUI(register, false);
+                    });
+
+                } else {
+
+                    var info = $('<span />').addClass('text-danger').html('Your browser cookies has been disabled. Please allow cookies in your browser');
+                    register.empty().append(info);
+
+                }
+            }
+        });
+    </script>
+}
+
+<div id="init" class="row">
+    <div class="col-sm-12">
+
+        <p>
+            Please wait while system is acquiring device Id...
+        </p>
+
+    </div>
+</div>
+
+<div id="register"></div>

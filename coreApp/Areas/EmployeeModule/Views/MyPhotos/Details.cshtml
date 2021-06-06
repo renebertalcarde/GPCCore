@@ -1,0 +1,80 @@
+﻿@{
+    Layout = "~/Areas/EmployeeModule/Views/Shared/_PDS.cshtml";
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    ViewBag.Title = "My Photos";
+
+
+    ViewBag.uiIsReadOnly = true;
+    ViewBag.uiIncludeId = true;
+
+
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "My Profile", Link = Url.Action("Details", "MyProfile", new { area = "EmployeeModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {   
+    <script>
+        $(document).ready(function () {
+            $('.btn-save').click(function (e) {
+                e.preventDefault();
+
+                var activePhotoConts = $('.photo-cont.has-file, .photo-cont.remove-photo');
+
+                if (activePhotoConts.length == 0) {
+                    modalMessage('No photo to upload/remove', 'Photos', true);
+                } else {
+                    $('#uploadform').submit();
+                }
+            });
+        });
+    </script>
+}
+
+@using (Html.BeginForm("Upload", "MyPhotos", new { area = "EmployeeModule", employeeId = employee.EmployeeId }, FormMethod.Post, new { id = "uploadform", enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    Profile Photo
+                </div>
+                <div class="card-body">
+                    @Html.Partial("_Helper_Photo", new ViewDataDictionary {
+                        { "url", Url.Action("GetPhoto", new { employeeId = employee.EmployeeId, type = "profile-photo" }) },
+                        { "control-name", "ProfilePhoto" },
+                        { "readonly", false }
+                   })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    PDS Photo
+                </div>
+                <div class="card-body">
+                    @Html.Partial("_Helper_Photo", new ViewDataDictionary {
+                        { "url", Url.Action("GetPhoto", new { employeeId = employee.EmployeeId, type = "pds-photo" }) },
+                        { "control-name", "PDSPhoto" },
+                        { "readonly", false }
+                   })
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section FormActions {
+    <a href="#" class="btn btn-sm btn-default btn-save">Save</a>
+}

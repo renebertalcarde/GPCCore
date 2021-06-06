@@ -1,0 +1,307 @@
+﻿@model OfficeStructureParameters
+@using coreApp
+@using Module.DB
+@{ 
+    UserAccess access = coreApp.Cache.Get().userAccess;
+
+    List<tblBranch> Branches = coreApp.Cache.Get_Tables().Branches.Where(x => !Model.RestrictAccess || access.AllowedBranch(x.Id)).OrderBy(x => x.Description).ToList();
+    List<tblOffice> Offices = coreApp.Cache.Get_Tables().Offices.Where(x => !Model.RestrictAccess || access.AllowedOffice(x.OfficeId)).OrderBy(x => x.Office).ToList();
+    List<tblDepartment> Departments = coreApp.Cache.Get_Tables().Departments.Where(x => !Model.RestrictAccess || access.AllowedDepartment(x.DepartmentId)).OrderBy(x => x.Department).ToList();
+
+    bool isSelectedAll = Model.SelectedAll(access);
+
+}
+
+@if (Model.Mode == coreApp.Enums.OfficeStructureMode.InlineTrigger)
+{
+    <div class="office-structure @Model.Classes" data-id="@Model.Id" data-mode="inlinetrigger" data-isdepartmentselection="@Model.IsDepartmentSelection" data-multiselection="@Model.InlineTrigger_Param_MultiSelection" data-selection-event="@Model.InlineTrigger_Event_Selection" data-selection="@(string.Join(",", Model.SelectedIds))" data-paths="@(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectionPaths))">
+        <div class="internal-office-structure-cont" data-url="@Url.Action("LoadOfficeStructure", "Home", new { area = "" })"></div>
+    </div>
+}
+else if (Model.Mode == coreApp.Enums.OfficeStructureMode.PathsDisplay)
+{
+    bool allItems = isSelectedAll && Model.PathsDisplay_Param_UseSelectedAllText;
+    bool showPopover = false; //!allItems && Model.SelectedIds.Count() > 1 && Model.PathsDisplay_Param_Minimal;
+
+    <div class="office-structure @Model.Classes" data-id="@Model.Id" data-mode="pathsdisplay"
+         data-container="body" data-toggle="@(showPopover ? "popover" : "")" data-placement="top" data-trigger="hover" data-popover-content="#@(Model.Id)-pathsdisplay-data" data-html="true" data-original-title="" title=""
+         >
+        @if (Model.IsDepartmentSelection)
+        {
+            if (allItems)
+            {
+                <div>All Departments</div>
+            }
+            else
+            {
+                List<tblDepartment> departments = Model.SelectedDepartments;
+                if (departments.Any())
+                {
+                    if (Model.PathsDisplay_Param_Minimal)
+                    {
+                        <div>@departments.First().Path()</div>
+                        if (departments.Count > 1)
+                        {
+                            int c = departments.Count - 1;
+                            string s = c > 1 ? "departments" : "department";
+
+                            <small>[and @c other @(s)]</small>
+                        }
+
+                        <div class="hidden" id="@(Model.Id)-pathsdisplay-data">
+                            <div class="popover-contents">
+                                <ol>
+                                    @foreach (tblDepartment department in departments.Take(10))
+                                    {
+                                        <li>@department.Path()</li>
+                                    }
+                                </ol>
+                                @if (departments.Count > 10)
+                                {
+                                    <span>[and more...]</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (tblDepartment department in departments)
+                            {
+                                <li>@department.Path()</li>
+                            }
+                        </ul>
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (allItems)
+            {
+                <div>All Offices</div>
+            }
+            else
+            {
+                List<tblOffice> offices = Model.SelectedOffices;
+                if (offices.Any())
+                {
+                    if (Model.PathsDisplay_Param_Minimal)
+                    {
+                        <div>@offices.First().Path()</div>
+                        if (offices.Count > 1)
+                        {
+                            int c = offices.Count - 1;
+                            string s = c > 1 ? "offices" : "office";
+
+                            <small>[and @c other @(s)]</small>
+                        }
+
+                        <div class="hidden" id="@(Model.Id)-pathsdisplay-data">
+                            <div class="popover-contents">
+                                <ol>
+                                    @foreach (tblOffice office in offices.Take(10))
+                                    {
+                                        <li>@office.Path()</li>
+                                    }
+                                </ol>
+                                @if (offices.Count > 10)
+                                {
+                                    <span>[and more...]</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <ul>
+                            @foreach (tblOffice office in offices)
+                            {
+                                <li>@office.Path()</li>
+                            }
+                        </ul>
+                    }
+                }
+            }
+        }
+    </div>
+    
+}
+else if (Model.Mode == coreApp.Enums.OfficeStructureMode.ListView_Source)
+{
+    <div class="office-structure @Model.Classes" data-id="@Model.Id" data-mode="listview-source">
+        <ul>
+            @foreach (tblBranch br in Branches)
+                {
+                <li>
+                    <i class="icon-location"></i> @br.Description
+
+                    <ul>
+                        @foreach (tblOffice o in Offices.Where(x => x.BranchId == br.Id))
+                        {
+                            <li>
+                                <i class="fa fa-building-o"></i> @o.Office
+
+                                <ul>
+                                    @foreach (tblDepartment d in Departments.Where(x => x.OfficeId == o.OfficeId))
+                                    {
+                                        <li>
+                                            <i class="fa fa-building"></i> @d.Department
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else if (Model.Mode == coreApp.Enums.OfficeStructureMode.ListView_Value)
+{
+    <div class="office-structure @Model.Classes" data-id="@Model.Id" data-mode="listview-value">
+        <ul>
+            @foreach (tblBranch br in Model.SelectedBranches)
+                {
+                <li>
+                    <i class="icon-location"></i> @br.Description
+
+                    <ul>
+                        @foreach (tblOffice o in Model.SelectedOffices.Where(x => x.BranchId == br.Id))
+                        {
+                            <li>
+                                <i class="fa fa-building-o"></i> @o.Office
+
+                                <ul>
+                                    @foreach (tblDepartment d in Model.SelectedDepartments.Where(x => x.OfficeId == o.OfficeId))
+                                    {
+                                        <li>
+                                            <i class="fa fa-building"></i> @d.Department
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else if (Model.Mode == coreApp.Enums.OfficeStructureMode.SingleSelect)
+{
+    Offices = Departments.Select(x => x.Office).Distinct().OrderBy(x => x.Office).ToList();
+    Branches = Offices.Select(x => x.Branch).Distinct().OrderBy(x => x.Description).ToList();
+
+    <div class="office-structure" data-id="@Model.Id" data-mode="singleselect">
+        @if (Model.SingleSelect_AllowEmptySelection)
+        {
+            <div class="office-structure-commands">
+                <a href="#" class="cmd cmd-unselectall">[Unselect All]</a>
+            </div>
+        }        
+        <ul>
+            @foreach (tblBranch br in Branches)
+            {
+                <li data-path="@br.ToString()">
+                    <i class="icon-location"></i> @br.Description
+
+                    <ul>
+                        @foreach (tblOffice o in Offices.Where(x => x.BranchId == br.Id))
+                        {
+                            <li data-path="@o.Path()">
+
+                                @if (Model.IsDepartmentSelection)
+                                {
+                                    <i class="fa fa-building-o"></i> @o.Office
+
+                                    <ul>
+                                        @foreach (tblDepartment d in Departments.Where(x => x.OfficeId == o.OfficeId))
+                                        {
+                                            <li data-path="@d.Path()">
+                                                @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "department-" + d.DepartmentId }, { "name", "OSSingleselect" }, { "value", !isSelectedAll && Model.SelectedDepartments.Any(x => x.DepartmentId == d.DepartmentId) }, { "text", d.Department }, { "input-value", d.DepartmentId }, { "style", "display:inline-block" }, { "small-type", true } })
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    @Html.Partial("_Helper_RadioBox", null, new ViewDataDictionary { { "id", "office-" + o.OfficeId }, { "name", "OSSingleselect" }, { "value", !isSelectedAll && Model.SelectedOffices.Any(x => x.OfficeId == o.OfficeId) }, { "text", o.Office }, { "input-value", o.OfficeId }, { "style", "display:inline-block" }, { "small-type", true } })
+                                }
+
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else if (Model.Mode == coreApp.Enums.OfficeStructureMode.MultiSelect)
+{
+    Offices = Departments.Select(x => x.Office).Distinct().OrderBy(x => x.Office).ToList();
+    Branches = Offices.Select(x => x.Branch).Distinct().OrderBy(x => x.Description).ToList();
+
+    <div class="office-structure select-all" data-id="@Model.Id" data-mode="multiselect">
+        <div class="office-structure-commands">
+            <a href="#" class="cmd cmd-selectall">[Select All]</a>
+            <a href="#" class="cmd cmd-unselectall">[Unselect All]</a>
+        </div>
+        <ul>
+            @foreach (tblBranch br in Branches)
+            {
+                <li data-path="@br.Description">
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.SelectedBranches.Any(x => x.Id == br.Id) }, { "text", br.Description }, { "input-value", "-1" }, { "id", "br-" + br.Id }, { "name", "OSMultiselect" } })
+
+                    <ul>
+                        @foreach (tblOffice o in Offices.Where(x => x.BranchId == br.Id))
+                        {
+                            <li data-path="@o.Path()">
+                                @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.SelectedOffices.Any(x => x.OfficeId == o.OfficeId) }, { "text", o.Office }, { "input-value", o.OfficeId }, { "id", "office-" + o.OfficeId }, { "name", "OSMultiselect" } })
+
+                                @if (Model.IsDepartmentSelection)
+                                {
+                                    <ul>
+                                        @foreach (tblDepartment d in Departments.Where(x => x.OfficeId == o.OfficeId))
+                                        {
+                                            <li data-path="@d.Path()">
+                                                @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", Model.SelectedDepartments.Any(x => x.DepartmentId == d.DepartmentId) }, { "text", d.Department }, { "input-value", d.DepartmentId }, { "id", "department-" + d.DepartmentId }, { "name", "OSMultiselect" } })
+                                            </li>
+                                        }
+                                    </ul>
+                                }                                
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+}
+else if (Model.Mode == coreApp.Enums.OfficeStructureMode.Edit)
+{
+    List<OfficeStructureItem> _Items = Branches.Select(x => new OfficeStructureItem(x)).ToList();
+
+    <div class="office-structure @Model.Classes" data-id="@Model.Id" data-mode="edit">
+        <div class="selected-item-info">
+            Selected Item: <span class="selected-item-name">[none]</span><br />
+            Selected Item Type: <span class="selected-item-type"></span>
+        </div>
+        <div class="office-structure-commands">
+            <a href="#" class="cmd cmd-newbr">[New @(FixedSettings.BranchDescription)]</a>
+            <a href="#" class="cmd cmd-newoffice">[New Office]</a>
+            <a href="#" class="cmd cmd-newdepartment">[New Department]</a>
+            <a href="#" class="cmd cmd-edititem">[Edit Item]</a>
+            <a href="#" class="cmd cmd-deleteitem">[Delete Item]</a>
+        </div>
+        <ul>
+            @foreach (OfficeStructureItem item in _Items)
+            {
+                <li>
+                    @Html.Partial("_OfficeStructure_Item", item)
+                </li>
+            }
+        </ul>
+    </div>
+}

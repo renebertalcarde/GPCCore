@@ -1,0 +1,86 @@
+﻿@model coreApp.DAL.tblEmployee_Reference
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+    
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Name)
+                        <div>
+                            @Html.DisplayFor(model => model.Name)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Address)
+                        <div>
+                            @Html.DisplayFor(model => model.Address)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TelephoneNo)
+                        <div>
+                            @Html.DisplayFor(model => model.TelephoneNo)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.Id)
+                        <div>
+                            @Html.DisplayFor(model => model.Id)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Name)
+                    <div>
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", maxlength = "100", placeholder = "[Enter Name]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Address)
+                    <div>
+                        @Html.TextBoxFor(model => model.Address, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Address]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.TelephoneNo)
+                    <div>
+                        @Html.TextBoxFor(model => model.TelephoneNo, new { @class = "form-control", placeholder = "[Enter Telephone No.]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}
+

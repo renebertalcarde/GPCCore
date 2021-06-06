@@ -1,0 +1,163 @@
+﻿@using coreApp.Models
+@model Module.Time.etPeriod
+@{ 
+    coreLib.Objects.PeriodModel pm = Model.data.pm;
+
+    Module.DB.TimeSettingsModel settings = Model.data.settings;
+
+    Module.Time.etDay day = Model.Days.First();
+
+    List<Module.DB.tblStakeholder_TimeLog> timeLogs = new List<Module.DB.tblStakeholder_TimeLog>();
+
+    if (day.Times.Any())
+    {
+        timeLogs = Model.data.tblStakeholder_TimeLogs.OrderBy(x => x.TimeLog).ThenBy(x => x.LogId)
+                                        .Where(x => day.Times.First().segment.TimeInFrom <= x.TimeLog && day.Times.Last().segment.TimeOutTo >= x.TimeLog)
+                                        .ToList();
+    }
+
+}
+
+
+<div class="card dam">
+    <div class="card-header">
+        <span class="card-title">Today's Attendance</span>
+    </div>
+
+    <div class="card-body">
+        @if (TempData["DAM_GlobalError"] != null)
+        {
+            <div class="alert alert-danger">
+                @Html.Raw(TempData["DAM_GlobalError"].ToString())
+            </div>
+        }
+        else
+        {
+            @Html.TextBox("DAM_Date", @pm.StartDate.ToString("MM/dd/yyyy"), new { @class = "form-control" })
+
+            <div class="row main-contents">
+                <div class="col-sm-5">
+                    <div class="ui-plate">
+                        <b>Schedules</b>
+
+                        @if (day.IsHoliday)
+                        {
+                            <div class="text-warning">
+                                This day was declared as a @(day.IsRegularHoliday ? "regular" : day.IsSpecialHoliday ? "special" : "") holiday: @day.Holidays_Desc
+                            </div>
+                        }
+
+                        @if (!day.IsWorkDay)
+                        {
+                            <div class="text-danger">
+                                You have no schedule for this day
+                            </div>
+                        }
+                        else
+                        {
+                            <ul>
+                                @foreach (var time in day.Times)
+                                {
+                                    if (time.segment.IsWorkSpan)
+                                    {
+                                        <li>
+                                            @time.segment.Description - @time.segment.SegmentType_Desc (@settings.WorkHoursPerDay hours)
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            @time.segment.Description (@time.segment.TimeIn.ToString("h:mm tt") - @time.segment.TimeOut.ToString("h:mm tt"))
+                                            @if (time.segment.SegmentType != (int)Module.DB.Enums.SegmentType.Regular)
+                                            {
+                                                <span>@(" - " + time.segment.SegmentType_Desc)</span>
+                                            }
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="ui-plate">
+                        <b>Day's Time Logs</b>
+
+                        @if (!timeLogs.Any())
+                        {
+                            <div class="text-danger">
+                                No time logs for this day
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="timelogs table static-table">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Time Log
+                                            </th>
+                                            <th>
+                                                Mode
+                                            </th>
+                                            <th>
+                                                Entry Type
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (Module.DB.tblStakeholder_TimeLog item in timeLogs.OrderByDescending(x => x.TimeLog))
+                                        {
+                                            <tr record-id="@item.LogId">
+                                                <td>
+                                                    @item.TimeLog.ToString("h:mm tt")
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Mode_Desc)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.EntryType_Desc)
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+           
+        }
+        
+        
+        
+    </div>
+    <div class="card-footer">
+        @{
+            bool hasLateUT = Model.LateUT.TotalMinsLate > 0 || Model.LateUT.TotalMinsUT > 0;
+            bool hasDayStatus = day.IsHoliday || day.IsRestDay || !day.IsWorkDay || day.NoWorkCredit || day.OnTravel || (day.IsAbsent_WholeDay && !day.Faculty40_Saturday_Absence) ||
+                (day.IsAbsent_HalfDay && !day.Faculty40_Saturday_Absence) || day.OnWholeDayLeave || day.OnHalfDayLeave;
+        }
+
+        @if (hasLateUT || hasDayStatus)
+        {
+            if (hasLateUT)
+            {
+                <div class="lateut-info-cont">
+                    <i class="fa fa-clock-o"></i>&nbsp;
+                    @Html.Partial("_LateUTInfo", day.LateUT, new ViewDataDictionary { { "forday", true } })
+                </div>
+            }
+
+            if (hasDayStatus)
+            {
+                <div class="day-status-cont">
+                    <i class="fa fa-info-circle"></i>&nbsp;
+                    @Html.Partial("~/Areas/TimeModule/Views/Shared/_DayStatus.cshtml", day)
+                </div>
+            }
+        }
+    </div>
+</div>

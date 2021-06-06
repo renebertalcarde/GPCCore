@@ -1,0 +1,34 @@
+﻿@model Module.DB.tblEmployee_Info
+@{
+    Layout = "~/Areas/EmployeeModule/Views/Shared/_PDS.cshtml";
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+    ViewBag.Title = "My Basic Information";
+    
+
+    ViewBag.uiIsReadOnly = true;
+    ViewBag.uiIncludeId = true;
+
+    
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "My Profile", Link = Url.Action("Details", "MyProfile", new { area = "EmployeeModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@Html.Partial("~/Areas/HRModule/Views/EmployeeInfo/_Info.cshtml", Model)
+
+@section FormActions {
+    @if (coreApp.Cache.Get().userAccess.HasPermission("EmployeeInfo"))
+    {
+        <div class="details" modal-title="Edit Basic Information" modal-width="modal-xl">
+            <a href="#" class="btn btn-sm btn-default btn-edit" data-url="@Url.Action("Edit")">Edit</a>
+        </div>
+    }
+}

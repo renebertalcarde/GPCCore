@@ -1,0 +1,44 @@
+﻿@{ 
+    Licenses.License lic = MvcApplication.ApplicationLicense;
+}
+
+<div class="block push-up-20">
+    <div class="row">
+        <div class="col-md-3 col-lg-4">
+            <div class="text-column this-animate" data-animate="fadeInLeft">
+                <h4>HRTrack &#8482;</h4>
+                <div class="text-column-info">
+                    Developed by iLogix Phils., Inc.
+                </div>
+            </div>
+
+            @if (lic.HasModule)
+            {
+                <div class="text-column this-animate" data-animate="fadeInLeft">
+                    <h4>Integrated Modules</h4>
+                    <div class="text-column-info">
+                        <ul></ul>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="block push-up-20">
+    <div class="row">
+        <div class="col-md-3 col-lg-4">
+            <div class="text-column this-animate" data-animate="fadeInLeft">
+                <div class="text-column-info">
+                    Registered Server S/N: @lic.Info.MotherboardSN
+
+                    @if (lic.Info.ShowExpiry)
+                    {
+                        <br /><span>Expiry Date: @lic.Info.ExpiryString</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

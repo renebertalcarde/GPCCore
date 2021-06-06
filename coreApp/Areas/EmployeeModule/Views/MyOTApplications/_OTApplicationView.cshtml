@@ -1,0 +1,167 @@
+﻿@model tblOTApplication
+@using Module.DB
+@{ 
+    tblOTTemplate template = coreApp.Cache.Get_Tables().OTTemplates.Where(x => x.Id == Model.OTTemplateId).Single();
+}
+
+@Html.HiddenFor(m => m.Id)
+
+<div class="modal-view-ui pattern-bg">
+    
+    <div class="row">
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">
+                    Overtime
+                </li>
+                <li class="list-group-item">
+                    <label>Application Id</label>
+                    <div>
+                        @Html.DisplayFor(model => model.Id)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Remarks)
+                    <div>
+                        @Html.DisplayMultiLineFor(model => model.Remarks)
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">
+                    Rules
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.MustTimeIn)
+                    <div>
+                        @Html.DisplayBooleanFor(model => template.MustTimeIn)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.MustTimeOut)
+                    <div>
+                        @Html.DisplayBooleanFor(model => template.MustTimeOut)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.SkipLastLog)
+                    <div>
+                        @Html.DisplayBooleanFor(model => template.SkipLastLog)
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">
+                    Period, Days & Time
+                </li>
+                <li class="list-group-item">
+                    <label>Inclusive Days</label>
+                    <div>
+                        @Procs.friendlyPeriod(Model.StartDate, Model.EndDate, true)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.Days)
+                    <div>
+                        @Html.DisplayFor(model => template.Days)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.TimeIn)
+                    <div>
+                        @Html.Partial("_Helper_SegmentTime", template, new ViewDataDictionary { { "IsTimeIn", true } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.TimeOut)
+                    <div>
+                        @Html.Partial("_Helper_SegmentTime", template, new ViewDataDictionary { { "IsTimeIn", false } })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.WorkDayEq)
+                    <div>
+                        @Html.DisplayFor(model => template.WorkDayEq)
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => template.AutoBreak)
+                    <div>
+                        @Html.DisplayFor(model => template.AutoBreak)
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <ul class="list-group">
+                <li class="list-group-item list-group-header">
+                    Action
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateSubmitted)
+                    <div>
+                        @if (Model.HasBeenSubmitted)
+                        {
+                            @Html.DisplayFor(modelItem => Model.DateSubmitted)
+                        }
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <label>Status</label>
+                    <div>
+                        @Html.DisplayFor(model => model.Application_Status_Desc)
+                    </div>
+                </li>
+
+                @if (Model.IsApproved)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ApprovedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ApprovedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.ApproveDate)
+                        </div>
+                    </li>
+                }
+                else if (Model.IsDenied)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DeniedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.DeniedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.DenyDate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DenyMessage)
+                        <div>
+                           @Html.DisplayMultiLineFor(model => model.DenyMessage)
+                        </div>
+                    </li>
+                }
+                else if (Model.IsReturned)
+                {
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ReturnedBy)
+                        <div>
+                            @Html.DisplayFor(model => model.ReturnedBy)<br />
+                            @Html.DisplayFor(modelItem => Model.ReturnDate)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.ReturnMessage)
+                        <div>
+                            @Html.DisplayMultiLineFor(model => model.ReturnMessage)
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

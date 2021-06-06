@@ -1,0 +1,142 @@
+﻿@{
+
+    UserAccess access = coreApp.Cache.Get().userAccess;
+
+    ViewBag.Title = "Downloads";
+}
+
+@section Styles {
+    <style>
+        .row > div {
+            border: 1px solid #e0e0e0;
+        }
+
+        fieldset {
+            padding: 20px;
+            text-align: center;
+        }
+
+            fieldset legend {
+                text-align: center;
+                text-decoration: underline;
+                color: #4299CF;
+            }
+
+        .dl {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        .dl > li {
+            vertical-align: top;
+            display: inline-block;
+            width: 30%;
+            min-width: 280px;
+        }
+
+        .applst {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .applst li {
+            margin-bottom: 20px;
+        }
+
+            .applst li a img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .mapps li {
+                display: inline-block;
+                width: 80px;
+            }
+
+                .mapps li a img {
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 4px;
+                }
+
+                .mapps li a span {
+                    display: block;
+                    font-size: smaller;
+                }
+    </style>
+}
+
+<ul class="dl">
+    @if (access.IsAdmin)
+    {
+        <li>
+            <fieldset>
+                <legend>Utilities</legend>
+
+                <ul class="applst utils">
+                    <li>
+                        <a href="@Procs.providerUrl("/DownloadPackages/ENROLLMENT%20DEPLOY/publish.htm")" class="applink">
+                            <img src="@Procs.providerUrl("/Assets/images/downloads/fingerprint.png")" />
+                            HRLogix U.are.U Fingerprint Enrollment
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Procs.providerUrl("/DownloadPackages/DEVICE%20SYNC%20DEPLOY/publish.htm")" class="applink">
+                            <img src="@Procs.providerUrl("/Assets/images/downloads/cogwheel.png")" />
+                            HRLogix Device Sync Service
+                        </a>
+                    </li>
+                </ul>
+
+            </fieldset>
+        </li>
+        <li>
+            <fieldset>
+                <legend>Windows Apps</legend>
+
+                <ul class="applst winapps">
+                    <li>
+                        <a href="@Procs.providerUrl("/DownloadPackages/KIOSK%20DEPLOY/publish.htm")" class="applink">
+                            <img src="@Procs.providerUrl("/Assets/images/downloads/clocks.png")" />
+                            HRLogix Kiosk
+                        </a>
+                    </li>
+                </ul>
+
+            </fieldset>
+        </li>
+    }
+
+    @if (FixedSettings.AllowGeoLocation)
+    {
+        <li>
+            <fieldset>
+                <legend>Mobile Apps</legend>
+
+
+                <h4>For Android devices:</h4>
+                <br />
+                <ul class="applst mapps">
+                    <li>
+                        <a href="@Procs.providerUrl("/DownloadPackages/com.ilogix.HRMobile.apk")" class="applink">
+                            <img src="@Procs.providerUrl("/Assets/images/downloads/hrmobile.png")" />
+                        </a>
+                    </li>
+                </ul>
+
+                <br /><br />
+                <a class="applink" href="@Procs.providerUrl("/Assets/docs/HRMobile Android Installation Guide.pdf")" target="_blank">View Android Installation Guide</a>
+
+                <hr />
+                <h4>For IOS devices:</h4>
+                <br />
+                <div>coming soon...</div>
+            </fieldset>
+        </li>
+    }
+
+</ul>
+

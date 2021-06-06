@@ -1,0 +1,61 @@
+﻿@model Module.DB.tblEmployee
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+    Module.DB.tblEmployee_Career career = new Module.DB.Procs.procs_tblEmployee(Model).LatestCareer();
+        
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.FullName)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.EmployeeId)
+                        <div>
+                            @Html.DisplayFor(model => model.EmployeeId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.IdNo)
+                        <div>
+                            @Html.DisplayFor(model => model.IdNo)
+                        </div>
+                    </li>
+                    
+                    @if (career != null)
+                    {
+                        if (career.Office != null)
+                        {
+                            <li class="list-group-item">
+                                @Html.LabelFor(model => career.Office.Office)
+                                <div>
+                                    @Html.DisplayFor(model => career.Office.Office)
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                @Html.LabelFor(model => career.Department)
+                                <div>
+                                    @Html.DisplayFor(model => career.Department)
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                @Html.LabelFor(model => career.Position.Position)
+                                <div>
+                                    @Html.DisplayFor(model => career.Position.Position)
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+}

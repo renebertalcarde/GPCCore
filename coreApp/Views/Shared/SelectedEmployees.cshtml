@@ -1,0 +1,33 @@
+﻿@model List<Module.DB.tblStakeholder>
+
+@{ 
+    List<SelectListItem> offices = coreApp.SelectItems.getOffices();
+
+
+    var results = Model.GroupBy(
+                         p => new Module.DB.Procs.procs_tblStakeholder(p).LatestCareer().Office.OfficeId,
+                         p => p.FullName,
+                         (key, g) => new { OfficeId = key, Stakeholders = g.ToList() }
+                     )
+                     .Join(offices, a => a.OfficeId.ToString(), b => b.Value, (a, b) => new { Office = b.Text, Stakeholders = a.Stakeholders.OrderBy(x => x) })
+                     .OrderBy(x => x.Office);
+}
+
+<ul>
+    @foreach (var item in results)
+    {
+        <li>
+            @item.Office
+
+            <ul>
+                @foreach(string stakeholder in item.Stakeholders)
+                {
+                    <li>
+                        @stakeholder
+                    </li>
+                }
+            </ul>
+            <br />
+        </li>
+    }
+</ul>

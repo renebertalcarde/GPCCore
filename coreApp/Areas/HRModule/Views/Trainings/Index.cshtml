@@ -1,0 +1,105 @@
+﻿@model List<tblTraining>
+@using coreApp.DAL
+@{
+    ViewBag.Title = "Trainings";
+
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+
+}
+
+@section Scripts {
+    <script>
+        function applyPeriod(start, end) {
+            $('#DateFrom').val(start);
+            $('#DateTo').val(end);
+        }
+    </script>
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view"
+           modal-view-url="/HR/Batch/Trainings/Details/{0}" modal-edit-url="/HR/Batch/Trainings/Edit/{0}" modal-delete-url="/HR/Batch/Trainings/Delete" modal-create-url="/HR/Batch/Trainings/Create">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Venue
+                </th>
+                <th>
+                    Period
+                </th>
+
+                <th>
+                    No. of Hours
+                </th>
+                <th>
+                    Type of Training
+                </th>
+                <th>
+                    Conducted By
+                </th>
+                <th>
+                    No. of Participants
+                </th>
+                <th>
+                    Last Updated By
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (tblTraining item in Model)
+            {
+                <tr record-id="@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                     <td>
+                        @Html.DisplayFor(modelItem => item.Venue)
+                    </td>
+                     <td>
+                         @coreLib.Procs.friendlyPeriod(item.DateFrom, item.DateTo)
+                     </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NoOfHours)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type_Desc)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ConductedBy)
+                    </td>
+                    <td>
+                        @item.GetParticipants_Raw().Count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+                        <div class="small">
+                            @Html.DisplayFor(modelItem => item.LastUpdated)
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

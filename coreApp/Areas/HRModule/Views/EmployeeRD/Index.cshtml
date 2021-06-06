@@ -1,0 +1,99 @@
+﻿@model List<Module.DB.tblEmployee_RD>
+
+@{
+    Layout = "~/Areas/TimeModule/Views/Shared/_Schedules_Layout.cshtml";
+
+    ViewBag.Title = "Rest Days";
+
+
+
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function applyPeriod(start, end) {
+            $('#StartDate').val(start);
+            $('#EndDate').val(end);
+        }
+    </script>
+}
+
+@section PreWrapper {
+    <div class="body-overlay"></div>
+    <div id="side-panel">
+        <div id="side-panel-trigger-close" class="side-panel-trigger"><a href="#"><i class="icon-line-cross"></i></a></div>
+        <div class="side-panel-wrap">
+            @Html.Action("Search", "EmployeeSearch", new { area = "HRModule", model = new coreApp.Models.EmployeeSearchUIModel { ForScheduling = true, DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/RD/Index/{0}", MinimalView = true, LessParameters = true } })
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        @Html.Partial("~/Views/Shared/info/_card_employeeInfo.cshtml", employee)
+    </div>
+</div>
+
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view" modal-view-width="modal-lg" modal-create-width="modal-lg" modal-edit-width="modal-lg"
+           modal-view-url="/HR/Manage/Employee/RD/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/RD/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/RD/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/RD/Create/@employee.EmployeeId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Period
+                </th>
+                <th>
+                    Days
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Module.DB.tblEmployee_RD item in Model)
+            {
+
+                <tr record-id="@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.InclusiveDays)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Days)
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

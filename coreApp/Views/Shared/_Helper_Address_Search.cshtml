@@ -1,0 +1,29 @@
+﻿@using Module.DB
+@{
+    int countryId = 446; //Philippines
+    int provinceId = 50; //Misamis Oriental
+    int cityId = -1;
+    int brgyId = -1;
+
+}
+
+    <div class="stat-address-cont search-mode">
+        <select class="select-country noselect2 form-control" data-value="@countryId" id="Search_CountryId" name="Search_CountryId">
+            <option value="-1">[All Countries]</option>
+            @foreach (_country c in coreApp.Cache.Get_Tables().ADDR.Countries)
+            {
+                <option value="@c.Id">
+                    @c.Country
+                </option>
+            }
+        </select>
+        <select class="select-province noselect2 form-control" data-value="@provinceId" id="Search_ProvinceId" name="Search_ProvinceId">
+            <option value="-1">[All Provinces]</option>
+        </select>
+        <select class="select-city noselect2 form-control" data-value="@cityId" id="Search_CityId" name="Search_CityId">
+            <option value="-1">[All Cities/Municipalities]</option>
+        </select>
+        <select class="select-brgy noselect2 form-control" data-value="@brgyId" id="Search_BrgyId" name="Search_BrgyId">
+            <option value="-1">[All Barangays]</option>
+        </select>
+    </div>

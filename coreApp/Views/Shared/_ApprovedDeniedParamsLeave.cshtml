@@ -1,0 +1,79 @@
+﻿@model string
+@{ 
+    bool showApproved = (bool)ViewBag.ShowApproved;
+    bool showDenied = (bool)ViewBag.ShowDenied;
+    bool showRecommended = (bool)ViewBag.ShowRecommended;
+
+    string approvedUrl = Url.Action("Index", Model, new { area = "HRModule", showApproved = !showApproved, showDenied = showDenied });
+    string deniedUrl = Url.Action("Index", Model, new { area = "HRModule", showApproved = showApproved, showDenied = !showDenied });
+    string recommendedUrl = Url.Action("Index", Model, new { area = "HRModule", showApproved = showApproved, showDenied = showDenied, showRecommended = !showRecommended });
+
+    UserAccess access = coreApp.Cache.Get().userAccess;
+    bool approveOny = !access.CanAccessLeaveApplications && access.CanApproveLeaveApplications;
+}
+
+<div class="approved-denied-params">
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <i class="fa fa-info-circle"></i>
+                </td>
+                @if (!approveOny)
+                {
+                    <td>
+                        @if (showRecommended)
+                        {
+                            <div>
+                                "Recommended" applications included in the list.
+                            </div>
+
+                            <a href="@recommendedUrl">[Hide "Recommended" applications]</a>
+                        }
+                        else
+                        {
+                            <div>
+                                "Recommended" applications hidden from the list.
+                            </div>
+                            <a href="@recommendedUrl">[Show "Recommended" applications]</a>
+                        }
+                    </td>
+                }
+
+                <td>
+                    @if (showApproved)
+                    {
+                        <div>
+                            "Approved" applications included in the list.
+                        </div>
+
+                        <a href="@approvedUrl">[Hide "Approved" applications]</a>
+                    }
+                    else
+                    {
+                        <div>
+                            "Approved" applications hidden from the list.
+                        </div>
+                        <a href="@approvedUrl">[Show "Approved" applications]</a>
+                    }
+                </td>
+                <td>
+                    @if (showDenied)
+                    {
+                        <div>
+                            "Denied" applications included in the list.
+                        </div>
+                        <a href="@deniedUrl">[Hide "Denied" applications]</a>
+                    }
+                    else
+                    {
+                        <div>
+                            "Denied" applications hidden from the list.
+                        </div>
+                        <a href="@deniedUrl">[Show "Denied" applications]</a>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>  
+</div>

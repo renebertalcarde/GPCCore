@@ -1,0 +1,91 @@
+﻿@model List<tblSignatory>
+@using coreApp.DAL
+@using coreLib.Extensions
+@{
+    ViewBag.Title = "Signatories";
+
+    string _prevModule = "";
+    string _prevReport = "";
+}
+
+@section Styles {
+    
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+
+<table class="table static-table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Module
+            </th>
+            <th>
+                Report Name
+            </th>
+            <th>
+                Field No.
+            </th>
+            <th>
+                Field Description
+            </th>
+            <th>
+                Signatory
+            </th>
+            <th>
+                Title
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (tblSignatory item in Model)
+        {
+            <tr>
+                @if (_prevModule == item.ModuleName)
+                {
+                    <td></td>
+                }
+                else
+                {
+                    _prevModule = item.ModuleName;
+
+                    <td>
+                        @item.ModuleName
+                    </td>
+                }
+                @if (_prevReport == item.ReportName)
+                {
+                    <td></td>
+                }
+                else
+                {
+                    _prevReport = item.ReportName;
+
+                    <td>
+                        @item.ReportName
+                    </td>
+                }
+                <td>
+                    @item.FieldNo
+                </td>
+                <td>
+                    @item.FieldDesc
+                </td>
+                <td>
+                    @item.Signatory
+                </td>
+                <td>
+                    @Html.DisplayMultiLineFor(m => item.Title)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@section FormActions {
+    <a href="@Url.Action("Edit")" class="btn btn-sm btn-default btn-edit">Edit Mode</a>
+}

@@ -1,0 +1,130 @@
+﻿@model coreApp.DAL.tblEmployee_CivilService
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+
+}
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="view-title">
+            @Html.DisplayFor(model => model.CareerService)
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.CSId)
+                        <div>
+                            @Html.DisplayFor(model => model.CSId)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Rating)
+                        <div>
+                            @Html.DisplayFor(model => model.Rating)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.DateOfExam)
+                        <div>
+                            @Html.DisplayFor(model => model.DateOfExam)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.POE)
+                        <div>
+                            @Html.DisplayFor(model => model.POE)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.LicenseNo)
+                        <div>
+                            @Html.DisplayFor(model => model.LicenseNo)
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.LicenseReleaseDate)
+                        <div>
+                            @Html.DisplayFor(model => model.LicenseReleaseDate)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.CSId)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.CSId)
+                        <div>
+                            @Html.DisplayFor(model => model.CSId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.CareerService)
+                    <div>
+                        @Html.TextBoxFor(m => m.CareerService, new { @class = "form-control", placeholder = "[Enter Career Service Name]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Rating)
+                    <div>
+                        @Html.TextBoxFor(m => m.Rating, new { @class = "form-control", placeholder = "[Enter Rating]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.DateOfExam)
+                    <div>
+                        @Html.TextBoxFor(model => model.DateOfExam, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.POE_Address)
+                    <div>
+                        @Html.TextBoxFor(model => model.POE_Address, new { @class = "form-control", maxlength = "200", placeholder = "[Enter Address]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.POE_CountryId)
+                    <div>
+                        @Html.DropDownListFor(m => m.POE_CountryId, coreApp.SelectItems.getCountries(), new { @class = "form-control" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.POE_PostalCode)
+                    <div>
+                        @Html.TextBoxFor(model => model.POE_PostalCode, new { @class = "form-control", placeholder = "[Enter Postal Code]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.LicenseNo)
+                    <div>
+                        @Html.TextBoxFor(model => model.LicenseNo, new { @class = "form-control", placeholder = "[Enter License No.]" })
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.LicenseReleaseDate)
+                    <div>
+                        @Html.TextBoxFor(model => model.LicenseReleaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

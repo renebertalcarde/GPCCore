@@ -1,0 +1,36 @@
+﻿@using coreApp.DAL
+@model string
+@{ 
+    tblPayrollSummary ps = (tblPayrollSummary)ViewBag.PS;
+    List<tblPayrollSummary> pSummaries = ((List<tblPayrollSummary>)ViewBag.PSummaries).ToList();
+}
+
+<div class="card card-info ps-info">
+    <div class="card-header">
+        Payroll Info
+    </div>
+    <div class="card-body">
+        <div class="section-main d-block nobottommargin">            
+            <div class="data-description">                
+                <select onchange="psItemSelected(this)" class="form-control">
+                    @foreach (tblPayrollSummary o in pSummaries)
+                    {
+                        <option value="@o.PSId" @(ps.PSId == o.PSId ? "selected" : "")>@(o.Description.ToUpper() + (o.IsPosted ? " [POSTED]" : ""))</option>
+                    }
+                </select>
+            </div>
+            <div class="data-subtitle">PS Id: @ps.PSId</div>
+            <div class="data-contents">
+                @ps.PayrollType_Desc @(ps.PayrollType == (int)coreApp.Enums.PayrollType.Salary ? "| " + ps.PayMode_Desc : "")<br />
+                @coreApp.Procs.friendlyPeriod(ps.DateFrom, ps.DateTo, true)<br />
+                Contributions: @ps.ContOptions_Desc
+            </div>
+        </div>
+    </div>    
+</div>
+
+<script>
+    function psItemSelected(sel) {
+        window.location = vdUrl('@Model' + $(sel).val());
+    }
+</script>

@@ -1,0 +1,332 @@
+﻿@using Module.Time
+@model etPeriodModel
+
+<div class="portlet light bordered">
+    <div class="attendance-table attendance-table-details table-responsive">
+
+        @if (Model.Period != null)
+        {
+            bool lateToleranceEnabled = Model.Period.data.settings.LateTolerance > 0;
+            bool flexiTimeEnabled = Model.Period.data.settings.FlexiTime > 0;
+            
+            <table border="1" class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>Schedule</th>
+                        <th>In</th>
+                        <th>Out</th>
+                        <th>Late <div class="subtitle">[mins]</div></th>
+                        <th>UTime <div class="subtitle">[mins]</div></th>
+
+                        @if (lateToleranceEnabled)
+                        {
+                            <th>Late Tol. <div class="subtitle">[mins]</div></th>
+                        }
+
+                        @if (flexiTimeEnabled)
+                        {
+                            <th>Flexi-Time <div class="subtitle">[mins]</div></th>
+                        }
+
+                        <th>Hrs. Worked</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        etDay day = Model.Period.Days.First();
+                        List<Module.Time.etTime> tmp = day.Times.Where(x => !x.IsAbsent).ToList();
+                    }
+
+                    <tr class="@(day.IsHoliday ? "holiday" : "")" data-date="@day.d.ToString("MM-dd-yyyy")">
+                        <td>
+                            @day.d.ToString("MM-dd-yyyy")
+                        </td>
+                        <td>
+                            @day.d.ToString("ddd")
+                        </td>
+
+                        @if (!day.IsWorkDay)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td>
+                                [@day.schedule.Description]
+                            </td>
+                        }
+
+
+                        @if (day.SkipAttendanceDetails)
+                        {
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            if (lateToleranceEnabled)
+                            {
+                                <td></td>
+                            }
+
+                            if (flexiTimeEnabled)
+                            {
+                                <td></td>
+                            }
+
+                            <td></td>
+                        }
+                        else
+                        {
+
+                            <td>
+                                @if (tmp.First().Log.Actual_TimeIn != coreLib.Constants.DEFAULT_DATETIME)
+                                {
+                                    <span>@tmp.First().Log.Actual_TimeIn.ToString("h:mm tt")</span>
+                                }
+                                else
+                                {
+                                    <span>@tmp.First().Log.Computed_TimeIn.ToString("h:mm tt")</span><span class="subtitle">[auto]</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (tmp.Last().Log.Actual_TimeOut != coreLib.Constants.DEFAULT_DATETIME)
+                                {
+                                    <span>@tmp.Last().Log.Actual_TimeOut.ToString("h:mm tt")</span>
+                                }
+                                else
+                                {
+                                    <span>@tmp.Last().Log.Computed_TimeOut.ToString("h:mm tt")</span> <span class="subtitle">[auto]</span>
+                                }
+                            </td>
+                            <td>
+                                @day.LateUT.TotalMinsLate.ToString("#,##0")
+                            </td>
+                            <td>
+                                @day.LateUT.TotalMinsUT.ToString("#,##0")
+                            </td>
+
+                            
+                            if (lateToleranceEnabled)
+                            {
+                                <td>
+                                    @day.LateUT.MinsLateTolerance.ToString("#,##0")
+                                </td>
+                            }
+
+                            if (flexiTimeEnabled)
+                            {
+                                <td>
+                                    @day.LateUT.MinsFlexiTime.ToString("#,##0")
+                                </td>
+                            }
+
+                            <td>
+                                @day.Fld.Worked_Hours.ToString("#,##0.###")
+                            </td>
+                           
+                        }
+
+                        <td>
+                            @if (day.IsHoliday)
+                            {
+                                <div class="holiday-text">@day.Holidays_Desc</div>
+                            }
+                        </td>
+
+                    </tr>
+
+                    @foreach (etTime ts in day.Times.Where(x => (!day.IsRestDay || x.RDSegment) && !x.IsDummy))
+                    {
+                        
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><b>@ts.segment.Description (@ts.segment.SegmentType_Desc)</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.Partial("_Helper_SegmentTime", ts.segment, new ViewDataDictionary { { "IsTimeIn", true } })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.Partial("_Helper_SegmentTime", ts.segment, new ViewDataDictionary { { "IsTimeIn", false } })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Work-day Equivalent: @ts.segment.WorkDayEq.ToString("0.###")
+                                        </td>
+                                    </tr>
+                                    @if (!string.IsNullOrEmpty(ts.segment.DeviceIds))
+                                    {
+                                        <tr>
+                                            <td>Log from device: @String.Join(", ", ts.segment.GetDeviceReferences(ts.segment.DeviceIds))</td>
+                                        </tr>                                        
+                                    }
+                                    @if (!string.IsNullOrEmpty(ts.segment.GeoAuth_AreaIds))
+                                    {
+                                        <tr>
+                                            <td>Log from area: @String.Join(", ", ts.segment.GetAreaReferences(ts.segment.GeoAuth_AreaIds))</td>
+                                        </tr>
+                                    }
+                                </table>
+
+
+                            </td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>autoLogin</td>
+                                        <td>: </td>
+                                        <td>@Html.DisplayBooleanFor(x => @ts.Log.autoLogin)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual_TimeIn</td>
+                                        <td>: </td>
+                                        <td>@(ts.Log.Actual_TimeIn == coreLib.Constants.DEFAULT_DATETIME ? "" : ts.Log.Actual_TimeIn.ToString("h:mm tt"))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Computed_TimeIn</td>
+                                        <td>: </td>
+                                        <td>@(ts.Log.Computed_TimeIn == coreLib.Constants.DEFAULT_DATETIME ? "" : ts.Log.Computed_TimeIn.ToString("h:mm tt"))</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td>autoLogout</td>
+                                        <td>: </td>
+                                        <td>@Html.DisplayBooleanFor(x => @ts.Log.autoLogout)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Actual_TimeOut</td>
+                                        <td>: </td>
+                                        <td>@(ts.Log.Actual_TimeOut == coreLib.Constants.DEFAULT_DATETIME ? "" : ts.Log.Actual_TimeOut.ToString("h:mm tt"))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Computed_TimeOut</td>
+                                        <td>: </td>
+                                        <td>@(ts.Log.Computed_TimeOut == coreLib.Constants.DEFAULT_DATETIME ? "" : ts.Log.Computed_TimeOut.ToString("h:mm tt"))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>lastLog</td>
+                                        <td>: </td>
+                                        <td>@(ts.lastLog == coreLib.Constants.DEFAULT_DATETIME ? "" : ts.lastLog.ToString("h:mm tt"))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>SkipLastLog</td>
+                                        <td>: </td>
+                                        <td>@Html.DisplayBooleanFor(x => @ts.segment.SkipLastLog)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                
+                                @if (ts.Log.minsLateTolerance > 0)
+                                {
+                                    @ts.Log.minsLateTolerance
+                                    <div>(charged to late tolerance: @ts.Log.minsLateTolerance)</div>
+                                }
+                                else
+                                {
+                                    @ts.Log.minsLate
+                                    if (ts.Log.minsLateRoundOff > 0)
+                                    {
+                                        <div>(rounded-off from @(ts.Log.minsLate - ts.Log.minsLateRoundOff))</div>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                
+                                @if (ts.Log.minsUndertimeTolerance > 0)
+                                {
+                                    @ts.Log.minsUndertimeTolerance
+                                    <div>(charged to undertime tolerance: @ts.Log.minsUndertimeTolerance)</div>
+                                }
+                                else
+                                {
+                                    @ts.Log.minsUndertime
+                                    if (ts.Log.minsUndertimeRoundOff > 0)
+                                    {
+                                        <div>(rounded-off from @(ts.Log.minsUndertime - ts.Log.minsUndertimeRoundOff))</div>
+                                    }
+                                }                                
+                            </td>
+
+                            @if (lateToleranceEnabled)
+                            {
+                                <td></td>
+                            }
+
+                            @if (flexiTimeEnabled)
+                            {
+                                <td></td>
+                            }
+
+                            <td>
+                                @ts.Worked_Hours.ToString("#,##0.###")
+                            </td>
+                            <td>
+                                @(ts.IsAbsent ? "Absent" : "")
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+        }
+    </div>
+</div>
+<div class="portlet light bordered">
+    <div class="table-responsive">
+        <table border="1" class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Time Log
+                    </th>
+                    <th>
+                        Mode
+                    </th>
+                    <th>
+                        Entry Type
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Module.DB.tblStakeholder_TimeLog item in Model.Period.data.tblStakeholder_TimeLogs.OrderBy(x => x.TimeLog).ThenBy(x => x.LogId))
+                {
+                    <tr record-id="@item.LogId">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LogId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TimeLog)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Mode_Desc)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EntryType_Desc)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</div>

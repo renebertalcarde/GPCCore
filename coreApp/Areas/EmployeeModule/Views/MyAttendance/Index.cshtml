@@ -1,0 +1,39 @@
+﻿@model AttendanceModel
+@using Module.Time
+@{
+    ViewBag.Title = "My Attendance";
+
+    string etPeriodFilter_Param = Model.period.filter.GetParam();
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+         function applyPeriod(start, end) {
+            window.location = vdUrl('/My/Attendance/Index/' + start + '/' + end + '/@etPeriodFilter_Param');
+        }
+
+        function applyFilters(param) {
+            window.location = vdUrl('/My/Attendance/Index/@Model.periodModel.StartDate.ToString("MM-dd-yyyy")/@Model.periodModel.EndDate.ToString("MM-dd-yyyy")/' + param);
+        }
+
+        function print() {
+            var printlink = '@Url.Action("Print", new { startDate = Model.periodModel.StartDate.ToString("MM-dd-yyyy"), endDate = Model.periodModel.EndDate.ToString("MM-dd-yyyy"), filters = etPeriodFilter_Param })';
+            window.open(vdUrl(printlink), '_blank');
+        }
+    </script>
+}
+
+@Html.Partial("~/Areas/TimeModule/Views/Shared/_AttendanceByPeriod.cshtml", Model, new ViewDataDictionary { { "clientCallback", "applyPeriod" }, { "filterClientCallback", "applyFilters" } })
+
+@section FormActions {
+    <button type="button" class="btn btn-sm btn-default btn-print" onclick="print()">
+        Print DTR
+    </button>
+}

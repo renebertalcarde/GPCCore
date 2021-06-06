@@ -1,0 +1,23 @@
+﻿@model coreApp.OfficeStructureParameters
+
+@{
+    ViewBag.Title = "Office Structure";
+    ViewBag.Subtitle = "View Mode";
+
+}
+
+@section Styles {
+    <link href="~/Assets/customplugins/office-structure.less" rel="stylesheet">
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+@Html.Partial("_OfficeStructure")
+
+
+
+@section FormActions {
+    <a href="@Url.Action("Edit")" class="btn btn-sm btn-default btn-edit">Edit Mode</a>
+}

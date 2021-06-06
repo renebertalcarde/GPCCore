@@ -1,0 +1,38 @@
+﻿@using Module.DB
+@model string
+@{
+    bool showDefault = true;
+    if (ViewBag.ShowDefault != null)
+    {
+        showDefault = (bool)ViewBag.ShowDefault;
+    }
+
+    string effectivity = (string)ViewBag.Effectivity;
+
+    List<DateTime> effectivites = (List<DateTime>)ViewBag.Effectivities;
+
+    string e = effectivity ?? TMSettings.DEFAULT_EFFECTIVITY;
+}
+
+<label>Effective</label>
+<select onchange="effectivitySelected(this)" class="form-control">
+    @foreach (DateTime dt in effectivites)
+    {
+        string d = dt.ToString("MM-dd-yyyy");
+
+
+        <option value="@d" @(d == e ? "selected" : "")>@d</option>
+    }
+    @if (showDefault)
+    {
+        <option value="DEFAULT" @(e == TMSettings.DEFAULT_EFFECTIVITY ? "selected" : "")>[DEFAULT]</option>
+    }
+
+</select>
+<br />
+
+<script>
+    function effectivitySelected(sel) {
+        window.location = vdUrl('@Model' + $(sel).val());
+    }
+</script>

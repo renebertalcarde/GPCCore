@@ -1,0 +1,96 @@
+﻿@model Module.DB.tblEmployee
+
+@{
+    Layout = "~/Areas/EmployeeModule/Views/Shared/_MyDetailsLayout.cshtml";
+
+    ViewBag.Title = "My Profile";
+
+
+    ViewBag.uiIsReadOnly = true;
+    ViewBag.uiIncludeId = true;
+    
+    Module.DB.tblEmployee_Access _access = new Module.DB.Procs.procs_tblEmployee(Model).Access();
+    Module.DB._HRPermission _permissions = new Module.DB.Procs.procs_tblEmployee(Model).Permissions();
+
+    UserAccess access = new UserAccess(Model);
+
+    OfficeStructureParameters officeScopeModel = new OfficeStructureParameters
+    {
+        Mode = coreApp.Enums.OfficeStructureMode.ListView_Value,
+        SelectedIds = access.departments.Select(x => x.DepartmentId).ToArray()
+    };
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+<div class="pattern-background modal-padding">
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Partial("~/Areas/HRModule/Views/Employees/_Employee.cshtml", Model)
+        </div>
+    </div>
+
+    <div class="modal-edit-ui pattern-bg">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="employee-account">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-header bg-info">
+                            Login Account
+                        </li>
+                        <li class="list-group-item">
+                            <label>
+                                Username
+                            </label>
+                            <div>
+                                @access.userName
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header">
+                        Access List
+                    </div>
+
+                    <div class="card-body">
+                        @Html.Partial("~/Areas/HRModule/Views/EmployeeAccess/_AccessList.cshtml", _access, new ViewDataDictionary { { "ReadOnly", true } })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header">
+                        Office Scope
+                    </div>
+
+                    <div class="card-body">
+                        @Html.Partial("_OfficeStructure", officeScopeModel)
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header">
+                        Update Permissions
+                    </div>
+
+                    <div class="card-body">
+                        @Html.Partial("~/Areas/HRModule/Views/HRPermissions/_PermissionList.cshtml", _permissions, new ViewDataDictionary { { "ReadOnly", true } })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

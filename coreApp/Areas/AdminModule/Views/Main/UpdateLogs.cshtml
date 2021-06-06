@@ -1,0 +1,98 @@
+﻿@model List<objDayLog>
+@using coreApp.Areas.AdminModule.Models
+@using coreLib.Extensions
+@{
+    ViewBag.Title = "Update Logs";
+
+    coreLib.Objects.PeriodModel pm = (coreLib.Objects.PeriodModel)ViewBag.Period;
+}
+
+@section Styles  {
+    <style>
+        #tblLogs th, 
+        #tblLogs td {
+            padding:4px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        function applyPeriod(start, end) {
+            window.location = vdUrl('/Admin/UpdateLogs/' + start + '/' + end);
+        }
+    </script>
+}
+
+<h3>Update Logs</h3>
+<br />
+
+@if (Model == null)
+{
+    <span class="text-danger">[Auto update service not installed]</span>
+}
+else
+{
+    <a href="@Url.Action("ForceUpdate")">[Update]</a>
+
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("~/Views/Shared/_Helper_Period.cshtml", pm, new ViewDataDictionary { { "clientCallback", "applyPeriod" }, { "label", "Period" } })
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="tblLogs" class="table table-bordered table-striped static-table" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (objDayLog day in Model.OrderByDescending(x => x.Date))
+                {
+                    if (day.Logs.Any())
+                    {
+                        bool firstLine = true;
+
+                        foreach (objLog log in day.Logs.OrderByDescending(x => x.Time))
+                        {
+                            <tr>
+                                @if (firstLine)
+                            {
+                                firstLine = false;
+
+                                    <td>
+                                        @day.Date.ToString("MM-dd-yyyy")
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                <td>
+                                    @log.Time.ToString("hh:mm tt")
+                                </td>
+                                <td>
+                                    @log.Description.ToMultilineString()
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>
+                                @day.Date.ToString("MM-dd-yyyy")
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}

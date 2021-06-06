@@ -1,0 +1,56 @@
+﻿@model coreApp.Models.EmployeeAccountModel
+
+@{    
+    bool isReadOnly = (bool)ViewBag.uiIsReadOnly;
+    bool includeId = (bool)ViewBag.uiIncludeId;
+    
+}
+
+
+@if (isReadOnly)
+{
+    <div class="modal-view-ui pattern-bg">
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.Username)
+                        <div>
+                            @Html.DisplayFor(model => model.Username)
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Email)
+        @Html.HiddenFor(model => model.EmployeeId)
+
+        <div class="modal-edit-ui pattern-bg">
+            <ul class="list-group">
+                @if (includeId)
+                {
+                    <li class="list-group-item dimmed">
+                        @Html.LabelFor(model => model.EmployeeId)
+                        <div>
+                            @Html.DisplayFor(model => model.EmployeeId)
+                        </div>
+                    </li>
+                }
+                <li class="list-group-item">
+                    @Html.LabelFor(model => model.Username)
+                    <div>
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "[Enter User Name]" })
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+}

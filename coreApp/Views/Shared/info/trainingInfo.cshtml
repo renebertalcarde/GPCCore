@@ -1,0 +1,22 @@
+﻿@model string
+@using coreApp.DAL
+@{ 
+    tblTraining training = (tblTraining)ViewBag.Training;
+
+    List<tblTraining> trainings = (List<tblTraining>)ViewBag.Trainings;
+}
+
+<label>Trainings</label>
+<select onchange="trainingSelected(this)" class="form-control">
+    @foreach (tblTraining p in trainings)
+    {
+        <option value="@p.Id" @(training.Id == p.Id ? "selected" : "")>@p.Title.ToUpper()</option>
+    }
+</select>
+<br />
+
+<script>
+    function trainingSelected(sel) {
+        window.location = vdUrl('@Model' + $(sel).val());
+    }
+</script>

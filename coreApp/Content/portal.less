@@ -1,0 +1,129 @@
+@import "~/Assets/theme/colors.less";
+
+.portal {
+    .theme-dark;
+    background-color: initial;
+    height: 100%;
+    min-height: 600px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+        color: white;
+    }
+
+    .header-section {
+        padding: 15px;
+        background-color: rgba(255, 255,255, 0.1);
+    }
+    
+    .logo-section {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+
+        img {
+            width: 100%;
+            max-width: 200px;  
+        }
+
+        .logo {
+            margin-bottom: 5px;
+        }
+
+        .logo:not(:last-child) {
+            margin-right: 60px;
+        }
+
+        .clientlogo-section {
+            text-align:center;
+            > * {
+                display: inline-block;
+            }
+
+            img {
+                width: 150px;
+            }
+        }
+    }
+
+    .separator {
+        border-top: 3px solid @color_tertiary;
+        height: 4px;
+    }
+
+    .apps-section {
+        padding: 10px 10px 0 10px;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+
+    .message-section {
+        max-width: 600px;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    .links-section {
+        margin-top: -71px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-wrap: wrap;
+        height: 100%;
+        padding-bottom: 110px;
+
+        .applink {
+            display: inline-block;
+            width: 200px;
+            margin: 0 30px 20px 0;
+            opacity: 0.7;
+        }
+
+        .applink:hover, .applink:visited {
+            opacity: 1;
+        }
+    }
+
+    .unlicensed {
+        text-align: center;
+        padding: 10px;
+        margin-top: 10px;
+        min-height: 46px;
+        background-color: rgba(255,255,255,0.8);
+        color: red;
+
+        p {
+            color: @color_primary;
+
+            a {
+                color: @color_highlight_1_shade
+            }
+        }
+    }
+
+    .license-info-link {
+        position: fixed;
+        bottom: 0;
+        text-align: center;
+        width: 100%;
+        border-top: 4px solid @color_tertiary;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.device-sm,
+.device-xs {
+
+    .applink,
+    .logo {
+        max-width: 130px !important;
+    }
+
+    .links-section {
+        margin-top: 30px;
+        padding-bottom: initial;
+    }
+}

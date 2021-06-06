@@ -1,0 +1,64 @@
+﻿@model coreApp.Models.EmployeeAllowancesDeductionsModel
+
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_EmployeeDetailsLayout.cshtml";
+
+    ViewBag.Title = "Allowances & Deductions";
+    
+
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = "Employee Profile", Link = Url.Action("Details", "Employees", new { id = employee.EmployeeId, area = "HRModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/AllowancesDeductions/Index/{0}", MinimalView = true, LessParameters = true } })
+}
+ 
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                Allowances
+
+                <div class="pull-right details" modal-target="#modalViewDetails_AccessList" modal-title="Edit Allowances" style="margin-left:10px">
+                    <i class="fa fa-pencil"></i> <a href="#" data-url="/HR/Manage/Employee/AllowancesDeductions/EditAllowances/@employee.EmployeeId" class="btn-open">Edit</a>
+                </div>
+            </div>
+            <div class="card-body">
+                @Html.Partial("~/Areas/HRModule/Views/EmployeeAllowancesDeductions/_AllowanceList.cshtml", Model.Allowances, new ViewDataDictionary { { "ReadOnly", true } })
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                Deductions
+
+                <div class="pull-right details" modal-target="#modalViewDetails_AccessList" modal-title="Edit Deductions" style="margin-left:10px">
+                    <i class="fa fa-pencil"></i> <a href="#" data-url="/HR/Manage/Employee/AllowancesDeductions/EditDeductions/@employee.EmployeeId" class="btn-open">Edit</a>
+                </div>
+            </div>
+            <div class="card-body">
+                @Html.Partial("~/Areas/HRModule/Views/EmployeeAllowancesDeductions/_DeductionList.cshtml", Model.Deductions, new ViewDataDictionary { { "ReadOnly", true } })
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+@section FormActions {
+    
+}

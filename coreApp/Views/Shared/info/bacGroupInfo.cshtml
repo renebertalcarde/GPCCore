@@ -1,0 +1,23 @@
+﻿@using coreApp.Areas.Procurement.DAL
+@model string
+@{
+    tblBACGroup group = (tblBACGroup)ViewBag.Group;
+
+    List<tblBACGroup> groups = (List<tblBACGroup>)ViewBag.Groups;
+}
+
+<label>Group</label>
+<select onchange="itemSelected(this)" class="form-control">
+    @foreach (tblBACGroup o in groups)
+            {
+        <option value="@o.Id" @(group.Id == o.Id ? "selected" : "")>@o.Description.ToUpper()</option>
+    }
+</select>
+
+<br />
+
+<script>
+    function itemSelected(sel) {
+        window.location = vdUrl('@Model' + $(sel).val());
+    }
+</script>

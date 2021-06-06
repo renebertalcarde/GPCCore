@@ -1,0 +1,621 @@
+﻿@model List<tblSignatory>
+@using coreApp.DAL
+@using coreLib.Extensions
+@{
+    ViewBag.Title = "Signatories";
+    ViewBag.Subtitle = "Edit Mode";
+
+    string _prevModule = "";
+    string _prevReport = "";
+
+    string moduleNamesData = Newtonsoft.Json.JsonConvert.SerializeObject(coreApp.SelectItems.getModuleNames());
+    string reportNamesData = Newtonsoft.Json.JsonConvert.SerializeObject(coreApp.SelectItems.getReportNames());
+
+    string employeesData = Newtonsoft.Json.JsonConvert.SerializeObject(coreApp.Areas.Procurement.SelectItems.getEmployees(upperCase: true));
+    string titleModesData = Newtonsoft.Json.JsonConvert.SerializeObject(coreApp.SelectItems.getTitleModes());
+
+}
+
+@section Styles {
+    <style>
+        .tblsignatories tbody tr {
+            cursor: pointer;
+        }
+
+            .tblsignatories tbody tr.modified {
+                background-color: #4299cf;
+                color: white;
+            }
+
+            .tblsignatories tbody tr.added {
+                background-color: lightgreen;
+                color: black;
+            }
+
+            .tblsignatories tbody tr.deleted {
+                background-color: red;
+                color: white;
+            }
+
+            .tblsignatories tbody tr.modified:hover {
+                color: lightblue;
+            }
+
+            .tblsignatories tbody tr.added:hover {
+                color: black;
+            }
+
+            .tblsignatories tbody tr.deleted:hover {
+                color: white;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        var url_index = '@Url.Action("Index")';
+        var url_getEmployeeInfo = '@Url.Action("GetEmployeeInfo")';
+        var url_save = '@Url.Action("Save")';
+
+        var moduleNamesData = @Html.Raw(moduleNamesData);
+        var reportNamesData = @Html.Raw(reportNamesData);
+        var filedNosData = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        var employeesData = @Html.Raw(employeesData);
+        var titleModesData = @Html.Raw(titleModesData);
+
+        var initTopUI = function (sig) {
+            var modal = sig.closest('.modal');
+            var body = modal.find('.modal-body');
+
+            var modules = sig.find('.module');
+            var reports = sig.find('.report');
+            var fieldnos = sig.find('.fieldno');
+            var fielddesc = sig.find('.fielddesc');
+
+            //fill
+            moduleNamesData.forEach(function (d) {
+                var option = $('<option />');
+                option.val(d.Text);
+                option.html(d.Text);
+                modules.append(option);
+            });
+
+            reportNamesData.forEach(function (d) {
+                var option = $('<option />');
+                option.val(d.Value);
+                option.html(d.Text);
+                reports.append(option);
+            });
+
+            filedNosData.forEach(function (d) {
+                var option = $('<option />');
+                option.val(d);
+                option.html(d);
+                fieldnos.append(option);
+            });
+
+            initPlugins(body);
+
+        };
+
+        var initCommonUI = function (sig) {
+            var modal = sig.closest('.modal');
+            var body = modal.find('.modal-body');
+
+            var employees = sig.find('.employeeid');
+            var titlemodes = sig.find('.titlemode');
+
+            //fill
+            employeesData.forEach(function (d) {
+                var option = $('<option />');
+                option.val(d.Value);
+                option.html(d.Text);
+                employees.append(option);
+            });
+
+            titleModesData.forEach(function (d) {
+                var option = $('<option />');
+                option.val(d.Value);
+                option.html(d.Text);
+                titlemodes.append(option);
+            });
+
+            initPlugins(body);
+
+            //bind
+            employees.change(function () {
+                setinfo(sig);
+            });
+
+            titlemodes.change(function () {
+                setinfo(sig);
+            });
+        };
+
+        var setinfo = function (sig) {
+            var fn = "";
+            var title = "";
+            var employeeFN = sig.find('.employee_fn');
+            var employeeId = sig.find('.employeeid').val();
+            var titleMode = parseInt(sig.find('.titlemode').val());
+
+            var customtitleField = sig.find('.customtitle');
+            var titleField = sig.find('.title');
+
+            var isCustomTitle = false;
+
+            var proceed = function () {
+                titleField.html(title);
+
+                if (isCustomTitle) {
+                    titleField.hide();
+                    customtitleField.show();
+                } else {
+                    titleField.show();
+                    customtitleField.hide();
+                }
+            };
+
+            if (titleMode == 0) {
+                if (employeeId != '-1') {
+                    var fnc = function (res) {
+                        if (res.IsSuccessful) { 
+                            fn = res.Data[0];
+                            title = res.Data[1];
+
+                            employeeFN.val(fn);
+                            titleField.html(title);
+                            proceed();
+                        }
+                    };
+
+                    $.get({
+                        url: vdUrl(url_getEmployeeInfo),
+                        data: { id: employeeId },
+                        success: fnc,
+                        async: false
+                    });
+                }
+            } else if (titleMode == 1) {
+                title = customtitleField.val();
+                isCustomTitle = true;
+                proceed();
+            }
+        };
+
+        var getAndApplyData = function (sig, tr, data, origData, isNew) {
+            var hasEmployee = sig.find('.employeeid').val() != '-1';
+            var titleMode = parseInt(sig.find('.titlemode').val());
+
+            var newData = $.extend({}, data, {
+                FieldDesc: sig.find('.fielddesc').val(),
+                EmployeeId: hasEmployee ? parseInt(sig.find('.employeeid').val()) : null,
+                TitleMode: titleMode,
+                CustomTitle: sig.find('.customtitle').val(),
+                Signatory: hasEmployee ? sig.find('.employee_fn').val() : '',
+                TitleMode_Desc: sig.find('.titlemode option:selected').html(),
+                Title: titleMode == 1 ? sig.find('.customtitle').val() : sig.find('.title').html()
+            });
+            
+            if (isNew) {                
+                tr.attr('data-orig', JSON.stringify(newData));
+                tr.addClass('added');
+
+                tr.find('.tdmodulename').html(newData.ModuleName);
+                tr.find('.tdreportname').html(newData.ReportName);
+                tr.find('.tdfieldno').html(newData.FieldNo);
+                
+            } else {
+           
+                var thesameData = function (a, b) {
+                    return a.EmployeeId == b.EmployeeId &&
+                        a.TitleMode == b.TitleMode &&
+                        a.Signatory == b.Signatory &&
+                        a.Title == b.Title;
+                };
+
+                if (!tr.hasClass('added')) {
+                    if (thesameData(origData, newData)) {
+                        tr.removeClass('modified');
+                    } else {
+                        tr.addClass('modified');
+                    }
+                }                
+            }   
+
+            tr.find('.tdfielddesc').html(newData.FieldDesc);
+            tr.find('.tdsignatory').html(newData.Signatory);
+            tr.find('.tdtitlemode').html(newData.TitleMode_Desc);
+            tr.find('.tdtitle').html(newData.Title);
+            
+            tr.attr('data-new', JSON.stringify(newData));
+        }
+
+        function addItem() {
+            var initui = function (sig) {
+                var modal = sig.closest('.modal');
+                var btnOk = modal.find('.modal-footer .btn-ok');
+
+                var addTr = function (data) {
+                    var tbody = $('.tblsignatories tbody');
+                    var _tr = tbody.find('tr').first().clone();
+
+                    _tr.removeClass('added modified deleted');
+                    _tr.find('td').empty();
+                    var t1 = tbody.find('tr[data-ref^="' + data.ModuleName + '|"]');
+                    if (t1.length > 0) {
+                        var t2 = tbody.find('tr[data-ref^="' + data.ModuleName + '|' + data.ReportName + '|"]');
+                        if (t2.length > 0) {
+                            _tr.insertAfter(t2.last());
+                        } else {
+                            _tr.insertAfter(t1.last());
+                        }
+                    } else {
+                        tbody.append(_tr);                        
+                    }
+
+                    return _tr;
+                };
+                
+                btnOk.unbind().click(function () {
+                    var data = {
+                        ModuleName: sig.find('.module').val(),
+                        ReportName: sig.find('.report').val(),
+                        FieldNo: sig.find('.fieldno').val()                        
+                    };
+                    
+                    var reference = data.ModuleName + '|' + data.ReportName + '|' + data.FieldNo;
+                    var fieldNoExists = $('.tblsignatories tbody tr[data-ref="' + reference + '"]').not('.deleted').length > 0;
+
+                    if (fieldNoExists) {
+                        modalMessage(reference + ' already exists', 'Add new signatory item', true);
+                    } else {
+                        var tr = addTr(data);
+                        getAndApplyData(sig, tr, data, data, true);
+                        modal.addClass('confirm-close-event').modal('hide');
+                    }
+                });                
+            };
+
+            modalEmpty('Add new signatory item', function (modal, recallback) {
+                modal.find('.modal-dialog').addClass('modal-lg');
+                var body = modal.find('.modal-body');
+                var btnOk = modal.find('.modal-footer .btn-ok');
+
+                btnOk.attr('disabled', 'disabled');
+
+                loadingUI(body, true);
+
+                var sig = getTemplateUIById('AddSignatoryTemplate');
+
+                setTimeout(function () {
+                    initTopUI(sig);
+                    initCommonUI(sig);
+                    initui(sig);
+
+                    setinfo(sig);
+
+                    btnOk.removeAttr('disabled');
+                    loadingUI(body, false);
+                }, 500);
+
+                body.append(sig);
+
+                if (recallback) recallback();
+            });
+        }
+
+        function updateItem(row) {
+            var tr = $(row);
+            var origData = JSON.parse(tr.attr('data-orig'));
+
+            var initui = function (sig, data) {
+                var modal = sig.closest('.modal');
+                var btnDelete = modal.find('.modal-footer .btn-delete');
+                var btnReset = modal.find('.modal-footer .btn-reset');
+                var btnOk = modal.find('.modal-footer .btn-ok');
+
+                var initValues = function (data) {
+                    var employeeId = data.EmployeeId == null ? -1 : data.EmployeeId;
+
+                    sig.find('.employeeid').val(employeeId);
+                    sig.find('.titlemode').val(data.TitleMode);
+                    sig.find('.customtitle').val(data.CustomTitle);
+
+                    sig.find('.employeeid').select2().trigger('change');
+                    sig.find('.titlemode').select2().trigger('change');
+
+                    setinfo(sig);
+                };
+
+                btnDelete.unbind().click(function () {
+                    if (tr.hasClass('added')) {
+                        tr.remove();
+                        modal.addClass('confirm-close-event').modal('hide');
+                    } else {
+                        btnReset.click();
+                        tr.removeClass('modified');
+                        tr.addClass('deleted');
+                    }
+                });
+
+                btnReset.unbind().click(function () {
+                    initValues(origData);
+                    btnOk.click();
+                });
+
+                btnOk.unbind().click(function () {
+                    getAndApplyData(sig, tr, data, origData);
+                    modal.addClass('confirm-close-event').modal('hide');
+                });
+
+                initValues(data);
+            };
+
+            modalEmpty('Update signatory item', function (modal, recallback) {
+                modal.find('.modal-dialog').addClass('modal-lg');
+
+                var body = modal.find('.modal-body');
+                var btnOk = modal.find('.modal-footer .btn-ok');
+
+                var btnDelete = $('<button type="button" class="btn btn-sm btn-default btn-danger btn-delete">Delete</button>');
+                var btnReset = $('<button type="button" class="btn btn-sm btn-default btn-reset">Reset</button>');
+                btnDelete.insertBefore(btnOk);
+                btnReset.insertBefore(btnOk);
+
+                btnDelete.attr('disabled', 'disabled');
+                btnReset.attr('disabled', 'disabled');
+                btnOk.attr('disabled', 'disabled');
+
+                loadingUI(body, true);
+
+                var sigData = JSON.parse(tr.attr('data-new'));
+                var sig = getTemplateUIById('UpdateSignatoryTemplate');
+
+                sig.find('.tdmodule').html(sigData.ModuleName);
+                sig.find('.tdreport').html(sigData.ReportName);
+                sig.find('.tdfieldno').html(sigData.FieldNo);
+
+                var fielddesc = sig.find('.fielddesc');
+                fielddesc.val(sigData.FieldDesc);
+
+                if (tr.hasClass('added')) {
+                    fielddesc.removeAttr('readonly');
+                }
+
+                setTimeout(function () {
+                    initCommonUI(sig);
+                    initui(sig, sigData);
+
+                    btnDelete.removeAttr('disabled');
+                    btnReset.removeAttr('disabled');
+                    btnOk.removeAttr('disabled');
+                    loadingUI(body, false);
+                }, 500);
+
+                body.append(sig);
+
+                if (recallback) recallback();
+            });
+        }
+
+        function save() {
+            modalConfirm('Are you sure you want to save changes?', function (ret) {
+                if (ret) {
+                    var proc = modalProcessing();
+
+                    var modifiedData = [];
+                    var addedData = [];
+                    var deletedData = [];
+
+                    $('.tblsignatories tbody tr.modified').each(function (i, v) {
+                        var tr = $(v);
+                        var d = JSON.parse(tr.attr('data-new'));
+
+                        modifiedData.push(d);
+                    });
+
+                    $('.tblsignatories tbody tr.added').each(function (i, v) {
+                        var tr = $(v);
+                        var d = JSON.parse(tr.attr('data-new'));
+
+                        addedData.push(d);
+                    });
+
+                    $('.tblsignatories tbody tr.deleted').each(function (i, v) {
+                        var tr = $(v);
+                        var d = tr.attr('data-ref');
+
+                        deletedData.push(d);
+                    });
+
+                    var data = {
+                        modifiedData: JSON.stringify(modifiedData),
+                        addedData: JSON.stringify(addedData),
+                        deletedData: JSON.stringify(deletedData)
+                    };
+
+                    $.post(vdUrl(url_save), data, function (res) {
+                        if (res.IsSuccessful) {
+                            sessionStorage.clientMessage = res.Remarks;
+                            window.location = vdUrl(url_index);
+                        } else {
+                            proc.addClass('confirm-close-event').modal('hide');
+                            modalMessage(res.Err.split('\n'), 'Save Signatories', true);
+                        }
+                    }, 'json');
+                }
+            });
+        }
+    </script>
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>() { new Breadcrumb { Description = ViewBag.Title } })
+}
+
+<table class="tblsignatories table static-table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Module
+            </th>
+            <th>
+                Report Name
+            </th>
+            <th>
+                Field No.
+            </th>
+            <th>
+                Field Description
+            </th>
+            <th>
+                Signatory
+            </th>
+            <th>
+                Title Mode
+            </th>
+            <th>
+                Title
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (tblSignatory item in Model)
+        {
+            string data = Newtonsoft.Json.JsonConvert.SerializeObject(item);
+            string reference = string.Format("{0}|{1}|{2}", 
+                item.ModuleName,
+                item.ReportName,
+                item.FieldNo
+                );
+
+            <tr class="" data-ref="@reference" data-orig="@data" data-new="@data" onclick="updateItem(this)">
+                @if (_prevModule == item.ModuleName)
+                {
+                    <td class="tdmodulename"></td>
+                }
+                else
+                {
+                    _prevModule = item.ModuleName;
+
+                    <td class="tdmodulename">
+                        @item.ModuleName
+                    </td>
+                }
+                @if (_prevReport == item.ReportName)
+                {
+                    <td class="tdreportname"></td>
+                }
+                else
+                {
+                    _prevReport = item.ReportName;
+
+                    <td class="tdreportname">
+                        @item.ReportName
+                    </td>
+                }
+                <td class="tdfieldno">
+                    @item.FieldNo
+                </td>
+                <td class="tdfielddesc">
+                    @item.FieldDesc
+                </td>
+                <td class="tdsignatory">
+                    @item.Signatory
+                </td>
+                <td class="tdtitlemode">
+                    @item.TitleMode_Desc
+                </td>
+                <td class="tdtitle">
+                    @Html.DisplayMultiLineFor(m => item.Title)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<template id="AddSignatoryTemplate">
+    <div>
+        <table class="table static-table">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Report Name</th>
+                    <th>Field No.</th>
+                    <th>Field Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select class="form-control module"></select>
+                    </td>
+                    <td>
+                        <select class="form-control report select2"></select>
+                    </td>
+                    <td>
+                        <select class="form-control fieldno"></select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control fielddesc" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Employee</h4>
+        <select class="form-control select2 employeeid"></select>
+        <input type="hidden" class="employee_fn" />
+        
+        <h4>Title Mode</h4>
+        <select class="form-control titlemode"></select>
+
+        <h4>Title</h4>
+        <div class="title"></div>
+        <textarea class="customtitle form-control"></textarea>
+    </div>
+</template>
+
+<template id="UpdateSignatoryTemplate">
+    <div>
+        <table class="table static-table">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Report Name</th>
+                    <th>Field No.</th>
+                    <th>Field Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tdmodule"></td>
+                    <td class="tdreport"></td>
+                    <td class="tdfieldno"></td>
+                    <td>
+                        <input type="text" class="form-control fielddesc" readonly="readonly" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Employee</h4>
+        <select class="form-control select2 employeeid"></select>
+        <input type="hidden" class="employee_fn" />
+
+        <h4>Title Mode</h4>
+        <select class="form-control titlemode"></select>
+
+        <h4>Title</h4>
+        <div class="title"></div>
+        <textarea class="customtitle form-control"></textarea>
+    </div>
+</template>
+
+@section FormActions {
+    <a href="@Url.Action("Index")" class="btn btn-sm btn-default btn-cancel">Cancel</a>
+    <a href="#" class="btn btn-sm btn-default btn-add" onclick="addItem()">Add Item</a>
+    <a href="#" class="btn btn-sm btn-default btn-save" onclick="save()">Save</a>
+}

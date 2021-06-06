@@ -1,0 +1,96 @@
+﻿@model List<coreApp.DAL.tblEmployee_CivilService>
+
+@{
+    Layout = "~/Areas/HRModule/Views/Shared/_PDS.cshtml";
+
+    ViewBag.Title = "Civil Services";
+    
+
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = "Employee List", Link = Url.Action("Index", "Employees", new { area = "HRModule" }) },
+        new Breadcrumb { Description = "Employee Profile", Link = Url.Action("Details", "Employees", new { id = employee.EmployeeId, area = "HRModule" } ) },
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section SearchSection {
+    @Html.Action("Search", "EmployeeSearch", new { model = new coreApp.Models.EmployeeSearchUIModel { DisableShowPanelTrigger = true, DataUrl = "/HR/Manage/Employee/CivilServices/Index/{0}", MinimalView = true, LessParameters = true } })
+}
+
+<div class="table-responsive">
+    <table class="tbl-1 display table table-bordered table-striped table-list" cellspacing="0" width="100%"
+           modal-target modal-start="view"
+           modal-view-url="/HR/Manage/Employee/CivilServices/Details/@employee.EmployeeId/{0}" modal-edit-url="/HR/Manage/Employee/CivilServices/Edit/@employee.EmployeeId/{0}" modal-delete-url="/HR/Manage/Employee/CivilServices/Delete/@employee.EmployeeId" modal-create-url="/HR/Manage/Employee/CivilServices/Create/@employee.EmployeeId">
+        <thead>
+            <tr>
+                <th class="idcol">
+                    Id
+                </th>
+                <th>
+                    Career Service
+                </th>
+                <th>
+                    Rating
+                </th>
+                <th>
+                    Date of Exam
+                </th>
+                <th>
+                    Place of Exam
+                </th>
+                <th>
+                    License No.
+                </th>
+                <th>
+                    License Release Date
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (coreApp.DAL.tblEmployee_CivilService item in Model)
+            {
+                <tr record-id="@item.CSId">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CSId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CareerService)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rating)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfExam)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.POE)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LicenseNo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LicenseReleaseDate)
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+
+
+
+
+@section FormActions {
+    <button class="btn btn-sm btn-default btn-create" onclick="$.fn.list('modalOp', this, 'create')" table-selector=".tbl-1">New</button>
+}

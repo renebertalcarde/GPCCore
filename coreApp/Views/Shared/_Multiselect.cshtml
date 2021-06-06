@@ -1,0 +1,51 @@
+﻿@model coreApp.Areas.TimeModule.ViewModels.MultiSelectModel
+
+<div class="multiselect-ui @(Model.ShowInModal ? "showinmodal" : "")">
+
+    @if (Model.ShowInModal)
+    {
+        <a href="#" class="modal-trigger" data-source="@Model.DatasourceSelector" data-selectedtexts="@(string.Join(",", Model.SelectedTexts))" data-templatename="@Model.TemplateName"></a>
+
+        <template id="@Model.TemplateName">
+            <div class="select-all select-all-parent-inverse" data-selectionselector="@Model.SelectionSelector">
+                <ul>
+                    <li>
+                        @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", !Model.Items.Any(x => !x.Selected) }, { "text", "Select All" }, { "input-value", "-99" }, { "id", Model.Name + "_SelectAll" }, { "name", Model.Name } })
+
+                        <ul>
+                            @foreach (SelectListItem item in Model.Items)
+                {
+                                <li>
+                                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", item.Selected }, { "text", item.Text }, { "input-value", item.Value }, { "id", Model.Name + "-" + item.Value }, { "name", Model.Name } })
+                                </li>
+                            }
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+        </template>
+    }
+    else
+    {
+        <div class="select-all select-all-parent-inverse" data-source="@Model.DatasourceSelector" data-selectionselector="@Model.SelectionSelector">
+            <ul>
+                <li>
+                    @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", !Model.Items.Any(x => !x.Selected) }, { "text", "Select All" }, { "input-value", "-99" }, { "id", Model.Name + "_SelectAll" }, { "name", Model.Name } })
+
+                    <ul>
+                        @foreach (SelectListItem item in Model.Items)
+                {
+                            <li>
+                                @Html.Partial("_Helper_CheckBox", null, new ViewDataDictionary { { "value", item.Selected }, { "text", item.Text }, { "input-value", item.Value }, { "id", Model.Name + "-" + item.Value }, { "name", Model.Name } })
+                            </li>
+                        }
+                    </ul>
+
+                </li>
+            </ul>
+        </div>
+    }
+
+</div>
+

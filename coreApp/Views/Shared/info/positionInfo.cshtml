@@ -1,0 +1,21 @@
+﻿@using Module.DB
+@{ 
+    tblPosition position = (tblPosition)ViewBag.Position;
+
+    List<tblPosition> positions = (List<tblPosition>)ViewBag.Positions;
+}
+
+<label>Job Title</label>
+<select onchange="positionSelected(this)" class="form-control">
+    @foreach (tblPosition p in positions)
+    {
+        <option value="@p.PositionId" @(position.PositionId == p.PositionId ? "selected" : "")>@p.Position.ToUpper()</option>
+    }
+</select>
+<br />
+
+<script>
+    function positionSelected(sel) {
+        window.location = vdUrl('/HR/Config/Position/Rates/Index/' + $(sel).val());
+    }
+</script>

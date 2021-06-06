@@ -1,0 +1,62 @@
+﻿@using coreApp.Models
+@model LoginViewModel
+@{
+    Layout = "~/Views/Shared/_Canvas_Anonymous.cshtml";
+
+    System.Reflection.AssemblyName n = typeof(MvcApplication).Assembly.GetName();
+}
+
+@section Styles {
+    <link href="~/Content/login.less" rel="stylesheet" type="text/css" />
+
+}
+
+<div class="logo-section">
+    <div class="applogo-section">
+        <img class="logo applogo" src="~/Assets/images/logixsystems.png" alt="">
+    </div>
+</div>
+
+<div class="message-section">
+    @Html.Partial("~/Views/Shared/_Messages_Unboxed.cshtml")
+</div>
+
+<div class="login-page">
+    
+
+    <div class="login-section">
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "nobottommargin loginform", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <h4>Login to your Account</h4>
+            <br />
+
+            <dl class="row">
+                <dt class="col-sm-4">
+                    Username
+                </dt>
+                <dd class="col-sm-8">
+                    <input class="form-control not-dark valid" data-val="true" data-val-required="The UserName field is required." id="UserName" name="UserName" type="text" value="" maxlength="50" autocomplete="off" aria-required="true" aria-describedby="UserName-error" aria-invalid="false">
+                </dd>
+                <dt class="col-sm-4">
+                    Password
+                </dt>
+                <dd class="col-sm-8">
+                    <input class="form-control not-dark valid" data-val="true" data-val-required="The Password field is required." id="Password" name="Password" type="password" aria-required="true" aria-describedby="Password-error" aria-invalid="false">
+                </dd>
+            </dl>
+
+            <div class="login-button-cont">
+                <button class="btn btn-sm btn-default" value="login">Login</button>
+            </div>
+            
+        }
+    </div>
+
+    
+</div>
+
+<div class="back-section">
+    <a href="~/">Back to Portal</a>
+</div>

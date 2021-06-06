@@ -1,0 +1,28 @@
+﻿@model Module.Time.etPeriodModel
+
+@{
+    ViewBag.Title = "Holidays";
+    
+
+    Module.DB.tblEmployee employee = (Module.DB.tblEmployee)ViewBag.Employee;
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function applyPeriod(start, end) {
+            window.location = vdUrl('/Holidays/Index/' + start + '/' + end);
+        }
+    </script>
+}
+
+@Html.Partial("~/Areas/TimeModule/Views/Shared/_HolidaysByPeriod.cshtml", Model, new ViewDataDictionary { { "clientCallback", "applyPeriod" } })
+
+

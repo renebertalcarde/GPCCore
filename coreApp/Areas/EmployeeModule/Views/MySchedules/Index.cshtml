@@ -1,0 +1,23 @@
+﻿@model Module.Time.etPeriodModel
+
+@{
+    ViewBag.Title = "My Schedules";
+
+}
+
+@section Breadcrumbs {
+    @Html.Partial("_Breadcrumbs", new List<Breadcrumb>()
+    {
+        new Breadcrumb { Description = ViewBag.Title }
+    })
+}
+
+@section Scripts {
+    <script>
+        function applyPeriod(start, end) {
+            window.location = vdUrl('/My/Schedules/' + start + '/' + end);
+        }
+    </script>
+}
+
+@Html.Partial("~/Areas/TimeModule/Views/Shared/_SchedulesByPeriod.cshtml", Model, new ViewDataDictionary { { "clientCallback", "applyPeriod" } })

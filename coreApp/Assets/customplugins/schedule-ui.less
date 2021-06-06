@@ -1,0 +1,109 @@
+﻿.schedule-ui {
+
+    .table {
+        font-size: smaller;
+    }
+
+    .allowedsegments-cont {
+        min-height: 120px;
+
+        .tblallowedsegments {
+            width: 900px;
+        }
+    }
+
+
+    .segment-list {
+        position: relative;
+
+        .sl-messages {
+        }
+
+        .sl-commands {
+            .sl-cmd {
+                display: inline-block;
+            }
+
+            .sl-cmd:after {
+                margin-right: 20px;
+            }
+
+            .cmd-reset {
+                display: none;
+            }
+        }
+
+        .sl-info {
+            position: absolute;
+            top: 0;
+            right: 0;
+
+            .list-status {
+                color: green;
+            }
+        }
+
+        .lstcmd-reset {
+            display: none !important;
+        }
+
+        .table {
+            tr {
+                cursor: pointer;
+
+                td.status {
+                    color: green;
+                }
+
+                .dayscol {
+                    display: none;
+                }
+            }
+
+            tr.deleted {
+                display: none;
+            }
+
+            tr.added td.status {
+                color: orange;
+            }
+
+            tr.modified td.status {
+                color: red;
+
+                .lstcmd-reset {
+                    display: inline-block !important;
+                }
+            }
+        }
+    }
+
+    .segment-list.includesegmentdays {
+        .dayscol {
+            display: table-cell !important;
+        }
+    }
+
+    .segment-list.modified {
+        .sl-commands {
+            .cmd-reset {
+                display: inline-block;
+            }
+        }
+
+        .list-status {
+            color: red;
+        }
+    }
+}
+
+.schedule-ui[data-readonly="True"],
+.schedule-ui[data-imported="True"] {
+    .sl-info {
+        display: none;
+    }
+
+    th.status, td.status {
+        display: none;
+    }
+}
